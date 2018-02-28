@@ -1,12 +1,53 @@
 #!/usr/bin/python3
 
 import os
+import re
 import sys
 
 
-def check_file_content(filename):
+def strip_line(line):
 
-    print("yop in check_file_content")
+    if '#' in line:
+        line = line[:line.index("#")]
+        print("stripped line (%s)" % line)
+
+    rule = re.sub(r'\s+', '', line)
+    print("line without whithspaces: (%s)" % rule)
+
+    if rule:
+        return rule
+
+
+def rules_object(rule):
+    print("fct to create rules objects")
+
+
+
+def parse(filename):
+
+    init = ''
+    query = ''
+    rules = []
+
+    with open(filename, 'r') as content:
+
+        for line in content:
+            print("line : (%s)" % line)
+
+            rule = strip_line(line)
+
+            if rule and rule[0] == '=':
+                init += rule[1:]
+            elif rule and rule[0] == '?':
+                query += rule[1:]
+
+            else:
+                rules.append(rules_object(rule))
+
+        print("init : {%s} queries : {%s}" % (init, query))
+#        result = fill_rlt_dict(init, query)
+#
+#    return result, rules
 
 
 
@@ -39,7 +80,7 @@ def main_input():
     if not filename:
         return
 
-    check_file_content(filename)
+    parse(filename)
 
     return filename
 
