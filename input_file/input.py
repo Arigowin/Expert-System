@@ -41,7 +41,7 @@ def parse(filename):
             elif rule and rule[0] == '?':
                 query += rule[1:]
 
-            else:
+            elif rule:
                 rules.append(rules_object(rule))
 
         print("init : {%s} queries : {%s}" % (init, query))
@@ -60,14 +60,14 @@ def get_file():
 
     if nb_arg == 1:
         print('this program need a arg.')
-        return
+        sys.exit()
     elif nb_arg > 2:
         print('this program only need one arg.')
-        return
+        sys.exit()
 
     if not os.path.isfile(arg[1]):
         print('You have to give the path to a file')
-        return
+        sys.exit()
 
     return arg[1]
 
