@@ -3,23 +3,37 @@
 import os
 import re
 import sys
+import string
+
+from classes.rule import Rule
 
 
 def strip_line(line):
 
     if '#' in line:
         line = line[:line.index("#")]
-        print("stripped line (%s)" % line)
+        #print("stripped line (%s)" % line)
 
     rule = re.sub(r'\s+', '', line)
-    print("line without whithspaces: (%s)" % rule)
+    #print("line without whithspaces: (%s)" % rule)
 
     if rule:
         return rule
 
 
-def rules_object(rule):
-    print("fct to create rules objects")
+def fill_rlt_dict(init, query):
+
+    mydict = dict((letter, [0, 0]) for letter in string.ascii_uppercase)
+    print("DICO {%s} init (%s)" % (mydict, init))
+
+    for elt in init:
+        mydict[elt][0] = 1
+    for elt in query:
+        mydict[elt][1] = 1
+
+    print("DICO {%s}" % mydict)
+
+    return mydict
 
 
 
@@ -42,12 +56,12 @@ def parse(filename):
                 query += rule[1:]
 
             elif rule:
-                rules.append(rules_object(rule))
+                rules.append(Rule(rule))
 
-        print("init : {%s} queries : {%s}" % (init, query))
-#        result = fill_rlt_dict(init, query)
-#
-#    return result, rules
+        #print("init : {%s} queries : {%s}" % (init, query))
+        result = fill_rlt_dict(init, query)
+
+    return result, rules
 
 
 
@@ -80,15 +94,12 @@ def main_input():
     if not filename:
         return
 
-    parse(filename)
+    result, rules = parse(filename)
 
-    return filename
+    return result, rules
 
 
 
 if __name__ == '__main__':
 
-    filename = main_input()
-
-    if filename:
-        print(filename)
+    main_input()

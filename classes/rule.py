@@ -18,7 +18,7 @@ class Rule:
             if line[index + 1] and line[index + 2]:
                 symb_end = index + 2 # indexes are` included at begining and excluded at end
             else:
-                print("the rule '%s' is not well formated.3" % line)
+                print("the rule '%s' is not well formated." % line)
                 sys.exit()
 
             self.symb = line[symb_beg:symb_end]
@@ -30,6 +30,7 @@ class Rule:
             self.symb = None
             self.cc = None
 
+
     def __check_syntax(self, line):
         self.__check_regex('^<?=>$', self.symb, line)
         self.__check_cond_recu('^!?[A-Z]([+\|\^]!?[A-Z])*$', self.cdt, line, line)
@@ -40,7 +41,7 @@ class Rule:
         print "in check regex", str
         cdt = re.search(regex, str)
         if not cdt:
-            print("the rule '%s' is not well formated.2" % line)
+            print("the rule '%s' is not well formated." % line)
             sys.exit()
 
 
@@ -52,13 +53,12 @@ class Rule:
             close_parent = str.rfind(')')
 
             if not close_parent:
-                print("the rule '%s' is not well formatedi 1." % line)
+                print("the rule '%s' is not well formated." % line)
                 sys.exit()
 
             self.__check_cond_recu(regex, str[open_parent + 1:close_parent], modif_line, line)
             str = str[:open_parent] + 'Z' + str[close_parent + 1:]
             print "after modif, line (%s)" % str
-
 
         self.__check_regex(regex, str, line)
 
@@ -66,4 +66,4 @@ class Rule:
 
 
 
-abc = Rule("(A+(D|N)^!P)|F=>W")
+#abc = Rule("(A+(D|N)^!P+)|F=>W")
