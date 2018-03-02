@@ -1,4 +1,3 @@
-Inde = -1
 
 
 def logic_not(val):
