@@ -1,14 +1,18 @@
 import re
 import sys
-#  cdt = re.search()
-#       symb = re.search(v'^<?=>$', self.symb)
+
+
+
 class Rule:
+
 
     def __init__(self, line):
         self.__split_line(line)
         self.__check_syntax(line)
 
+
     def __split_line(self, line):
+        """ split the rule in 3 part: condition, symbol, conclusion """
 
         if '=' in line:
             index = line.index('=')
@@ -32,13 +36,17 @@ class Rule:
 
 
     def __check_syntax(self, line):
+        """ launch the 'well formated' check on the three part of the rule:
+            condition, symbole and conclusion """
+
         self.__check_regex('^<?=>$', self.symb, line)
         self.__check_cond_recu('^!?[A-Z]([+\|\^]!?[A-Z])*$', self.cdt, line, line)
         self.__check_cond_recu('^!?[A-Z]([+\|\^]!?[A-Z])*$', self.cc, line, line)
 
 
     def __check_regex(self, regex, str, line):
-        print "in check regex", str
+        """ return if the given string 'str' matches the given 'regex' """
+
         cdt = re.search(regex, str)
         if not cdt:
             print("the rule '%s' is not well formated." % line)
@@ -46,6 +54,8 @@ class Rule:
 
 
     def __check_cond_recu(self, regex, str, modif_line, line):
+        """ check if the rule is well formated begining by the innerest parenthesis """
+
         print  "IN REC", str
 
         if '(' in str:
@@ -58,12 +68,32 @@ class Rule:
 
             self.__check_cond_recu(regex, str[open_parent + 1:close_parent], modif_line, line)
             str = str[:open_parent] + 'Z' + str[close_parent + 1:]
-            print "after modif, line (%s)" % str
 
         self.__check_regex(regex, str, line)
 
 
+    def __get_polish_notation(self):
+        """ return the polish notation version of self.rule condition """
 
+        self.polish_rule = ""
+        tmp_ope = ""
+
+        for elt in self.cdt:
+
+            if elt.isupper():
+                self.polish_rule = elt + self.polish_rule
+            elif tmp_ope == "" or self.__priority(tmp_ope[0], elt) == False:
+                tmp_ope = elt + tmp_ope
+            else:
+                self.polish_rule = tmp_ope + self.polish_rule
+                tmp_ope = elt
+
+
+    def __priority(symb1, symb2):
+        """ return if symbol 1 has priority on symbol 2 """
+
+        order = "+|^"
+        return order.find(symb1) < order.find(symb2):
 
 
 #abc = Rule("(A+(D|N)^!P+)|F=>W")
