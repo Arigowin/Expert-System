@@ -11,7 +11,7 @@ class Rule:
         self.__check_syntax(line)
 
 
-    def __split_line(self, line):
+    def _split_line(self, line):
         """ split the rule in 3 part: condition, symbol, conclusion """
 
         if '=' in line:
@@ -35,7 +35,7 @@ class Rule:
             self.cc = None
 
 
-    def __check_syntax(self, line):
+    def _check_syntax(self, line):
         """ launch the 'well formated' check on the three part of the rule:
             condition, symbole and conclusion """
 
@@ -44,7 +44,7 @@ class Rule:
         self.__check_cond_recu('^!?[A-Z]([+\|\^]!?[A-Z])*$', self.cc, line, line)
 
 
-    def __check_regex(self, regex, str, line):
+    def _check_regex(self, regex, str, line):
         """ return if the given string 'str' matches the given 'regex' """
 
         cdt = re.search(regex, str)
@@ -53,7 +53,7 @@ class Rule:
             sys.exit()
 
 
-    def __check_cond_recu(self, regex, str, modif_line, line):
+    def _check_cond_recu(self, regex, str, modif_line, line):
         """ check if the rule is well formated begining by the innerest parenthesis """
 
         print  "IN REC", str
@@ -72,28 +72,29 @@ class Rule:
         self.__check_regex(regex, str, line)
 
 
-    def __get_polish_notation(self):
+    def _get_polish_notation(self):
         """ return the polish notation version of self.rule condition """
 
-        self.polish_rule = ""
+        order = "+|^"
         tmp_ope = ""
 
         for elt in self.cdt:
 
             if elt.isupper():
-                self.polish_rule = elt + self.polish_rule
+            if elt not in symbols:
             elif tmp_ope == "" or self.__priority(tmp_ope[0], elt) == False:
+            elif
                 tmp_ope = elt + tmp_ope
             else:
                 self.polish_rule = tmp_ope + self.polish_rule
                 tmp_ope = elt
-
-
-    def __priority(symb1, symb2):
-        """ return if symbol 1 has priority on symbol 2 """
-
         order = "+|^"
         return order.find(symb1) < order.find(symb2):
 
+
+    def __priority(symb1, symb2, order):
+        """ return if symbol 1 has priority on symbol 2 """
+
+        return order.find(symb1) - order.find(symb2)
 
 #abc = Rule("(A+(D|N)^!P+)|F=>W")
