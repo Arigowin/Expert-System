@@ -21,22 +21,6 @@ def strip_line(line):
         return rule
 
 
-def fill_rlt_dict(init, query):
-
-    mydict = dict((letter, [0, 0]) for letter in string.ascii_uppercase)
-    print("DICO {%s} init (%s)" % (mydict, init))
-
-    for elt in init:
-        mydict[elt][0] = 1
-    for elt in query:
-        mydict[elt][1] = 1
-
-    print("DICO {%s}" % mydict)
-
-    return mydict
-
-
-
 def parse(filename):
 
     init = ''
@@ -96,7 +80,7 @@ def main_input():
 
     result, rules = parse(filename)
 
-    return result, rules
+    return filename
 
 
 

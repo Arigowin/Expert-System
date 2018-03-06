@@ -2,26 +2,27 @@ import re
 import sys
 
 
-
 class Rule:
-    """ contain the rule and handle the rules coherence check and modifications """
+    """ contain the rule and handle coherence check and modifications """
 
 
     def __init__(self, line):
-        self.__split_line(line)
-        self.__check_syntax(line)
+        self._split_line(line)
+        self._check_syntax(line)
+        self.line = line
+        print(self.line)
 
 
     def _split_line(self, line):
         """ split the rule in 3 part: condition, symbol, conclusion """
 
         if '=' in line:
-            index = line.index('=')
+            i = line.index('=')
 
-            symb_beg = index - 1 if index and line[index - 1] and line[index - 1] is '<' else index
+            symb_beg = i - 1 if i and line[i - 1] and line[i - 1] is '<' else i
 
-            if line[index + 1] and line[index + 2]:
-                symb_end = index + 2
+            if line[i + 1] and line[i + 2]:
+                symb_end = i + 2
             else:
                 print("the rule '%s' is not well formated." % line)
                 sys.exit()
@@ -55,21 +56,23 @@ class Rule:
             sys.exit()
 
 
-    def _check_cond_recu(self, regex, str, modif_line, line):
-        """ check if the rule is well formated begining by the innerest parenthesis """
+    def _check_cond_recu(self, regex, str, lmodif, line):
+        """ check if the rule is well formated begining by the most inner
+        parenthesis
+        """
 
         print( "IN REC", str)
 
         if '(' in str:
-            open_parent = str.find('(')
-            close_parent = str.rfind(')')
+            popen = str.find('(')
+            pclose = str.rfind(')')
 
-            if not close_parent:
+            if not pclose:
                 print("the rule '%s' is not well formated." % line)
                 sys.exit()
 
-            self._check_cond_recu(regex, str[open_parent + 1:close_parent], modif_line, line)
-            str = str[:open_parent] + 'Z' + str[close_parent + 1:]
+            self._check_cond_recu(regex, str[popen + 1:pclose], lmodif, line)
+            str = str[:popen] + 'Z' + str[pclose + 1:]
 
         self._check_regex(regex, str, line)
 
