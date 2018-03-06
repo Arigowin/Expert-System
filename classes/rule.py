@@ -77,67 +77,6 @@ class Rule:
         self._check_regex(regex, str, line)
 
 
-    def get_polish_notation(self):
-        """ return the polish notation version of self.rule condition """
-
-        symbols = "^|+"
-        self.polish_rule = ""
-        ope = ""
-
-        for elt in self:
-
-            if elt.isupper():
-                self.polish_rule += elt
-
-            elif not ope or elt == '(':
-                ope = elt + ope
-
-            elif elt == ')':
-                index = ope.find('(')
-                self.polish_rule += ope[:index]
-                ope = ope[index + 1:]
-
-            else:
-                prio = self._priority(elt, ope[0], symbols)
-
-                if ope[0] == '(' or prio > 0:
-                    ope = elt + ope
-
-                elif prio == 0:
-                    self.polish_rule += elt
-
-                else:
-                    add_to_polish, add_to_ope = self._split_ope(elt, ope)
-                    self.polish_rule += add_to_polish
-                    ope = elt + add_to_ope
-
-        if ope:
-            self.polish_rule += ope
-
-        return self.polish_rule
-
-
-    def _priority(symb1, symb2, order):
-        """ return if symbol 1 has priority on symbol 2 """
-
-        return order.find(symb1) - order.find(symb2)
-
-
-    def _split_ope(to_find, ope):
-        #cf convention sur pep8
-        """ get the elements to add in our polish rule and the ones to keep in
-        ope
-        """
-
-        for elt in ope:
-
-            if elt is '(':
-                return ope[:ope.index(elt)], ope[ope.index(elt):]
-
-            if elt in to_find:
-                return ope[:ope.index(elt) +1], ope[ope.index(elt) +1:]
-
-        return ope, ""
 
 
 #abc = Rule("(A+(D|N)^!P+)|F=>W")
