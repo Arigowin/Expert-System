@@ -13,7 +13,7 @@ class Rule:
         symb
         cc
 
-    Function:
+    Functions:
         _check_syntax(self, split_line)
         _check_regex(self, regex, str)
         _check_cond_recu(self, regex, strm lmodif)

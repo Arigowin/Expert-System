@@ -1,10 +1,14 @@
-import operators.operators as op
 import tools.defines as td
+import handle_expression.operators as op
+from handle_expression.create_RPN import get_polish_notation
 
 class Condition:
     """ handle all the modfications and specifications of condition
 
     Variables:
+        cdt
+        polish_rule
+        pmodif
 
     Function:
     """
@@ -12,12 +16,12 @@ class Condition:
     def __init__(self, cdt):
         self.cdt = cdt
         print("cdt : " + self.cdt)
-        self._get_polish_notation(cdt)
+        self.polish_rule = get_polish_notation(cdt)
         self.pmodif = self.polish_rule
         print("RPN : " + self.polish_rule)
 
 
-    def polish_solver(self, dictionary):
+    def solver(self, dictionary):
         """ find the result of the given RPN expression """
 
         print("cdt : " + self.cdt)
@@ -43,10 +47,10 @@ class Condition:
 
         self.pmodif = start + str(rlt) + end
 
-        print("polish_solver : " + self.pmodif)
+        print("solver : " + self.pmodif)
         for elt in td.Symbols:
             if elt in self.pmodif:
-                self.polish_solver(dictionary)
+                self.solver(dictionary)
 
 
     def _get_sub_exp(self):
@@ -71,6 +75,7 @@ class Condition:
         return None
 
 
+# OUT OF THE CLASS!!!!!
     def _get_value(self, fact, dictionary):
         """ return the value of 'fact' from 'dictionary' """
 
@@ -85,63 +90,3 @@ class Condition:
         return rlt
 
 
-    def _get_polish_notation(self, cdt):
-        """ return the polish notation version of self.rule condition """
-
-        self.polish_rule = ""
-        ope = ""
-
-        for elt in cdt:
-
-            if elt.isupper():
-                self.polish_rule += elt
-
-            elif not ope or elt == '(':
-                ope = elt + ope
-
-            elif elt == ')':
-                index = ope.find('(')
-                self.polish_rule += ope[:index]
-                ope = ope[index + 1:]
-
-            else:
-                prio = self._priority(elt, ope[0], td.Symbols)
-
-                if ope[0] == '(' or prio > 0:
-                    ope = elt + ope
-
-                elif prio == 0:
-                    self.polish_rule += elt
-
-                else:
-                    add_to_polish, add_to_ope = self._split_ope(elt, ope)
-                    self.polish_rule += add_to_polish
-                    ope = elt + add_to_ope
-
-        if ope:
-            self.polish_rule += ope
-
-        return self.polish_rule
-
-
-    def _priority(self, symb1, symb2, order):
-        """ return if symbol 1 has priority on symbol 2 """
-
-        return order.find(symb1) - order.find(symb2)
-
-
-    def _split_ope(self, to_find, ope):
-        #cf convention sur pep8
-        """ get the elements to add in our polish rule and the ones to keep in
-        ope
-        """
-
-        for elt in ope:
-
-            if elt is '(':
-                return ope[:ope.index(elt)], ope[ope.index(elt):]
-
-            if elt in to_find:
-                return ope[:ope.index(elt) +1], ope[ope.index(elt) +1:]
-
-        return ope, ""
