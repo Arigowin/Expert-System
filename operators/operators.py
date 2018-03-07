@@ -2,43 +2,52 @@ import tools.defines as td
 
 def logic_not(val):
 
-    if val == td.Indet:
+    if int(val) == td.Indet:
         return td.Indet
 
-    return not val
+    return not int(val)
 
 
-def logic_and(val1, val2):
+def logic_and(val):
 
-    if val1 == td.Indet or val2 == td.Indet:
+    if len(val) < 2:
+        return
+
+    if int(val[0]) == td.Indet or int(val[1]) == td.Indet:
         return td.Indet
 
-    if val1 == True and val2 == True:
+    if int(val[0]) == True and int(val[1]) == True:
         return True
 
     return False
 
 
-def logic_or(val1, val2):
+def logic_or(val):
 
-    if val1 == True or val2 == True:
+    if len(val) < 2:
+        return
+
+    if int(val[0]) == True or int(val[1]) == True:
         return True
 
-    if val1 == td.Indet or val2 == td.Indet:
+    if int(val[0]) == td.Indet or int(val[1]) == td.Indet:
         return td.Indet
 
     return False
 
 
-def logic_xor(val1, val2):
+def logic_xor(val):
 
-    if val1 == td.Indet or val2 == td.Indet:
+    if len(val) < 2:
+        return
+
+    if int(val[0]) == td.Indet or int(val[1]) == td.Indet:
         return td.Indet
 
-    if val1 == True and val2 == False:
+    if int(val[0]) == True and int(val[1]) == False:
         return True
 
-    if val1 == False and val2 == True:
+    if int(val[0]) == False and int(val[1]) == True:
         return True
 
     return False

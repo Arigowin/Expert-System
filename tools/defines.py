@@ -3,4 +3,4 @@
 """
 
 Indet = 2
-Symbols = "^|+"
+Symbols = "^|+!"

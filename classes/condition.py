@@ -6,7 +6,7 @@ class Condition:
 
     def __init__(self, cdt):
         self.cdt = cdt
-        print("cdt : " + self.cdt)
+        print("\ncdt : " + self.cdt)
         self._get_polish_notation(cdt)
         self.pmodif = self.polish_rule
         print("RPN : " + self.polish_rule)
@@ -19,16 +19,23 @@ class Condition:
 #        print("RPN : " + self.polish_rule)
 
         sym, fact, start, end = self._get_sub_exp()
-#        print("sym[%s], fact[%s], start[%s], end[%s]" % (sym, fact, start, end))
+        #print("sym[%s], fact[%s], start[%s], end[%s]" % (sym, fact, start, end))
 
-        val1 = self._get_value(fact[0], dictionary)
-        val2 = self._get_value(fact[1], dictionary)
+        val = self._get_value(fact, dictionary)
 
-        func_tbl = { '^': op.logic_xor(val1, val2),
-                     '|': op.logic_or(val1, val2),
-                     '+': op.logic_and(val1, val2) }
+        func_tbl = {
+                    '^': op.logic_xor(val),
+                    '|': op.logic_or(val),
+                    '+': op.logic_and(val),
+                    '!': op.logic_not(val)
+                   }
 
-        rlt = 0 if func_tbl[sym] == False else 1 if func_tbl[sym] == True else td.Indet
+        # as rlt is a boolean, we need to get the correct int value for
+        # the equations to be performed
+        rlt = 0 if func_tbl[sym] == False \
+              else 1 if func_tbl[sym] == True \
+              else td.Indet
+
         self.pmodif = start + str(rlt) + end
 
 #        print("polish_solver : " + self.pmodif)
@@ -38,29 +45,22 @@ class Condition:
 
 
     def _get_sub_exp(self):
-        """ """
+        """ split pmodif to get the fist operation to do -fact and symbol- and
+        the 2 leftovers
+        """
 
         for elt in self.pmodif:
 
-            if elt in "^|+":
+            if elt in td.Symbols:
 
                 i = self.pmodif.index(elt)
 
-                if self.pmodif[i - 2] is not '!':
-                    fact = [self.pmodif[i - 2] if self.pmodif[i - 3] is not '!'
-                                               else self.pmodif[i - 3:i - 1],
-                            self.pmodif[i - 1]]
+                fact_start = i - 2
+                if self.pmodif[i] is '!':
+                    fact_start = i - 1
 
-                else:
-                    fact = [self.pmodif[i - 3] if self.pmodif[i - 4] is not '!'
-                                               else self.pmodif[i - 4:i - 2],
-                           self.pmodif[i - 2:i]]
-
-
-                start = self.pmodif[:i - (len(fact[0]) + len(fact[1]))]
-                end = self.pmodif[i + 1:]
-
-                return self.pmodif[i], fact, start, end
+                return self.pmodif[i], self.pmodif[fact_start:i], \
+                       self.pmodif[:fact_start], self.pmodif[i+1 :]
 
 #       ERROR
         return None
@@ -69,15 +69,15 @@ class Condition:
     def _get_value(self, fact, dictionary):
         """ return the value of 'fact' from 'dictionary' """
 
-        if fact.isdigit():
-            return int(fact)
+        rlt = ""
 
-        if '!' in fact:
-            return op.logic_not(dictionary[fact[1]][0])
+        for elt in fact:
+            if elt.isdigit():
+                rlt += elt
+            else:
+                rlt += str(dictionary[elt][0])
 
-        return dictionary[fact][0]
-
-
+        return rlt
 
 
     def _get_polish_notation(self, cdt):
@@ -88,7 +88,7 @@ class Condition:
 
         for elt in cdt:
 
-            if elt.isupper() or elt is '!':
+            if elt.isupper():
                 self.polish_rule += elt
 
             elif not ope or elt == '(':
