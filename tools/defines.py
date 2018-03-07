@@ -4,3 +4,4 @@
 
 Indet = 2
 Symbols = "^|+!"
+Error = -1

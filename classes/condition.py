@@ -2,11 +2,16 @@ import operators.operators as op
 import tools.defines as td
 
 class Condition:
-    """ handle all the modfications and specifications of condition """
+    """ handle all the modfications and specifications of condition
+
+    Variables:
+
+    Function:
+    """
 
     def __init__(self, cdt):
         self.cdt = cdt
-        print("\ncdt : " + self.cdt)
+        print("cdt : " + self.cdt)
         self._get_polish_notation(cdt)
         self.pmodif = self.polish_rule
         print("RPN : " + self.polish_rule)
@@ -15,11 +20,11 @@ class Condition:
     def polish_solver(self, dictionary):
         """ find the result of the given RPN expression """
 
-#        print("cdt : " + self.cdt)
-#        print("RPN : " + self.polish_rule)
+        print("cdt : " + self.cdt)
+        print("RPN : " + self.polish_rule)
 
         sym, fact, start, end = self._get_sub_exp()
-        #print("sym[%s], fact[%s], start[%s], end[%s]" % (sym, fact, start, end))
+        print("sym[%s], fact[%s], start[%s], end[%s]" % (sym, fact, start, end))
 
         val = self._get_value(fact, dictionary)
 
@@ -38,7 +43,7 @@ class Condition:
 
         self.pmodif = start + str(rlt) + end
 
-#        print("polish_solver : " + self.pmodif)
+        print("polish_solver : " + self.pmodif)
         for elt in td.Symbols:
             if elt in self.pmodif:
                 self.polish_solver(dictionary)

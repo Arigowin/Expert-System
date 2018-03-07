@@ -5,7 +5,7 @@ import re
 import sys
 import string
 
-from classes.rule import Rule
+from classes.expression import Expression
 
 
 def strip_line(line):
@@ -30,7 +30,7 @@ def parse(filename):
     with open(filename, 'r') as content:
 
         for line in content:
-            print("line : (%s)" % line)
+#            print("line : (%s)" % line)
 
             rule = strip_line(line)
 
@@ -40,10 +40,11 @@ def parse(filename):
                 query += rule[1:]
 
             elif rule:
-                rules.append(Rule(rule))
+                rules.append(Expression(rule))
 
         #print("init : {%s} queries : {%s}" % (init, query))
-        result = fill_rlt_dict(init, query)
+        #result = fill_rlt_dict(init, query)
+    result = None
 
     return result, rules
 
