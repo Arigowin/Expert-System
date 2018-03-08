@@ -4,8 +4,8 @@ import tools.defines as td
 import handle_expression.operators as op
 from tools.functions import get_first_index
 from handle_expression.create_RPN import get_polish_notation
-from dictionary.check_in_dictionary import get_value_from_dict, fact_to_value, \
-                                           modify_value_in_dict
+from dictionary.check_dictionary import get_value_from_dict, fact_to_value
+from dictionary.fill_dictionary import modify_value_in_dict
 
 
 class Conclusion:
@@ -91,7 +91,8 @@ class Conclusion:
 
             melt = 1 if val[0] is td.indet else 2
             value = td.false if td.true in val else td.true
-            modify_value_in_dict(rpolish_lst[melt], value, dictionary)
+            if modify_value_in_dict(rpolish_lst[melt], value, dictionary) is not None:
+                return td.Error
 
             return wanted
 
@@ -106,7 +107,8 @@ class Conclusion:
 
             melt = 1 if val[0] is td.indet else 2
             value = td.false if td.false in val else td.true
-            modify_value_in_dict(rpolish_lst[melt], value, dictionary)
+            if modify_value_in_dict(rpolish_lst[melt], value, dictionary) is not None:
+                return td.Error
 
             return wanted
 
@@ -129,10 +131,10 @@ class Conclusion:
                 return td.true
 
             if val.count(td.false) == 1:
-                if val[0] is td.false:
-                    modify_value_in_dict(rpolish_lst[2], td.true, dictionary)
-                else:
-                    modify_value_in_dict(rpolish_lst[1], td.true, dictionary)
+                if val[0] is td.false and modify_value_in_dict(rpolish_lst[2], td.true, dictionary) is not None:
+                        return td.Error
+                elif modify_value_in_dict(rpolish_lst[1], td.true, dictionary) is not None:
+                        return td.Error
                 return td.true
 
             if val.count(td.indet) == 2:
@@ -148,7 +150,9 @@ class Conclusion:
                 return td.Error
 
             for elt in rpolish_lst[1:]:
-                modify_value_in_dict(elt, td.false, dictionary)
+                if modify_value_in_dict(elt, td.false, dictionary) is not None:
+                        return td.Error
+                return td.true
 
             return td.false
 
@@ -165,7 +169,8 @@ class Conclusion:
                 val[i] = self._recu_fct(dictionary, elt, wanted)
 
             elif elt.isupper():
-                modify_value_in_dict(elt, wanted, dictionary)
+                if modify_value_in_dict(elt, wanted, dictionary) is not None:
+                    return td.Error
                 val[i] = wanted
 
             else:
@@ -192,7 +197,8 @@ class Conclusion:
             val = op.logic_not(self._recu_fct(dictionary, rpolish_lst[1], inv_rlt))
 
         elif rpolish_lst[1].isupper():
-            modify_value_in_dict(rpolish_lst[1], inv_rlt, dictionary)
+            if modify_value_in_dict(elt, wanted, dictionary) is not None:
+                return td.Error
             val = inv_rlt
 
         else:

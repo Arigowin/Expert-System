@@ -6,19 +6,19 @@ import sys
 import string
 
 from classes.expression import Expression
+from dictionary.fill_dictionary import init_dictionary
 
 
 def strip_line(line):
 
     if '#' in line:
         line = line[:line.index("#")]
-        #print("stripped line (%s)" % line)
 
     rule = re.sub(r'\s+', '', line)
-    #print("line without whithspaces: (%s)" % rule)
-
     if rule:
         return rule
+
+    return None
 
 
 def parse(filename):
@@ -30,24 +30,20 @@ def parse(filename):
     with open(filename, 'r') as content:
 
         for line in content:
-#            print("line : (%s)" % line)
-
             rule = strip_line(line)
 
             if rule and rule[0] == '=':
                 init += rule[1:]
+
             elif rule and rule[0] == '?':
                 query += rule[1:]
 
             elif rule:
                 rules.append(Expression(rule))
 
-        #print("init : {%s} queries : {%s}" % (init, query))
-        #result = fill_rlt_dict(init, query)
-    result = None
+    dictionary = init_dictionary(init, query)
 
-    return result, rules
-
+    return dictionary, rules
 
 
 def get_file():
@@ -71,20 +67,13 @@ def get_file():
     return arg[1]
 
 
-
 def main_input():
 
     filename = get_file()
 
     if not filename:
-        return
+        return None
 
-    result, rules = parse(filename)
+    dictionary, rules = parse(filename)
 
-    return filename
-
-
-
-if __name__ == '__main__':
-
-    main_input()
+    return dictionary, rule
