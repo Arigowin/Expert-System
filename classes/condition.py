@@ -43,7 +43,7 @@ class Condition:
         # the equations to be performed
         rlt = 0 if func_tbl[sym] == False \
               else 1 if func_tbl[sym] == True \
-              else td.Indet
+              else td.indet
 
         self.pmodif = start + str(rlt) + end
 
