@@ -98,15 +98,17 @@ class Conclusion:
     def _logic_or(self, dictionary, rpolish_lst, wanted):
         """ """
 
+        print("- LOGIC OR -")
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
-
             if len(elt) > 1:
                 val[i] = self._recu_fct(dictionary, elt, wanted)
+            else:
+                val[i] = get_value_from_dict(elt, dictionary)
 
-            val[i] = get_value_from_dict(elt, dictionary)
-
+        print("val in OR after for", val)
         if wanted is td.true:
+            print("if wanted true and one val true")
             if td.true in val:
                 return td.true
 
@@ -124,7 +126,6 @@ class Conclusion:
                 print("ERROR")
                 return td.Error
 
-
         if wanted is td.fale:
             if td.true in val:
                 print("ERROR")
@@ -140,6 +141,7 @@ class Conclusion:
     def _logic_and(self, dictionary, rpolish_lst, wanted):
         """ """
 
+        print("- LOGIC AND -")
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
 
@@ -167,6 +169,7 @@ class Conclusion:
     def _logic_not(self, dictionary, rpolish_lst, wanted):
         """ """
 
+        print("- LOGIC NOT -")
         inv_rlt = op.logic_not(wanted)
 
         if len(rpolish_lst[1]) > 1:
@@ -221,6 +224,6 @@ class Conclusion:
     def _fill_dictionary(self, dictionary):
 
         for elt in self.rpolish:
-            if elt.isupper():
+            if elt.isupper() and dictionary[elt][2] == 0:
                 dictionary[elt][1] = 2
 
