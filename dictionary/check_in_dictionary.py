@@ -33,7 +33,7 @@ def modify_value_in_dict(elt, value, dictionary):
     """ """
 
     print("\tin modify dict")
-    if not elt.isupper() and dictionary[elt][2] is 1:
+    if not elt.isupper() or dictionary[elt][2] is 1:
         # ERROR
         print("ERROR")
 

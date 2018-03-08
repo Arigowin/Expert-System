@@ -46,10 +46,10 @@ class Conclusion:
 
         print("recu fct after split ", rpolish_cpy, rpolish_lst)
 
-#        if rpolish_cpy[0] is '^':
-#            rlt = self._logic_xor(dictionary, rpolish_lst)
+        if rpolish_cpy[0] is '^':
+            rlt = self._logic_xor(dictionary, rpolish_lst, wanted)
 
-        if rpolish_cpy[0] is '|':
+        elif rpolish_cpy[0] is '|':
             rlt = self._logic_or(dictionary, rpolish_lst, wanted)
 
         elif rpolish_cpy[0] is '+':
@@ -66,33 +66,49 @@ class Conclusion:
 
 
 
-#    def _logic_xor(self, dictionary, rpolish_lst):
-#        """ """
-#
-#        val = [-1, -1]
-#        print(dictionary)
-#        for i, elt in enumerate(rpolish_lst[1:]):
-#
-#            print("xor for star ", i, elt, val)
-#
-#            if len(elt) > 1:
-#                val[i] = self._recu_fct(dictionary, elt)
-#                print("dep : ", val, elt)
-#
-#            print("xor for 1 ", val, elt)
-#            if val[i] is -1:
-#                val[i] = get_value_from_dict(elt[0], dictionary)
-#
-#            print("xor for end", elt, val)
-#
-#        print("xor after for ", val)
-#        if -1 not in val:
-#            rlt = op.logic_xor(val)
-#            print("rlt xor : ", rlt)
-#            return rlt
-#        else:
-#            # return error
-#            print("ERROR")
+    def _logic_xor(self, dictionary, rpolish_lst, wanted):
+        """ """
+
+        print("- LOGIC XOR -")
+        val = [-1, -1]
+        for i, elt in enumerate(rpolish_lst[1:]):
+            if len(elt) > 1:
+                val[i] = self._recu_fct(dictionary, elt, wanted)
+            else:
+                val[i] = get_value_from_dict(elt, dictionary)
+
+        if -1 in val:
+            return td.Error
+
+        if wanted is td.true:
+            if val[0] != val[1] and td.indet not in val:
+                return wanted
+            if val[0] == val[1] and val[0] is not td.indet:
+                print("ERROR")
+                return td.Error
+            if val[0] == val[1]:
+                return td.indet
+
+            melt = 1 if val[0] is td.indet else 2
+            value = td.false if td.true in val else td.true
+            modify_value_in_dict(rpolish_lst[melt], value, dictionary)
+
+            return wanted
+
+        if wanted is td.false:
+            if val[0] != val[1] and td.indet not in val:
+                print("ERROR")
+                return td.Error
+            if val[0] == val[1] and td.indet not in val:
+                return wanted
+            if val[0] == val[1] and td.indet in val:
+                return td.indet
+
+            melt = 1 if val[0] is td.indet else 2
+            value = td.false if td.false in val else td.true
+            modify_value_in_dict(rpolish_lst[melt], value, dictionary)
+
+            return wanted
 
 
     def _logic_or(self, dictionary, rpolish_lst, wanted):
