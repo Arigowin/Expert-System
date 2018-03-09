@@ -10,17 +10,35 @@ class Expression:
 
     Function:
         _split_line(self, line)
-        _toto(self, line)
+        _create_rule_list(self, line, dictionary)
         _handle_iif(self, split_line)
     """
 
 
-    def __init__(self, line):
+    def __init__(self, line, dictionary):
 
         print("\n[%s]" % line)
 
         self.line = line
-        self._toto(line)
+        self._create_rule_list(line, dictionary)
+        self.usable = True
+
+
+    def solver(self, dictionary, query):
+        """ """
+
+        for rule in self.rules:
+            ret = rule.solver(dictionary)
+            if ret is td.v_false:
+                lst = [elt for elt in self.cdt if elt.isupper()
+                       and dictionary[elt][2] is td.m_default]
+                print("\t\tIN LIST OF UNUSABLE", lst, self.cdt)
+                if len(lst) == 0:
+                    self.usable = False
+            if ret is td.Error:
+                print("ERROR - call to main error fct")
+
+        return ret
 
 
     def _split_line(self, line):
@@ -37,46 +55,42 @@ class Expression:
                 print("the rule '%s' is not well formated." % line)
                 sys.exit()
 
-            symb = line[symb_beg:symb_end]
-            cdt = line[:symb_beg]
-            cc = line[symb_end:]
+            self.symb = line[symb_beg:symb_end]
+            self.cdt = line[:symb_beg]
+            self.cc = line[symb_end:]
 
         else:
-            cdt = line
-            symb = None
-            cc = None
-
-        return [cdt, symb, cc]
+            self.cdt = line
+            self.symb = None
+            self.cc = None
 
 
-    def _toto(self, line):
+    def _create_rule_list(self, line, dictionary):
         """  """
 
-        split_line = self._split_line(line)
+        self._split_line(line)
+        split_line = [self.cdt, self.symb, self.cc]
 
         if '<' in split_line[1]:
-            self._handle_iif(split_line)
+            self._handle_iif(split_line, dictionary)
         else:
-            self.rules = [Rule(split_line)]
+            self.rules = [Rule(split_line, dictionary)]
 
         if td.Error in self.rules:
             print("the rule '%s' is not well formated." % line)
             sys.exit()
 
 
-    def _handle_iif(self, split_line):
+    def _handle_iif(self, split_line, dictionary):
         """  """
 
         symb = "=>"
 
-        cdt = split_line[0]
-        cc = split_line[2]
-
-        not_cdt = "!(%s)" % split_line[0]
-        not_cc = "!(%s)" % split_line[2]
+        not_cdt = "!(%s)" % self.cdt
+        not_cc = "!(%s)" % self.cc
 
         self.rules = []
-        self.rules.append(Rule([cdt, symb, cc]))
-        self.rules.append(Rule([not_cdt, symb, not_cc]))
-        self.rules.append(Rule([cc, symb, cdt]))
-        self.rules.append(Rule([not_cc, symb, not_cdt]))
+        self.rules.append(Rule([self.cdt, symb, self.cc], dictionary))
+        self.rules.append(Rule([not_cdt, symb, not_cc], dictionary))
+        self.rules.append(Rule([self.cc, symb, self.cdt], dictionary))
+        self.rules.append(Rule([not_cc, symb, not_cdt], dictionary))

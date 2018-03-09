@@ -1,4 +1,5 @@
 import tools.defines as td
+from tools.functions import print_dict
 import handle_expression.operators as op
 from handle_expression.create_RPN import get_polish_notation
 
@@ -17,15 +18,25 @@ class Condition:
         self.cdt = cdt
         print("cdt : " + self.cdt)
         self.polish_rule = get_polish_notation(cdt)
-        self.pmodif = self.polish_rule
         print("RPN : " + self.polish_rule)
 
 
     def solver(self, dictionary):
         """ find the result of the given RPN expression """
 
+        self.pmodif = self.polish_rule
+        self._recu_solver(dictionary)
+        print("LOGIQUEMENT LA DERNIERE VALEUR DS CDT", self.pmodif)
+
+        return int(self.pmodif)
+
+    def _recu_solver(self, dictionary):
         print("cdt : " + self.cdt)
         print("RPN : " + self.polish_rule)
+
+        if len(self.pmodif) == 1:
+            self.pmodif = self._get_value(self.pmodif, dictionary)
+            return None
 
         sym, fact, start, end = self._get_sub_exp()
         print("sym[%s], fact[%s], start[%s], end[%s]" % (sym, fact, start, end))
@@ -39,18 +50,13 @@ class Condition:
                     '!': op.logic_not(val)
                    }
 
-        # as rlt is a boolean, we need to get the correct int value for
-        # the equations to be performed
-        rlt = 0 if func_tbl[sym] == False \
-              else 1 if func_tbl[sym] == True \
-              else td.indet
+        self.pmodif = start + str(func_tbl[sym]) + end
 
-        self.pmodif = start + str(rlt) + end
-
-        print("solver : " + self.pmodif)
+        print("recu solver : " + self.pmodif)
         for elt in td.Symbols:
             if elt in self.pmodif:
-                self.solver(dictionary)
+                self._recu_solver(dictionary)
+
 
 
     def _get_sub_exp(self):
@@ -71,8 +77,8 @@ class Condition:
                 return self.pmodif[i], self.pmodif[fact_start:i], \
                        self.pmodif[:fact_start], self.pmodif[i+1 :]
 
-#       ERROR
-        return None
+        print('ERROR')
+        return None, None, None, None
 
 
 # OUT OF THE CLASS!!!!!

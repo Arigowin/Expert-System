@@ -8,3 +8,9 @@ def get_first_index(to_find, to_search):
              index = i
 
     return index
+
+
+def print_dict(dictionary):
+
+    for elt in sorted(dictionary):
+        print("[%s:%s]" % (elt, dictionary[elt]))

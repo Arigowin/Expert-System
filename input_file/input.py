@@ -5,6 +5,7 @@ import re
 import sys
 import string
 
+import tools.defines as td
 from classes.expression import Expression
 from dictionary.fill_dictionary import init_dictionary
 
@@ -21,7 +22,7 @@ def strip_line(line):
     return None
 
 
-def parse(filename):
+def parse(filename, dictionary):
 
     init = ''
     query = ''
@@ -39,9 +40,9 @@ def parse(filename):
                 query += rule[1:]
 
             elif rule:
-                rules.append(Expression(rule))
+                rules.append(Expression(rule, dictionary))
 
-    dictionary = init_dictionary(init, query)
+    dictionary = init_dictionary(init, query, td.q_initial, dictionary)
 
     return dictionary, rules
 
@@ -74,6 +75,8 @@ def main_input():
     if not filename:
         return None
 
-    dictionary, rules = parse(filename)
 
-    return dictionary, rule
+    dictionary = dict((letter, [0, 0, 0]) for letter in string.ascii_uppercase)
+    dictionary, rules = parse(filename, dictionary)
+
+    return dictionary, rules

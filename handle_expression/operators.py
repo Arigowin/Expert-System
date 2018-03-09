@@ -2,10 +2,10 @@ import tools.defines as td
 
 def logic_not(val):
 
-    if int(val) == td.indet:
-        return td.indet
+    if int(val) == td.v_indet:
+        return td.v_indet
 
-    return td.true if int(val) is td.false else td.false
+    return td.v_true if int(val) is td.v_false else td.v_false
 
 
 def logic_and(val):
@@ -13,13 +13,13 @@ def logic_and(val):
     if len(val) < 2:
         return
 
-    if int(val[0]) == td.indet or int(val[1]) == td.indet:
-        return td.indet
+    if int(val[0]) == td.v_indet or int(val[1]) == td.v_indet:
+        return td.v_indet
 
-    if int(val[0]) == td.true and int(val[1]) == td.true:
-        return td.true
+    if int(val[0]) == td.v_true and int(val[1]) == td.v_true:
+        return td.v_true
 
-    return td.false
+    return td.v_false
 
 
 def logic_or(val):
@@ -27,13 +27,13 @@ def logic_or(val):
     if len(val) < 2:
         return
 
-    if int(val[0]) == td.true or int(val[1]) == td.true:
-        return td.true
+    if int(val[0]) == td.v_true or int(val[1]) == td.v_true:
+        return td.v_true
 
-    if int(val[0]) == td.indet or int(val[1]) == td.indet:
-        return td.indet
+    if int(val[0]) == td.v_indet or int(val[1]) == td.v_indet:
+        return td.v_indet
 
-    return td.false
+    return td.v_false
 
 
 def logic_xor(val):
@@ -41,14 +41,14 @@ def logic_xor(val):
     if len(val) < 2:
         return
 
-    if int(val[0]) == td.indet or int(val[1]) == td.indet:
-        return td.indet
+    if int(val[0]) == td.v_indet or int(val[1]) == td.v_indet:
+        return td.v_indet
 
-    if int(val[0]) == td.true and int(val[1]) == td.false:
-        return td.true
+    if int(val[0]) == td.v_true and int(val[1]) == td.v_false:
+        return td.v_true
 
-    if int(val[0]) == td.false and int(val[1]) == td.true:
-        return td.true
+    if int(val[0]) == td.v_false and int(val[1]) == td.v_true:
+        return td.v_true
 
-    return td.false
+    return td.v_false
 

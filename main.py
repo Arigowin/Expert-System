@@ -3,4 +3,5 @@ from input_file.input import main_input
 
 dictionary, rules = main_input()
 main_loop(rules, dictionary)
+print("OK END!")
 
