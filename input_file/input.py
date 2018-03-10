@@ -6,6 +6,7 @@ import sys
 import string
 
 import tools.defines as td
+import tools.functions as tf
 from classes.expression import Expression
 from dictionary.fill_dictionary import init_dictionary
 
@@ -55,14 +56,17 @@ def get_file():
     nb_arg = len(arg)
 
     if nb_arg == 1:
-        print('this program need a arg.')
+        print('this program need a arg.\n')
+        tf.usage()
         sys.exit()
     elif nb_arg > 2:
         print('this program only need one arg.')
+        tf.usage()
         sys.exit()
 
     if not os.path.isfile(arg[1]):
         print('You have to give the path to a file')
+        tf.usage()
         sys.exit()
 
     return arg[1]
