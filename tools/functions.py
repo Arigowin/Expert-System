@@ -4,7 +4,7 @@ def usage():
     print("\t\t  -- EXPERT SYSTEM -- \n\n\tUsage:\t\t./expert_system.py [file_to_test]")
     print("\n\tOptions:\n\t\t-p:\tdisplay plain results without visualisation")
     print("\n\t\t-v:\tdisplay regular visualisation (default)")
-    print("\n\t\t-c:\tdisplay colorized visualisation (default)")
+    print("\n\t\t-c:\tdisplay colorized visualisation")
     #print("\n\t\t-f:\tproceed to extend resolution: using suppositions to solve the queries")
     print("\n\t\t-h:\tdisplay this help")
 
