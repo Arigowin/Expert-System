@@ -4,7 +4,7 @@ from solver.solver import solve_query
 from dictionary.check_dictionary import get_queries
 
 
-def check_solved_queries(query_list, dictionary):
+def check_solved_queries(query_list, dictionary, indet_lst):
     """ loop thought the 'query_list' to check if all the facts in it
     have their value modified
     and remove the facts that have been set from query_list
@@ -12,37 +12,38 @@ def check_solved_queries(query_list, dictionary):
 
     boolean = True
     for fact in query_list:
- #       print("before remove fact[%s][%s]" % (fact, query_list))
+
+        print("IN CHECK QUERIES LOOP", fact, dictionary[fact])
+        if dictionary[fact][2] is td.m_nset:
+            if fact in indet_lst:
+                query_list.remove(fact)
+                dictionary[fact][2] = td.m_modif
+                if query_list:
+                    boolean = False
+            else:
+                indet_lst.append(fact)
+                boolean = False
+
         if dictionary[fact][2] is td.m_default:
             boolean = False
-        else:
-            query_list.remove(fact)
-#        print("after remove fact[%s][%s]" % (fact, query_list))
 
+    print("END CHECK QUERIE", boolean)
     return boolean
 
 
 def main_loop(exprs, dictionary):
     """ """
 
-    print_dict(dictionary)
     query_list = get_queries(dictionary)
-    #print_dict(dictionary)
 
-    while check_solved_queries(query_list, dictionary) is False:
-        print("in solve main loop", query_list)
+    indet_lst = []
+    while check_solved_queries(query_list, dictionary, indet_lst) is False:
+        print("AFTER CHECK SOLVE", query_list, indet_lst)
 
-        expr_list = [expr for expr in exprs if query_list[0] in expr.cc and expr.usable]
-     #   print_dict(dictionary)
+        expr_list = [expr for expr in exprs if query_list and query_list[0] in expr.cc and expr.usable]
+
         solve_query(query_list[0], expr_list, dictionary)
-      #  print_dict(dictionary)
-
-    #    if sorted(query_list) == sorted(get_queries(dictionary, query_list)):
-    #        print("BoUCLE INFINIE")
-    #        input()
-    #      #  return None
+        print_dict(dictionary)
 
         query_list = get_queries(dictionary, query_list)
-    print_dict(dictionary)
-
-
+        input()

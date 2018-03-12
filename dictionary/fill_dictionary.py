@@ -1,7 +1,7 @@
 import tools.defines as td
 
 
-def init_dictionary(init, query, query_val, dictionary):
+def init_dictionary(init, query, dictionary):
     """ create an empty dictionary and fill in the initial queries and values"""
 
     for elt in init:
@@ -9,39 +9,36 @@ def init_dictionary(init, query, query_val, dictionary):
         dictionary[elt][2] = td.m_initial
 
     for elt in query:
-        dictionary[elt][1] = query_val
+        dictionary[elt][1] = td.q_initial
 
     return dictionary
 
 
-def modify_value_in_dict(elt, value, dictionary, symb=td.m_modif):
+def modify_value_in_dict(elt, value, dictionary, query, symb=td.m_modif):
     """ check if the given fact has a define value
     and set it to the given value if it is not incoherent
     """
 
-    print("modify_value_in_dict ", elt, value, symb)
     if not elt.isupper():
-        # ERROR pas incoherence
-        print("4 : ERROR")
         return td.Error
 
+    print("modify_value_in_dict [{%s}{%s}] %s %s " % (elt, query, value, symb))
+    print(dictionary[elt])
+
     if value == dictionary[elt][0]:
-        if symb > dictionary[elt][2]:
+        if symb > dictionary[elt][2] and elt is query:
             dictionary[elt][2] = symb
+        elif elt is not query:
+            dictionary[elt][2] = td.m_nset
 
         return None
 
-    if dictionary[elt][2] is not td.m_default and value != dictionary[elt][0]:
-        if symb > dictionary[elt][2] or dictionary[elt][0] is td.v_indet :
-            dictionary[elt][0] = value
-            dictionary[elt][2] = symb
-
-        else:
+    if dictionary[elt][2] > 0 and value != dictionary[elt][0]:
+        if symb < dictionary[elt][2] and dictionary[elt][0] is not td.v_indet :
             dictionary[elt][0] = td.v_indet
-
-        return td.Error
+            return td.Error
 
     dictionary[elt][0] = value
-    dictionary[elt][2] = symb
+    dictionary[elt][2] = symb if elt is query else td.m_nset
 
     return None

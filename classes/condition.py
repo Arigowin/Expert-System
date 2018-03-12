@@ -16,9 +16,7 @@ class Condition:
 
     def __init__(self, cdt):
         self.cdt = cdt
-        print("cdt : " + self.cdt)
         self.polish_rule = get_polish_notation(cdt)
-        print("RPN : " + self.polish_rule)
 
 
     def solver(self, dictionary):
@@ -31,15 +29,12 @@ class Condition:
         return int(self.pmodif)
 
     def _recu_solver(self, dictionary):
-        print("cdt : " + self.cdt)
-        print("RPN : " + self.polish_rule)
 
         if len(self.pmodif) == 1:
             self.pmodif = self._get_value(self.pmodif, dictionary)
             return None
 
         sym, fact, start, end = self._get_sub_exp()
-        print("sym[%s], fact[%s], start[%s], end[%s]" % (sym, fact, start, end))
 
         val = self._get_value(fact, dictionary)
 
@@ -52,7 +47,6 @@ class Condition:
 
         self.pmodif = start + str(func_tbl[sym]) + end
 
-        print("recu solver : " + self.pmodif)
         for elt in td.Symbols:
             if elt in self.pmodif:
                 self._recu_solver(dictionary)
@@ -77,7 +71,6 @@ class Condition:
                 return self.pmodif[i], self.pmodif[fact_start:i], \
                        self.pmodif[:fact_start], self.pmodif[i+1 :]
 
-        print('ERROR')
         return None, None, None, None
 
 

@@ -25,22 +25,20 @@ class Conclusion:
         self._fill_dictionary(dictionary)
 
 
-    def solver(self, dictionary, symb):
+    def solver(self, dictionary, query, symb):
         """ """
 
         rpolish_cpy = self.rpolish
         rpolish_cpy = fact_to_value(list(rpolish_cpy), dictionary)
-        print("solv2", rpolish_cpy)
-        rlt = self._recu_solver(dictionary, rpolish_cpy, td.v_true, symb)
-        print("last rlt : ", rlt)
+        rlt = self._recu_solver(dictionary, rpolish_cpy, td.v_true, query, symb)
+        print("CONCLUSION last rlt : ", rlt)
 
         return rlt
 
 
-    def _recu_solver(self, dictionary, rpolish_cpy, wanted, symb):
+    def _recu_solver(self, dictionary, rpolish_cpy, wanted, query, symb):
         """ recursive function to call the correct operator function """
 
-        print("recu_solver", rpolish_cpy)
         rpolish_lst = []
         if get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1:
             rpolish_lst = self._split_rpolish(rpolish_cpy)
@@ -48,40 +46,37 @@ class Conclusion:
             rpolish_lst = ['!', rpolish_cpy[1:]]
         elif rpolish_cpy[0].isupper():
             if wanted is td.v_true and modify_value_in_dict(rpolish_cpy[0],
-                                     td.v_true, dictionary, symb) is not None:
+                                     td.v_true, dictionary, query, symb) is not None:
                 return td.Error
             return get_value_from_dict(rpolish_cpy[0], dictionary)
 
-        print("recu fct after split ", rpolish_cpy, rpolish_lst)
-
         if rpolish_cpy[0] is '^':
-            rlt = self._logic_xor(dictionary, rpolish_lst, wanted, symb)
+            rlt = self._logic_xor(dictionary, rpolish_lst, wanted, query, symb)
 
         elif rpolish_cpy[0] is '|':
-            rlt = self._logic_or(dictionary, rpolish_lst, wanted, symb)
+            rlt = self._logic_or(dictionary, rpolish_lst, wanted, query, symb)
 
         elif rpolish_cpy[0] is '+':
-            rlt = self._logic_and(dictionary, rpolish_lst, wanted, symb)
+            rlt = self._logic_and(dictionary, rpolish_lst, wanted, query, symb)
 
         elif rpolish_cpy[0] is '!':
-            rlt = self._logic_not(dictionary, rpolish_lst, wanted, symb)
+            rlt = self._logic_not(dictionary, rpolish_lst, wanted, query, symb)
 
         else:
             rlt = get_value_from_dict(rpolish_cpy[0], dictionary)
 
-        print("rlt rcu : ", rlt)
+        print("----- end recu ", rlt)
         return rlt
 
 
 
-    def _logic_xor(self, dictionary, rpolish_lst, wanted, symb):
+    def _logic_xor(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC XOR -")
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
-                val[i] = self._recu_solver(dictionary, elt, wanted, symb)
+                val[i] = self._recu_solver(dictionary, elt, wanted, query, symb)
             else:
                 val[i] = get_value_from_dict(elt, dictionary)
 
@@ -92,21 +87,19 @@ class Conclusion:
             if val[0] != val[1] and td.v_indet not in val:
                 return wanted
             if val[0] == val[1] and val[0] is not td.v_indet:
-                print("ERROR")
                 return td.Error
             if val[0] == val[1]:
                 return td.v_indet
 
             melt = 1 if val[0] is td.v_indet else 2
             value = td.v_false if td.v_true in val else td.v_true
-            if modify_value_in_dict(rpolish_lst[melt], value, dictionary, symb) is not None:
+            if modify_value_in_dict(rpolish_lst[melt], value, dictionary, query, symb) is not None:
                 return td.Error
 
             return wanted
 
         if wanted is td.v_false:
             if val[0] != val[1] and td.v_indet not in val:
-                print("ERROR")
                 return td.Error
             if val[0] == val[1] and td.v_indet not in val:
                 return wanted
@@ -115,83 +108,74 @@ class Conclusion:
 
             melt = 1 if val[0] is td.v_indet else 2
             value = td.v_false if td.v_false in val else td.v_true
-            if modify_value_in_dict(rpolish_lst[melt], value, dictionary, symb) is not None:
+            if modify_value_in_dict(rpolish_lst[melt], value, dictionary, query, symb) is not None:
                 return td.Error
 
             return wanted
 
 
-    def _logic_or(self, dictionary, rpolish_lst, wanted, symb):
+    def _logic_or(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC OR -")
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
-                val[i] = self._recu_solver(dictionary, elt, wanted, symb)
+                val[i] = self._recu_solver(dictionary, elt, wanted, query, symb)
             else:
                 val[i] = get_value_from_dict(elt, dictionary)
 
-        print("val in OR after for", val)
         if wanted is td.v_true:
-            print("if wanted true and one val true")
+
             if td.v_true in val:
-                # set le 2eme a indet
                 return td.v_true
 
             if val.count(td.v_false) == 1:
-                print("TOTOTOTOTOTOTO", val, rpolish_lst)
                 if val[0] is td.v_false:
-                    if modify_value_in_dict(rpolish_lst[2], td.v_true, dictionary, symb) is not None:
-                        print("ERROR -- 1")
+
+                    if modify_value_in_dict(rpolish_lst[2], td.v_true, dictionary, query, symb) is not None:
                         return td.Error
-                elif modify_value_in_dict(rpolish_lst[1], td.v_true, dictionary, symb) is not None:
-                    print("ERROR -- 2")
+
+                elif modify_value_in_dict(rpolish_lst[1], td.v_true, dictionary, query, symb) is not None:
                     return td.Error
+
                 return td.v_true
 
             if val.count(td.v_indet) == 2:
-                print("in OR [%s][%s]" % (val, self.cc))
-                input()
-                if modify_value_in_dict(rpolish_lst[1], td.v_indet, dictionary, symb) is not None:
-                    print("ERROR -- 3")
+                if modify_value_in_dict(rpolish_lst[1], td.v_indet, dictionary, query, symb) is not None:
                     return td.Error
-                if modify_value_in_dict(rpolish_lst[2], td.v_indet, dictionary, symb) is not None:
-                    print("ERROR -- 4")
+
+                if modify_value_in_dict(rpolish_lst[2], td.v_indet, dictionary, query, symb) is not None:
                     return td.Error
+
                 return td.v_indet
 
             if val.count(td.v_false) == 2:
-                print("2 : ERROR")
                 return td.Error
 
         if wanted is td.v_false:
             if td.v_true in val:
-                print("3 : ERROR")
                 return td.Error
 
             for elt in rpolish_lst[1:]:
-                if modify_value_in_dict(elt, td.v_false, dictionary, symb) is not None:
-                    print("ERROR -- 5")
+                if modify_value_in_dict(elt, td.v_false, dictionary, query, symb) is not None:
                     return td.Error
                 return td.v_true
 
             return td.v_false
 
 
-    def _logic_and(self, dictionary, rpolish_lst, wanted, symb):
+    def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC AND -")
+        #print("- LOGIC AND -")
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
 
             if len(elt) > 1:
-                val[i] = self._recu_solver(dictionary, elt, wanted, symb)
+                val[i] = self._recu_solver(dictionary, elt, wanted, query, symb)
 
             elif elt.isupper():
-                if modify_value_in_dict(elt, wanted, dictionary, symb) is not None:
-                    print("in ret ERROR add", elt, wanted, symb, dictionary[elt])
+                if modify_value_in_dict(elt, wanted, dictionary, query, symb) is not None:
                     return td.Error
                 val[i] = wanted
 
@@ -199,37 +183,37 @@ class Conclusion:
                 val[i] = int(elt)
 
         if td.v_indet in val:
-            # si on revient ici et que c'est indet ca veux dire qu'il faut determiner les valeurs par une autre equation
             return td.v_indet
 
         if val.count(wanted) is not 2:
-            print("1 ERROR - incoherence")
             return td.Error
 
         return wanted
 
 
-    def _logic_not(self, dictionary, rpolish_lst, wanted, symb):
+    def _logic_not(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC NOT -")
         inv_rlt = op.logic_not(wanted)
 
         print("IN LOGIC NOT", rpolish_lst, wanted)
         if len(rpolish_lst[1]) > 1:
-            val = op.logic_not(self._recu_solver(dictionary, rpolish_lst[1], inv_rlt, symb))
+            val = self._recu_solver(dictionary, rpolish_lst[1], inv_rlt, query, symb)
             print("END IF RECU LOGIC NOT", rpolish_lst[1], val)
 
         elif rpolish_lst[1].isupper():
-            if modify_value_in_dict(rpolish_lst[1], not wanted, dictionary, symb) is not None:
+            if modify_value_in_dict(rpolish_lst[1], inv_rlt, dictionary, query, symb) is not None:
+                print(">>>> YEP")
                 return td.Error
             val = inv_rlt
 
         else:
-            val = op.logic_not(rpolish_lst[1])
+            val = rpolish_lst[1]
+
+        print("++++ in not val/wanted", val, wanted)
 
         if val is wanted:
-            print("2 ERROR - incoherence", val)
+            print("NOOOOOOOOOP!!!")
             return td.Error
 
         return val
@@ -238,7 +222,6 @@ class Conclusion:
     def _split_rpolish(self, rpolish_cpy):
         """ """
 
-        print("in split : ", rpolish_cpy)
         if get_first_index(td.Symbols[:-1], rpolish_cpy[1:]) is -1:
             match = re.match("([+|^])(!?[A-Z0-2])(!?[A-Z0-2])", rpolish_cpy)
 
@@ -253,7 +236,6 @@ class Conclusion:
         index = -1
         for i, elt in enumerate(rpolish_cpy[1:]):
 
-#            print(i, elt)
             if elt in "^|+" and b is True:
                 index = i + 1
                 break

@@ -10,6 +10,7 @@ q_unused = 0
 q_needed = 1
 q_initial = 2
 
+m_nset = -1
 m_default = 0
 m_iif = 1
 m_modif = 2

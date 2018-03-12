@@ -1,4 +1,4 @@
 A => !V
-C | D => X | V
-=AC
+A | D => X | V
+=A
 ?X

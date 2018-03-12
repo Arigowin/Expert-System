@@ -28,16 +28,14 @@ class Rule:
         self.symb = split_line[1]
         self.cc = Conclusion(split_line[2], dictionary)
 
-        print(split_line)
 
-
-    def solver(self, dictionary):
+    def solver(self, dictionary, query):
         """ """
 
         cdt = self.cdt.solver(dictionary)
         if cdt is td.v_true:
             symb = td.m_iif if '<' in self.symb else td.m_modif
-            cc = self.cc.solver(dictionary, symb)
+            cc = self.cc.solver(dictionary, query, symb)
             if cc is td.Error:
                 return td.Error
 
@@ -81,8 +79,6 @@ class Rule:
         parenthesis
         """
 
-        print( "IN REC", str)
-
         if '(' in str:
             popen = str.find('(')
             pclose = str.rfind(')')
@@ -94,7 +90,3 @@ class Rule:
             str = str[:popen] + 'Z' + str[pclose + 1:]
 
         self._check_regex(regex, str)
-
-
-
-#abc = Rule("(A+(D|N)^!P+)|F=>W")

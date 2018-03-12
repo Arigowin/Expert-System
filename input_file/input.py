@@ -43,7 +43,7 @@ def parse(filename, dictionary):
             elif rule:
                 rules.append(Expression(rule, dictionary))
 
-    dictionary = init_dictionary(init, query, td.q_initial, dictionary)
+    dictionary = init_dictionary(init, query, dictionary)
 
     return dictionary, rules
 
@@ -51,21 +51,17 @@ def parse(filename, dictionary):
 def get_file():
 
     arg = sys.argv
-    print(arg)
-
     nb_arg = len(arg)
 
     if nb_arg == 1:
-        print('this program need a arg.\n')
         tf.usage()
         sys.exit()
+
     elif nb_arg > 2:
-        print('this program only need one arg.')
         tf.usage()
         sys.exit()
 
     if not os.path.isfile(arg[1]):
-        print('You have to give the path to a file')
         tf.usage()
         sys.exit()
 

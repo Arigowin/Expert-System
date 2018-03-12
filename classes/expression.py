@@ -17,8 +17,6 @@ class Expression:
 
     def __init__(self, line, dictionary):
 
-        print("\n[%s]" % line)
-
         self.line = line
         self._create_rule_list(line, dictionary)
         self.usable = True
@@ -28,15 +26,12 @@ class Expression:
         """ """
 
         for rule in self.rules:
-            ret = rule.solver(dictionary)
+            ret = rule.solver(dictionary, query)
             if ret is td.v_false:
                 lst = [elt for elt in self.cdt if elt.isupper()
                        and dictionary[elt][2] is td.m_default]
-                print("\t\tIN LIST OF UNUSABLE", lst, self.cdt)
                 if len(lst) == 0:
                     self.usable = False
-            if ret is td.Error:
-                print("ERROR - call to main error fct")
 
         return ret
 
@@ -52,7 +47,6 @@ class Expression:
             if line[i + 1] and line[i + 2]:
                 symb_end = i + 2
             else:
-                print("the rule '%s' is not well formated." % line)
                 sys.exit()
 
             self.symb = line[symb_beg:symb_end]
@@ -77,7 +71,6 @@ class Expression:
             self.rules = [Rule(split_line, dictionary)]
 
         if td.Error in self.rules:
-            print("the rule '%s' is not well formated." % line)
             sys.exit()
 
 
