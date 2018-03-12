@@ -38,14 +38,12 @@ class Condition:
 
         val = self._get_value(fact, dictionary)
 
-        func_tbl = {
-                    '^': op.logic_xor(val),
-                    '|': op.logic_or(val),
-                    '+': op.logic_and(val),
-                    '!': op.logic_not(val)
-                   }
+        func_tbl = {'^': op.logic_xor,
+                    '|': op.logic_or,
+                    '+': op.logic_and,
+                    '!': op.logic_not}
 
-        self.pmodif = start + str(func_tbl[sym]) + end
+        self.pmodif = start + str(func_tbl[sym](val)) + end
 
         for elt in td.Symbols:
             if elt in self.pmodif:

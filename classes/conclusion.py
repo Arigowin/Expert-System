@@ -40,6 +40,7 @@ class Conclusion:
         """ recursive function to call the correct operator function """
 
         rpolish_lst = []
+
         if get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1:
             rpolish_lst = self._split_rpolish(rpolish_cpy)
         elif rpolish_cpy[0] is '!':
@@ -50,17 +51,13 @@ class Conclusion:
                 return td.Error
             return get_value_from_dict(rpolish_cpy[0], dictionary)
 
-        if rpolish_cpy[0] is '^':
-            rlt = self._logic_xor(dictionary, rpolish_lst, wanted, query, symb)
+        func_tbl = {'^': self._logic_xor,
+                    '|': self._logic_or,
+                    '+': self._logic_and,
+                    '!': self._logic_not}
 
-        elif rpolish_cpy[0] is '|':
-            rlt = self._logic_or(dictionary, rpolish_lst, wanted, query, symb)
-
-        elif rpolish_cpy[0] is '+':
-            rlt = self._logic_and(dictionary, rpolish_lst, wanted, query, symb)
-
-        elif rpolish_cpy[0] is '!':
-            rlt = self._logic_not(dictionary, rpolish_lst, wanted, query, symb)
+        if rpolish_cpy[0] in '^|+!':
+            rlt = func_tbl[rpolish_cpy[0]](dictionary, rpolish_lst, wanted, query, symb)
 
         else:
             rlt = get_value_from_dict(rpolish_cpy[0], dictionary)
