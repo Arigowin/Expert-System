@@ -1,7 +1,9 @@
-def usage():
+def usage(error_str):
     """ diplay the expert system program usage """
 
     print("\t\t  -- EXPERT SYSTEM -- \n\n\tUsage:\t\t./expert_system.py [file_to_test]")
+    if error_str:
+        print("\n\tYou tried to to launch this program, but", str)
     print("\n\tOptions:\n\t\t-p:\tdisplay plain results without visualisation")
     print("\n\t\t-v:\tdisplay regular visualisation (default)")
     print("\n\t\t-c:\tdisplay colorized visualisation")
