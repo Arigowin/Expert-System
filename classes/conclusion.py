@@ -263,5 +263,5 @@ class Conclusion:
     def _fill_dictionary(self, dictionary):
 
         for elt in self.rpolish:
-            if elt.isupper() and dictionary[elt][2] is td.m_default:
+            if elt.isupper() and dictionary[elt][2] is td.m_default and dictionary[elt][1] is not td.q_initial:
                 dictionary[elt][1] = td.q_needed

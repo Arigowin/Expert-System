@@ -31,7 +31,7 @@ def get_value_from_dict(fact, dictionary):
         return td.Error
 
     val = dictionary[fact][0] if dictionary[fact][2] > td.m_default else td.v_indet
-    dictionary[fact][1] = td.q_needed if val is td.v_indet else dictionary[fact][1]
+    dictionary[fact][1] = td.q_needed if val is td.v_indet and dictionary[fact][1] is not td.q_initial else dictionary[fact][1]
 
     return val
 

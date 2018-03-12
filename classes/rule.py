@@ -51,7 +51,7 @@ class Rule:
         """ set a list of facts as queries in dictionary if not yet setted """
 
         for elt in cdt_str:
-            if elt.isupper() and dictionary[elt][2] is not td.m_default:
+            if elt.isupper() and dictionary[elt][2] is not td.m_default and dictionary[elt][1] is not td.q_initial:
                 dictionary[elt][1] = td.q_needed
 
 

@@ -5,6 +5,7 @@ def usage():
     print("\n\tOptions:\n\t\t-p:\tdisplay plain results without visualisation")
     print("\n\t\t-v:\tdisplay regular visualisation (default)")
     print("\n\t\t-c:\tdisplay colorized visualisation")
+    print("\n\t\t-d:\tshow filled dictionary at the end of the program")
     #print("\n\t\t-f:\tproceed to extend resolution: using suppositions to solve the queries")
     print("\n\t\t-h:\tdisplay this help")
 
