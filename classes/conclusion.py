@@ -140,38 +140,43 @@ class Conclusion:
                 return td.v_true
 
             if val.count(td.v_false) == 1:
-                if val[0] is td.v_false and modify_value_in_dict(rpolish_lst[2],
-                                         td.v_true, dictionary, symb) is not None:
+                print("TOTOTOTOTOTOTO", val, rpolish_lst)
+                if val[0] is td.v_false:
+                    if modify_value_in_dict(rpolish_lst[2], td.v_true, dictionary, symb) is not None:
+                        print("ERROR -- 1")
                         return td.Error
                 elif modify_value_in_dict(rpolish_lst[1], td.v_true, dictionary, symb) is not None:
-                        return td.Error
+                    print("ERROR -- 2")
+                    return td.Error
                 return td.v_true
 
             if val.count(td.v_indet) == 2:
                 print("in OR [%s][%s]" % (val, self.cc))
                 input()
                 if modify_value_in_dict(rpolish_lst[1], td.v_indet, dictionary, symb) is not None:
-                        return td.Error
+                    print("ERROR -- 3")
+                    return td.Error
                 if modify_value_in_dict(rpolish_lst[2], td.v_indet, dictionary, symb) is not None:
-                        return td.Error
+                    print("ERROR -- 4")
+                    return td.Error
                 return td.v_indet
 
             if val.count(td.v_false) == 2:
-                print("ERROR")
+                print("2 : ERROR")
                 return td.Error
 
         if wanted is td.v_false:
             if td.v_true in val:
-                print("ERROR")
+                print("3 : ERROR")
                 return td.Error
 
             for elt in rpolish_lst[1:]:
                 if modify_value_in_dict(elt, td.v_false, dictionary, symb) is not None:
-                        return td.Error
+                    print("ERROR -- 5")
+                    return td.Error
                 return td.v_true
 
             return td.v_false
-
 
 
     def _logic_and(self, dictionary, rpolish_lst, wanted, symb):
@@ -210,18 +215,20 @@ class Conclusion:
         print("- LOGIC NOT -")
         inv_rlt = op.logic_not(wanted)
 
+        print("IN LOGIC NOT", rpolish_lst, wanted)
         if len(rpolish_lst[1]) > 1:
             val = op.logic_not(self._recu_solver(dictionary, rpolish_lst[1], inv_rlt, symb))
+            print("END IF RECU LOGIC NOT", rpolish_lst[1], val)
 
         elif rpolish_lst[1].isupper():
-            if modify_value_in_dict(rpolish_lst[1], wanted, dictionary, symb) is not None:
+            if modify_value_in_dict(rpolish_lst[1], not wanted, dictionary, symb) is not None:
                 return td.Error
             val = inv_rlt
 
         else:
             val = op.logic_not(rpolish_lst[1])
 
-        if val is not wanted:
+        if val is wanted:
             print("2 ERROR - incoherence", val)
             return td.Error
 

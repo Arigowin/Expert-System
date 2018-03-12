@@ -19,9 +19,10 @@ def modify_value_in_dict(elt, value, dictionary, symb=td.m_modif):
     and set it to the given value if it is not incoherent
     """
 
+    print("modify_value_in_dict ", elt, value, symb)
     if not elt.isupper():
         # ERROR pas incoherence
-        print("ERROR")
+        print("4 : ERROR")
         return td.Error
 
     if value == dictionary[elt][0]:
