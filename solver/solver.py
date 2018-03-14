@@ -17,10 +17,10 @@ def solve_query(query, expr_list, dictionary):
         copy_dict = dictionary.copy()
         solution = expr.solver(dictionary, query)
 
-        print(solution)
+        print("SOLUTION ?", solution)
         if solution < 0:
             dictionary = copy_dict.copy()
-            modify_value_in_dict(query, td.v_undef, dictionary, query, td.m_initial)
-            return None
+
+            return modify_value_in_dict(query, td.v_undef, dictionary, query, td.m_initial)
 
     ##print_dict(dictionary)

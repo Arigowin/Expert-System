@@ -4,7 +4,6 @@ import sys
 import tools.defines as td
 from classes.condition import Condition
 from classes.conclusion import Conclusion
-from dictionary.fill_dictionary import modify_value_in_dict
 
 
 class Rule:
@@ -36,8 +35,8 @@ class Rule:
         if cdt is td.v_true:
             symb = td.m_iif if '<' in self.symb else td.m_modif
             cc = self.cc.solver(dictionary, query, symb)
-            if cc is td.Error:
-                return td.Error
+            if int(cc) < 0:
+                return cc
 
         else:
             self._add_to_queries(self.cdt.cdt, dictionary)

@@ -25,6 +25,7 @@ class Expression:
     def solver(self, dictionary, query):
         """ """
 
+        ret = td.Error
         for rule in self.rules:
             ret = rule.solver(dictionary, query)
             if ret is td.v_false:
