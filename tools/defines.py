@@ -4,7 +4,7 @@
 
 v_false = 0
 v_true = 1
-v_indet = 2
+v_undef = 2
 
 q_unused = 0
 q_needed = 1

@@ -31,7 +31,7 @@ class Conclusion:
         rpolish_cpy = self.rpolish
         rpolish_cpy = fact_to_value(list(rpolish_cpy), dictionary)
         rlt = self._recu_solver(dictionary, rpolish_cpy, td.v_true, query, symb)
-        print("CONCLUSION last rlt : ", rlt)
+        #print("CONCLUSION last rlt : ", rlt)
 
         return rlt
 
@@ -62,7 +62,7 @@ class Conclusion:
         else:
             rlt = get_value_from_dict(rpolish_cpy[0], dictionary)
 
-        print("----- end recu ", rlt)
+        #print("----- end recu ", rlt)
         return rlt
 
 
@@ -81,14 +81,14 @@ class Conclusion:
             return td.Error
 
         if wanted is td.v_true:
-            if val[0] != val[1] and td.v_indet not in val:
+            if val[0] != val[1] and td.v_undef not in val:
                 return wanted
-            if val[0] == val[1] and val[0] is not td.v_indet:
+            if val[0] == val[1] and val[0] is not td.v_undef:
                 return td.Error
             if val[0] == val[1]:
-                return td.v_indet
+                return td.v_undef
 
-            melt = 1 if val[0] is td.v_indet else 2
+            melt = 1 if val[0] is td.v_undef else 2
             value = td.v_false if td.v_true in val else td.v_true
             if modify_value_in_dict(rpolish_lst[melt], value, dictionary, query, symb) is not None:
                 return td.Error
@@ -96,14 +96,14 @@ class Conclusion:
             return wanted
 
         if wanted is td.v_false:
-            if val[0] != val[1] and td.v_indet not in val:
+            if val[0] != val[1] and td.v_undef not in val:
                 return td.Error
-            if val[0] == val[1] and td.v_indet not in val:
+            if val[0] == val[1] and td.v_undef not in val:
                 return wanted
-            if val[0] == val[1] and td.v_indet in val:
-                return td.v_indet
+            if val[0] == val[1] and td.v_undef in val:
+                return td.v_undef
 
-            melt = 1 if val[0] is td.v_indet else 2
+            melt = 1 if val[0] is td.v_undef else 2
             value = td.v_false if td.v_false in val else td.v_true
             if modify_value_in_dict(rpolish_lst[melt], value, dictionary, query, symb) is not None:
                 return td.Error
@@ -137,14 +137,14 @@ class Conclusion:
 
                 return td.v_true
 
-            if val.count(td.v_indet) == 2:
-                if modify_value_in_dict(rpolish_lst[1], td.v_indet, dictionary, query, symb) is not None:
+            if val.count(td.v_undef) == 2:
+                if modify_value_in_dict(rpolish_lst[1], td.v_undef, dictionary, query, symb) is not None:
                     return td.Error
 
-                if modify_value_in_dict(rpolish_lst[2], td.v_indet, dictionary, query, symb) is not None:
+                if modify_value_in_dict(rpolish_lst[2], td.v_undef, dictionary, query, symb) is not None:
                     return td.Error
 
-                return td.v_indet
+                return td.v_undef
 
             if val.count(td.v_false) == 2:
                 return td.Error
@@ -164,7 +164,7 @@ class Conclusion:
     def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        #print("- LOGIC AND -")
+        ##print("- LOGIC AND -")
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
 
@@ -179,8 +179,8 @@ class Conclusion:
             else:
                 val[i] = int(elt)
 
-        if td.v_indet in val:
-            return td.v_indet
+        if td.v_undef in val:
+            return td.v_undef
 
         if val.count(wanted) is not 2:
             return td.Error
@@ -193,24 +193,24 @@ class Conclusion:
 
         inv_rlt = op.logic_not(wanted)
 
-        print("IN LOGIC NOT", rpolish_lst, wanted)
+        #print("IN LOGIC NOT", rpolish_lst, wanted)
         if len(rpolish_lst[1]) > 1:
             val = self._recu_solver(dictionary, rpolish_lst[1], inv_rlt, query, symb)
-            print("END IF RECU LOGIC NOT", rpolish_lst[1], val)
+            #print("END IF RECU LOGIC NOT", rpolish_lst[1], val)
 
         elif rpolish_lst[1].isupper():
             if modify_value_in_dict(rpolish_lst[1], inv_rlt, dictionary, query, symb) is not None:
-                print(">>>> YEP")
+                #print(">>>> YEP")
                 return td.Error
             val = inv_rlt
 
         else:
             val = rpolish_lst[1]
 
-        print("++++ in not val/wanted", val, wanted)
+        #print("++++ in not val/wanted", val, wanted)
 
         if val is wanted:
-            print("NOOOOOOOOOP!!!")
+            #print("NOOOOOOOOOP!!!")
             return td.Error
 
         return val

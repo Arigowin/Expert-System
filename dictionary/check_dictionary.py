@@ -4,7 +4,7 @@ import tools.defines as td
 def get_queries(dictionary, query_list = []):
     """ get the list of the fact we need to find the value of """
 
-    print("IN GET QUERIES", query_list)
+    #print("IN GET QUERIES", query_list)
 
     for elt in dictionary:
         if dictionary[elt][2] is td.m_default and dictionary[elt][1] is not td.q_unused and elt not in query_list:
@@ -12,7 +12,7 @@ def get_queries(dictionary, query_list = []):
 
     if len(query_list) > 1:
         query_list.append(query_list.pop(0))
-    print("AFTER POP IN GET QUERIES", query_list)
+    #print("AFTER POP IN GET QUERIES", query_list)
     return query_list
 
 
@@ -27,8 +27,8 @@ def get_value_from_dict(fact, dictionary):
     if not fact.isupper():
         return td.Error
 
-    val = dictionary[fact][0] if dictionary[fact][2] > td.m_default else td.v_indet
-    dictionary[fact][1] = td.q_needed if val is td.v_indet and dictionary[fact][1] is not td.q_initial else dictionary[fact][1]
+    val = dictionary[fact][0] if dictionary[fact][2] > td.m_default else td.v_undef
+    dictionary[fact][1] = td.q_needed if val is td.v_undef and dictionary[fact][1] is not td.q_initial else dictionary[fact][1]
 
     return val
 
@@ -40,7 +40,7 @@ def fact_to_value(expr, dictionary):
 
         if elt.isupper():
 
-            if dictionary[elt][2] > td.m_default and dictionary[elt][0] is not td.v_indet:
+            if dictionary[elt][2] > td.m_default and dictionary[elt][0] is not td.v_undef:
                 expr[i] = str(dictionary[elt][0])
 
     return ''.join(expr)

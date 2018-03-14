@@ -1,4 +1,5 @@
 import tools.defines as td
+from error.error import error
 
 
 def init_dictionary(init, query, dictionary):
@@ -20,7 +21,7 @@ def modify_value_in_dict(elt, value, dictionary, query, symb=td.m_modif):
     """
 
     if not elt.isupper():
-        return td.Error
+        return error(-7)
 
     print("modify_value_in_dict [{%s}{%s}] %s %s " % (elt, query, value, symb))
     print(dictionary[elt])
@@ -34,9 +35,9 @@ def modify_value_in_dict(elt, value, dictionary, query, symb=td.m_modif):
         return None
 
     if dictionary[elt][2] > 0 and value != dictionary[elt][0]:
-        if symb < dictionary[elt][2] and dictionary[elt][0] is not td.v_indet :
-            dictionary[elt][0] = td.v_indet
-            return td.Error
+        if symb < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef :
+            dictionary[elt][0] = td.v_undef
+            return error(-4)
 
     dictionary[elt][0] = value
     dictionary[elt][2] = symb if elt is query else td.m_nset

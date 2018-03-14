@@ -24,7 +24,7 @@ class Condition:
 
         self.pmodif = self.polish_rule
         self._recu_solver(dictionary)
-        print("LOGIQUEMENT LA DERNIERE VALEUR DS CDT", self.pmodif)
+        #print("LOGIQUEMENT LA DERNIERE VALEUR DS CDT", self.pmodif)
 
         return int(self.pmodif)
 
