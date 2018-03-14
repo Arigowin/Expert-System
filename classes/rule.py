@@ -1,5 +1,4 @@
 import re
-import sys
 
 import tools.defines as td
 from classes.condition import Condition

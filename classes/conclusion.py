@@ -2,7 +2,7 @@ import re
 
 import tools.defines as td
 import handle_expression.operators as op
-from error.error  import error
+from error.error import error
 from tools.functions import get_first_index
 from handle_expression.create_RPN import get_polish_notation
 from dictionary.check_dictionary import get_value_from_dict, fact_to_value
@@ -39,6 +39,8 @@ class Conclusion:
 
     def _recu_solver(self, dictionary, rpolish_cpy, wanted, query, symb):
         """ recursive function to call the correct operator function """
+
+        print("RECU SOLVER")
 
         rpolish_lst = []
 
@@ -179,7 +181,7 @@ class Conclusion:
     def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC AND -")
+        print("- LOGIC AND - lst : %s, wanted: %s" % (rpolish_lst, wanted))
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
 
@@ -195,6 +197,8 @@ class Conclusion:
             else:
                 val[i] = int(elt)
 
+            print("VAL[I] ", i, val[i])
+
         if td.v_undef in val:
             return td.v_undef
 
@@ -207,7 +211,7 @@ class Conclusion:
     def _logic_not(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC NOT -")
+        print("- LOGIC NOT - ", rpolish_lst)
         inv_rlt = op.logic_not(wanted)
 
         #print("IN LOGIC NOT", rpolish_lst, wanted)

@@ -39,7 +39,7 @@ def modify_value_in_dict(elt, value, dictionary, query, symb=td.m_modif):
         return None
 
     if dictionary[elt][2] > 0 and value != dictionary[elt][0]:
-        if symb < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef :
+        if symb < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef:
             dictionary[elt][0] = td.v_undef
             print("\t fill value error : -4")
             print("\t fill value ", elt, query, value, dictionary[elt])

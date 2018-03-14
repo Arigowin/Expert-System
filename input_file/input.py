@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import os
 import re
 import sys
@@ -74,7 +72,6 @@ def main_input():
 
     if not filename:
         return None
-
 
     dictionary = dict((letter, [0, 0, 0]) for letter in string.ascii_uppercase)
     dictionary, rules = parse(filename, dictionary)

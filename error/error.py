@@ -1,5 +1,6 @@
 import sys
 
+
 def error_tbl(code, msg=""):
     """ set an error table to be called by the error handler to get the correct
     error messages and return
@@ -11,11 +12,11 @@ def error_tbl(code, msg=""):
     """
 
     error_tbl = {2: ["Cannot modify value already set %s" % msg, False],
-                 3: ["Cannot modify value with lower priority %s" % msg, False], # prio dico < prio current
-                 4: ["Cannot modify value with highter priority %s" % msg, False], # prio dico > prio current
-                 5: ["Cannot modify value with same priority %s" % msg, False], # prio dico == prio current
+                 3: ["Cannot modify value with lower priority %s" % msg, False],  # prio dico < prio current
+                 4: ["Cannot modify value with higher priority %s" % msg, False],  # prio dico > prio current
+                 5: ["Cannot modify value with same priority %s" % msg, False],  # prio dico == prio current
                  6: ["Problem of consistency between the rules %s" % msg, False],
-                 1: ["Input file not well formated %s" % msg, True],
+                 1: ["Input file not well formatted %s" % msg, True],
                  7: ["Notre machin il est tout casse.... :( %s" % msg, False]}
 
     return error_tbl[code]

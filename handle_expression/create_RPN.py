@@ -1,5 +1,6 @@
 import tools.defines as td
 
+
 def get_polish_notation(cdt):
     """ return the polish notation version of rule condition """
 
@@ -56,6 +57,6 @@ def split_ope(to_find, ope):
             return ope[:ope.index(elt)], ope[ope.index(elt):]
 
         if elt in to_find:
-            return ope[:ope.index(elt) +1], ope[ope.index(elt) +1:]
+            return ope[:ope.index(elt) + 1], ope[ope.index(elt) + 1:]
 
     return ope, ""

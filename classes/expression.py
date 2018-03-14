@@ -1,5 +1,8 @@
+import sys
+
 import tools.defines as td
 from classes.rule import Rule
+
 
 class Expression:
     """
@@ -27,6 +30,7 @@ class Expression:
 
         ret = td.Error
         for rule in self.rules:
+            print("\t\t\t\t\tRULE : ", rule.cdt.cdt, rule.symb, rule.cc.cc)
             ret = rule.solver(dictionary, query)
             if ret is td.v_false:
                 lst = [elt for elt in self.cdt if elt.isupper()

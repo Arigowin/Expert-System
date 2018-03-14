@@ -1,5 +1,6 @@
 import tools.defines as td
 
+
 def logic_not(val):
 
     if int(val) == td.v_undef:
@@ -51,4 +52,3 @@ def logic_xor(val):
         return td.v_true
 
     return td.v_false
-

@@ -1,5 +1,5 @@
 def usage(error_str):
-    """ diplay the expert system program usage """
+    """ display the expert system program usage """
 
     print("\t\t  -- EXPERT SYSTEM -- \n\n\tUsage:\t\t./expert_system.py [file_to_test]")
     if error_str:
@@ -12,14 +12,13 @@ def usage(error_str):
     print("\n\t\t-h:\tdisplay this help")
 
 
-
 def get_first_index(to_find, to_search):
 
     index = -1
 
     for i, elt in enumerate(to_search):
         if elt in to_find:
-             index = i
+            index = i
 
     return index
 

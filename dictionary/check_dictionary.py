@@ -1,7 +1,7 @@
 import tools.defines as td
 
 
-def get_queries(dictionary, query_list = []):
+def get_queries(dictionary, query_list=[]):
     """ get the list of the fact we need to find the value of """
 
     #print("IN GET QUERIES", query_list)

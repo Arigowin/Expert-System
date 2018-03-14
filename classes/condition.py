@@ -2,6 +2,8 @@ import tools.defines as td
 from tools.functions import print_dict
 import handle_expression.operators as op
 from handle_expression.create_RPN import get_polish_notation
+from dictionary.check_dictionary import get_value_from_dict
+
 
 class Condition:
     """ handle all the modfications and specifications of condition
@@ -67,7 +69,7 @@ class Condition:
                     fact_start = i - 1
 
                 return self.pmodif[i], self.pmodif[fact_start:i], \
-                       self.pmodif[:fact_start], self.pmodif[i+1 :]
+                       self.pmodif[:fact_start], self.pmodif[i+1:]
 
         return None, None, None, None
 
@@ -79,10 +81,7 @@ class Condition:
         rlt = ""
 
         for elt in fact:
-            if elt.isdigit():
-                rlt += elt
-            else:
-                rlt += str(dictionary[elt][0])
+            rlt += str(get_value_from_dict(elt, dictionary))
 
         return rlt
 
