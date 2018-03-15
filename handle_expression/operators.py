@@ -49,10 +49,12 @@ def logic_xor(val, fact, dictionary):
     if int(val[0]) == int(val[1]):
         return td.v_false
 
-    if td.v_true in val:
+    if str(td.v_true) in val:
 
-        false = fact[1] if val[0] is td.v_true else fact[0]
-        rlt = modify_value_in_dict(false, td.v_false, dictionary, fact)
+        fact_false = fact[1] if int(val[0]) is td.v_true else fact[0]
+        rlt = modify_value_in_dict(fact_false, td.v_false, dictionary, fact_false)
+        print("in XOR - true in val [%s][%s] (%s)" % (val, type(val), dictionary[fact_false]))
+        #dictionary[fact][2] = td.q_needed if dictionary[fact][2] is not td.q_initial else td.q_initial
         return rlt if rlt is not None else td.v_true
 
     return td.v_undef

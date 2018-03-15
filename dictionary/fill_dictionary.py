@@ -35,7 +35,7 @@ def modify_value_in_dict(elt, value, dictionary, query, symb=td.m_modif):
             dictionary[elt][2] = td.m_nset
 
 
-        print("\t fill value OK", elt, query, value, dictionary[elt])
+        print("\t1 - fill value OK", elt, query, value, dictionary[elt])
         return None
 
     if dictionary[elt][2] > 0 and value != dictionary[elt][0]:

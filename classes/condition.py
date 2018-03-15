@@ -47,7 +47,7 @@ class Condition:
                     '!': op.logic_not}
 
         if sym is '^':
-            self.pmodif = start + op.logic_xor(val, fact, dictionary) + end
+            self.pmodif = start + str(op.logic_xor(val, fact, dictionary)) + end
         else:
             self.pmodif = start + str(func_tbl[sym](val)) + end
 
