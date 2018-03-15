@@ -28,8 +28,10 @@ def parse(filename, dictionary):
     rules = []
 
     with open(filename, 'r') as content:
+        print("**************************************************************")
 
         for line in content:
+            print(line[:-1])
             rule = strip_line(line)
 
             if rule and rule[0] == '=':
@@ -42,6 +44,8 @@ def parse(filename, dictionary):
                 rules.append(Expression(rule, dictionary))
 
     dictionary = init_dictionary(init, query, dictionary)
+
+    print("**************************************************************")
 
     return dictionary, rules
 

@@ -1,3 +1,5 @@
+from _ast import expr
+
 import tools.defines as td
 from tools.functions import print_dict
 from solver.solver import solve_query
@@ -40,10 +42,23 @@ def main_loop(exprs, dictionary):
     while check_solved_queries(query_list, dictionary, undef_lst) is False:
         #print("AFTER CHECK SOLVE", query_list, undef_lst)
 
-        expr_list = [expr for expr in exprs if query_list and query_list[0] in expr.cc and expr.usable]
+        # expr_list = [expr for expr in exprs if query_list and query_list[0] in expr.cc and expr.usable]
+        # expr_list = [expr for expr in exprs if query_list and query_list[0] in [rule.cc.cc for rule in expr.rules] and expr.usable]
+
+        expr_list = []
+
+        for expr in exprs:
+            for rule in expr.rules:
+                print("rule %s, usable: %s" % (rule, expr.usable))
+                if query_list and query_list[0] in rule.cc.cc and expr.usable and expr not in expr_list:
+                    expr_list.append(expr)
+
+        print("query: %s expr: {%s}" % (query_list[0], expr_list))
 
         solve_query(query_list[0], expr_list, dictionary)
         #print_dict(dictionary)
 
         query_list = get_queries(dictionary, query_list)
         input()
+
+

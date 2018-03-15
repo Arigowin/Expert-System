@@ -40,7 +40,7 @@ class Conclusion:
     def _recu_solver(self, dictionary, rpolish_cpy, wanted, query, symb):
         """ recursive function to call the correct operator function """
 
-        print("RECU SOLVER")
+        print("- RECU SOLVER - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_cpy, wanted, query, symb))
 
         rpolish_lst = []
 
@@ -75,7 +75,8 @@ class Conclusion:
     def _logic_xor(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("LOGIC XOR")
+        print("- LOGIC XOR - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
+
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
@@ -122,7 +123,7 @@ class Conclusion:
     def _logic_or(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("LOGIC OR")
+        print("- LOGIC OR - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
@@ -181,7 +182,8 @@ class Conclusion:
     def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC AND - lst : %s, wanted: %s" % (rpolish_lst, wanted))
+        print("- LOGIC AND - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
+
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
 
@@ -211,7 +213,8 @@ class Conclusion:
     def _logic_not(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC NOT - ", rpolish_lst)
+        print("- LOGIC NOT - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
+
         inv_rlt = op.logic_not(wanted)
 
         #print("IN LOGIC NOT", rpolish_lst, wanted)

@@ -27,12 +27,14 @@ class Rule:
         self.cc = Conclusion(split_line[2], dictionary)
 
 
-    def solver(self, dictionary, query):
+    def solver(self, dictionary, query, symb):
         """ """
 
         cdt = self.cdt.solver(dictionary)
+
+        print("RULE SOLVER rlt cdt:", cdt)
+
         if cdt is td.v_true:
-            symb = td.m_iif if '<' in self.symb else td.m_modif
             cc = self.cc.solver(dictionary, query, symb)
             if int(cc) < 0:
                 return cc

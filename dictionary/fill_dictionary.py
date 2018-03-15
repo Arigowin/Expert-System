@@ -25,7 +25,7 @@ def modify_value_in_dict(elt, value, dictionary, query, symb=td.m_modif):
         print("\t fill value", elt, query, value, dictionary[elt])
         return error(-7)
 
-    print("modify_value_in_dict [{%s}{%s}] %s %s " % (elt, query, value, symb))
+    print("modify_value_in_dict [{%s}{%s}] val: %s symb: %s " % (elt, query, value, symb))
     print(dictionary[elt])
 
     if value == dictionary[elt][0]:

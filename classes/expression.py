@@ -28,15 +28,12 @@ class Expression:
     def solver(self, dictionary, query):
         """ """
 
-        ret = td.Error
+        ret = td.v_false
         for rule in self.rules:
-            print("\t\t\t\t\tRULE : ", rule.cdt.cdt, rule.symb, rule.cc.cc)
-            ret = rule.solver(dictionary, query)
-            if ret is td.v_false:
-                lst = [elt for elt in self.cdt if elt.isupper()
-                       and dictionary[elt][2] is td.m_default]
-                if len(lst) == 0:
-                    self.usable = False
+            # print("\t\t\t\t\tRULE : ", rule.cdt.cdt, rule.symb, rule.cc.cc)
+
+            symb = td.m_iif if '<' in self.line else td.m_modif
+            ret += rule.solver(dictionary, query, symb)
 
         return ret
 
