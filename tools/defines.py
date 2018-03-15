@@ -5,6 +5,7 @@
 v_false = 0
 v_true = 1
 v_undef = 2
+v_bugged = 3
 
 q_unused = 0
 q_needed = 1

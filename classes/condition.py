@@ -40,12 +40,18 @@ class Condition:
 
         val = self._get_value(fact, dictionary)
 
-        func_tbl = {'^': op.logic_xor,
-                    '|': op.logic_or,
+        print("RULE IN recu sol ", fact, val)
+
+        func_tbl = {'|': op.logic_or,
                     '+': op.logic_and,
                     '!': op.logic_not}
 
-        self.pmodif = start + str(func_tbl[sym](val)) + end
+        if sym is '^':
+            self.pmodif = start + op.logic_xor(val, fact, dictionary) + end
+        else:
+            self.pmodif = start + str(func_tbl[sym](val)) + end
+
+        print("RULE IN recu sol logic rlt", self.pmodif)
 
         for elt in td.Symbols:
             if elt in self.pmodif:
