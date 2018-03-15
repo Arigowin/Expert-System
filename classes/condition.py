@@ -26,7 +26,6 @@ class Condition:
 
         self.pmodif = self.polish_rule
         self._recu_solver(dictionary)
-        #print("LOGIQUEMENT LA DERNIERE VALEUR DS CDT", self.pmodif)
 
         return int(self.pmodif)
 
@@ -40,8 +39,6 @@ class Condition:
 
         val = self._get_value(fact, dictionary)
 
-        print("RULE IN recu sol ", fact, val)
-
         func_tbl = {'|': op.logic_or,
                     '+': op.logic_and,
                     '!': op.logic_not}
@@ -50,8 +47,6 @@ class Condition:
             self.pmodif = start + str(op.logic_xor(val, fact, dictionary)) + end
         else:
             self.pmodif = start + str(func_tbl[sym](val)) + end
-
-        print("RULE IN recu sol logic rlt", self.pmodif)
 
         for elt in td.Symbols:
             if elt in self.pmodif:

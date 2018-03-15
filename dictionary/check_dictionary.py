@@ -4,15 +4,13 @@ import tools.defines as td
 def get_queries(dictionary, query_list=[]):
     """ get the list of the fact we need to find the value of """
 
-    #print("IN GET QUERIES", query_list)
-
     for elt in dictionary:
         if dictionary[elt][2] is td.m_default and dictionary[elt][1] is not td.q_unused and elt not in query_list:
             query_list.insert(0, elt)
 
     if len(query_list) > 1:
         query_list.append(query_list.pop(0))
-    #print("AFTER POP IN GET QUERIES", query_list)
+
     return query_list
 
 

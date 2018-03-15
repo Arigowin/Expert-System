@@ -23,9 +23,9 @@ class Expression:
 
         self.line = line
         self.used = []
-        
+
         self._create_rule_list(line, dictionary)
-        
+
         self.cdt_lst = [fact for fact in self.cdt if fact.isupper()]
         self.cdt_lst += [fact for fact in self.cc if fact.isupper() and
                          '<' in self.line]
@@ -40,12 +40,11 @@ class Expression:
 
         ret = td.v_false
         for rule in self.rules:
-            # print("\t\t\t\t\tRULE : ", rule.cdt.cdt, rule.symb, rule.cc.cc)
 
             symb = td.m_iif if '<' in self.line else td.m_modif
             ret = rule.solver(dictionary, query, symb)
             if ret == -6:
-                modify_value_in_dict(query, td.v_bugged, dictionary, query)
+                modify_value_in_dict(query, td.v_bugged, dictionary, query, symb)
 
         return ret
 

@@ -30,6 +30,7 @@ class Conclusion:
     def solver(self, dictionary, query, symb):
         """ """
 
+        print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.rpolish))
         rpolish_cpy = self.rpolish
         rpolish_cpy = fact_to_value(list(rpolish_cpy), dictionary)
         rlt = self._recu_solver(dictionary, rpolish_cpy, td.v_true, query, symb)
@@ -40,8 +41,6 @@ class Conclusion:
 
     def _recu_solver(self, dictionary, rpolish_cpy, wanted, query, symb):
         """ recursive function to call the correct operator function """
-
-        print("- RECU SOLVER - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_cpy, wanted, query, symb))
 
         rpolish_lst = []
 
@@ -68,15 +67,12 @@ class Conclusion:
         else:
             rlt = get_value_from_dict(rpolish_cpy[0], dictionary)
 
-        #print("----- end recu ", rlt)
         return rlt
 
 
 
     def _logic_xor(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
-
-        print("- LOGIC XOR - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
 
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
@@ -124,7 +120,6 @@ class Conclusion:
     def _logic_or(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC OR - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
@@ -183,8 +178,6 @@ class Conclusion:
     def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC AND - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
-
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
 
@@ -200,8 +193,6 @@ class Conclusion:
             else:
                 val[i] = int(elt)
 
-            print("VAL[I] ", i, val[i])
-
         if td.v_undef in val:
             return td.v_undef
 
@@ -214,14 +205,10 @@ class Conclusion:
     def _logic_not(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("- LOGIC NOT - lst: %s, wanted: %s, query: %s, symb: %s" % (rpolish_lst, wanted, query, symb))
-
         inv_rlt = op.logic_not(wanted)
 
-        #print("IN LOGIC NOT", rpolish_lst, wanted)
         if len(rpolish_lst[1]) > 1:
             val = self._recu_solver(dictionary, rpolish_lst[1], inv_rlt, query, symb)
-            #print("END IF RECU LOGIC NOT", rpolish_lst[1], val)
 
         elif rpolish_lst[1].isupper():
             rlt = modify_value_in_dict(rpolish_lst[1], inv_rlt, dictionary, query, symb)
@@ -232,10 +219,8 @@ class Conclusion:
         else:
             val = rpolish_lst[1]
 
-        print("++++ in not val/wanted", val, wanted)
 
         if int(val) == int(wanted):
-            print("NOOOOOOOOOP!!!")
             return error(-6)
 
         return val

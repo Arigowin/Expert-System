@@ -32,8 +32,6 @@ class Rule:
 
         cdt = self.cdt.solver(dictionary)
 
-        print("RULE SOLVER rlt cdt:", cdt)
-
         if cdt is td.v_true:
             cc = self.cc.solver(dictionary, query, symb)
             if int(cc) < 0:
