@@ -9,9 +9,13 @@ class Rule:
     """ contain the rule and handle coherence check and modifications
 
     Variables:
+        expr
+        used
         cdt
         symb
         cc
+        cdt_lst
+        cc_lst
 
     Functions:
         _check_syntax(self, split_line)
@@ -19,36 +23,19 @@ class Rule:
         _check_cond_recu(self, regex, strm lmodif)
     """
 
-    def __init__(self, split_line, dictionary):
+    def __init__(self, expr, split_line, dictionary):
+
+        self.expr = expr
+        self.used = []
+
         self._check_syntax(split_line)
 
         self.cdt = Condition(split_line[0])
         self.symb = split_line[1]
         self.cc = Conclusion(split_line[2], dictionary)
 
-
-    def solver(self, dictionary, query, symb):
-        """ """
-
-        cdt = self.cdt.solver(dictionary)
-
-        if cdt is td.v_true:
-            cc = self.cc.solver(dictionary, query, symb)
-            if int(cc) < 0:
-                return cc
-
-        else:
-            self._add_to_queries(self.cdt.cdt, dictionary)
-
-        return cdt
-
-
-    def _add_to_queries(self, cdt_str, dictionary):
-        """ set a list of facts as queries in dictionary if not yet setted """
-
-        for elt in cdt_str:
-            if elt.isupper() and dictionary[elt][2] is not td.m_default and dictionary[elt][1] is not td.q_initial:
-                dictionary[elt][1] = td.q_needed
+        self.cdt_lst = [fact for fact in self.cdt.cdt if fact.isupper()]
+        self.cc_lst = [fact for fact in self.cc.cc if fact.isupper()]
 
 
     def _check_syntax(self, split_line):

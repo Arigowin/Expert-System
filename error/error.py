@@ -25,6 +25,7 @@ def error_tbl(code, msg=""):
 
 
                  1: ["Input file not well formatted %s", True],
+                 8: ["trucmuche bugge", True],
                  7: ["Notre machin il est tout casse.... :( %s", False]}
 
     return error_tbl[code]

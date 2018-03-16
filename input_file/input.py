@@ -5,7 +5,7 @@ import string
 
 import tools.defines as td
 import tools.functions as tf
-from classes.expression import Expression
+from handle_expression.expression import create_rule
 from dictionary.fill_dictionary import init_dictionary
 
 
@@ -33,6 +33,7 @@ def parse(filename, dictionary):
         for line in content:
             print(line[:-1])
             rule = strip_line(line)
+            print("in parse rule", rule)
 
             if rule and rule[0] == '=':
                 init += rule[1:]
@@ -41,7 +42,7 @@ def parse(filename, dictionary):
                 query += rule[1:]
 
             elif rule:
-                rules.append(Expression(rule, dictionary))
+                rules.append(create_rule(rule, dictionary))
 
     dictionary = init_dictionary(init, query, dictionary)
 

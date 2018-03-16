@@ -4,6 +4,7 @@ from tools.functions import print_dict
 
 dictionary, rules = main_input()
 main_loop(rules, dictionary)
+
 print_dict(dictionary)
 print("OK END!")
 
