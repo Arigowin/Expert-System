@@ -13,5 +13,5 @@ def enable_ret(func):
     return decorated_func
 
 
-def ret(value):
+def cust_ret(value):
     raise ReturnValue(value)

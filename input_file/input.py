@@ -42,7 +42,7 @@ def parse(filename, dictionary):
                 query += rule[1:]
 
             elif rule:
-                rules.append(create_rule(rule, dictionary))
+                rules.extend(create_rule(rule, dictionary))
 
     dictionary = init_dictionary(init, query, dictionary)
 

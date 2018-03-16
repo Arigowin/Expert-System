@@ -7,7 +7,7 @@ from tools.functions import get_first_index
 from handle_expression.create_RPN import get_polish_notation
 from dictionary.check_dictionary import get_value_from_dict, fact_to_value
 from dictionary.fill_dictionary import modify_value_in_dict
-from tools.custom_return import enable_ret, ret
+from tools.custom_return import enable_ret, cust_ret
 
 
 class Conclusion:
