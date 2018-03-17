@@ -1,0 +1,6 @@
+C + A => V
+B|F => V
+K=>B^H
+
+=ACK
+?V

@@ -38,6 +38,7 @@ class Conclusion:
 
         return rlt
 
+    # !!!!!!!!!!! pb in XOR? undef not set
 
     def _recu_solver(self, dictionary, rpolish_cpy, wanted, query, symb):
         """ recursive function to call the correct operator function """
@@ -46,8 +47,10 @@ class Conclusion:
 
         if get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1:
             rpolish_lst = self._split_rpolish(rpolish_cpy)
+
         elif rpolish_cpy[0] is '!':
             rpolish_lst = ['!', rpolish_cpy[1:]]
+
         elif rpolish_cpy[0].isupper():
             if wanted is td.v_true:
                 rlt = modify_value_in_dict(rpolish_cpy[0], td.v_true, dictionary,
@@ -70,10 +73,11 @@ class Conclusion:
         return rlt
 
 
-
+    @enable_ret
     def _logic_xor(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
+        print("-- IN XOR --", query, wanted, rpolish_lst, symb)
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
@@ -81,6 +85,7 @@ class Conclusion:
             else:
                 val[i] = get_value_from_dict(elt, dictionary)
 
+        print(" XOR-after for", query, wanted, rpolish_lst, symb, val)
         if -1 in val:
             return td.Error
 
@@ -90,13 +95,15 @@ class Conclusion:
             if val[0] == val[1] and val[0] is not td.v_undef:
                 return td.Error
             if val[0] == val[1]:
-                return td.v_undef
+                ret = modify_value_in_dict(rpolish_lst[1], td.v_undef, dictionary, query, symb)
+                cust_ret(ret) if ret is not None else None
+                ret = modify_value_in_dict(rpolish_lst[2], td.v_undef, dictionary, query, symb)
+                return td.v_undef if ret is None else ret
 
             melt = 1 if val[0] is td.v_undef else 2
             value = td.v_false if td.v_true in val else td.v_true
             ret = modify_value_in_dict(rpolish_lst[melt], value, dictionary, query, symb)
-            if ret is not None:
-                return ret
+            cust_ret(ret) if ret is not None else None
 
             return wanted
 
