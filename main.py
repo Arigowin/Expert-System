@@ -6,5 +6,5 @@ dictionary, rules = main_input()
 main_loop(rules, dictionary)
 
 print_dict(dictionary)
-print("OK END!")
+#print("OK END!")
 

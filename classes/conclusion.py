@@ -30,11 +30,11 @@ class Conclusion:
     def solver(self, dictionary, query, symb):
         """ """
 
-        print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.rpolish))
+        #print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.rpolish))
         rpolish_cpy = self.rpolish
         rpolish_cpy = fact_to_value(list(rpolish_cpy), dictionary)
         rlt = self._recu_solver(dictionary, rpolish_cpy, td.v_true, query, symb)
-        print("CONCLUSION last rlt : ", rlt)
+        #print("CONCLUSION last rlt : ", rlt)
 
         return rlt
 
@@ -45,6 +45,7 @@ class Conclusion:
 
         rpolish_lst = []
 
+        #print("--------------- BEFORE CALL rpolish(%s)" % rpolish_cpy)
         if get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1:
             rpolish_lst = self._split_rpolish(rpolish_cpy)
 
@@ -77,7 +78,7 @@ class Conclusion:
     def _logic_xor(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
-        print("-- IN XOR --", query, wanted, rpolish_lst, symb)
+        #print("-- IN XOR --", query, wanted, rpolish_lst, symb)
         val = [-1, -1]
         for i, elt in enumerate(rpolish_lst[1:]):
             if len(elt) > 1:
@@ -85,7 +86,7 @@ class Conclusion:
             else:
                 val[i] = get_value_from_dict(elt, dictionary)
 
-        print(" XOR-after for", query, wanted, rpolish_lst, symb, val)
+        #print(" XOR-after for", query, wanted, rpolish_lst, symb, val)
         if -1 in val:
             return td.Error
 
@@ -96,14 +97,18 @@ class Conclusion:
                 return td.Error
             if val[0] == val[1]:
                 ret = modify_value_in_dict(rpolish_lst[1], td.v_undef, dictionary, query, symb)
-                cust_ret(ret) if ret is not None else None
+                if ret is not None:
+                    return ret
+                #cust_ret(ret) if ret is not None else None
                 ret = modify_value_in_dict(rpolish_lst[2], td.v_undef, dictionary, query, symb)
                 return td.v_undef if ret is None else ret
 
             melt = 1 if val[0] is td.v_undef else 2
             value = td.v_false if td.v_true in val else td.v_true
             ret = modify_value_in_dict(rpolish_lst[melt], value, dictionary, query, symb)
-            cust_ret(ret) if ret is not None else None
+            if ret is not None:
+                return ret
+            #cust_ret(ret) if ret is not None else None
 
             return wanted
 
@@ -185,13 +190,31 @@ class Conclusion:
     def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
+        if len(rpolish_lst[1]) == 1 and len(rpolish_lst[2]) == 1:
+            #print("FIRST IF", rpolish_lst)
+            for fact in rpolish_lst[1:]:
+                #print("FACT???", fact)
+
+                if fact.isupper():
+                    rlt = modify_value_in_dict(fact, wanted, dictionary, query, symb)
+                    #print("rlt", rlt)
+                    if rlt is not None:
+                        return rlt
+                elif rpolish_lst[rpolish_lst.index(fact)] != wanted:
+                    return error(-6)
+
+            return wanted
+
         val = [-1, -1]
+        #print(">>>>>>>>>>>>>>>>>> IN ADD CC", rpolish_lst)
         for i, elt in enumerate(rpolish_lst[1:]):
+            #print("NOT FIRST IF")
 
             if len(elt) > 1:
                 val[i] = self._recu_solver(dictionary, elt, wanted, query, symb)
 
             elif elt.isupper():
+                #print("ELIF => wanted(%s)" % wanted)
                 rlt = modify_value_in_dict(elt, wanted, dictionary, query, symb)
                 if rlt is not None:
                     return rlt
@@ -199,9 +222,6 @@ class Conclusion:
 
             else:
                 val[i] = int(elt)
-
-        if td.v_undef in val:
-            return td.v_undef
 
         if val.count(wanted) is not 2:
             return td.Error
@@ -236,6 +256,7 @@ class Conclusion:
     def _split_rpolish(self, rpolish_cpy):
         """ """
 
+        ##print("SPILT POLISH", rpolish_cpy)
         if get_first_index(td.Symbols[:-1], rpolish_cpy[1:]) is -1:
             match = re.match("([+|^])(!?[A-Z0-2])(!?[A-Z0-2])", rpolish_cpy)
 

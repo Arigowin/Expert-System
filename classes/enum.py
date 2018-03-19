@@ -2,5 +2,5 @@ from enum import Enum
 
 
 class Btype(Enum):
-    EXPR = 0
-    FACT = 1
+    CDT = 0
+    CC = 1

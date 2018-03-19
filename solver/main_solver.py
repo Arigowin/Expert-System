@@ -33,13 +33,13 @@ def check_solved_queries(query_list, dictionary, undef_lst):
 def main_loop(expr_lst, dictionary):
     """ """
 
-    print_dict(dictionary)
+  #  print_dict(dictionary)
     for fact in dictionary:
         if dictionary[fact][1] is not td.q_unused:
-            print("in main IF", fact)
+            #print("in main IF", fact)
             new_tree = Btree(dictionary, expr_lst, fact)
             pouet = new_tree.recu_launcher(dictionary, expr_lst)
-            print("POUET!!", pouet)
+            ##print("POUET!!", pouet)
         #recu(fact, expr_lst, dictionary)
 
 
