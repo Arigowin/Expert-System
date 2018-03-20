@@ -32,7 +32,7 @@ class Conclusion:
 
         #print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.rpolish))
         rpolish_cpy = self.rpolish
-        rpolish_cpy = fact_to_value(list(rpolish_cpy), dictionary)
+#        rpolish_cpy = fact_to_value(list(rpolish_cpy), dictionary)
         rlt = self._recu_solver(dictionary, rpolish_cpy, td.v_true, query, symb)
         #print("CONCLUSION last rlt : ", rlt)
 
@@ -178,37 +178,42 @@ class Conclusion:
             if td.v_true in val:
                 return td.Error
 
-            for elt in rpolish_lst[1:]:
+            val = [-1, -1]
+            for i, elt in enumerate(rpolish_lst[1:]):
                 rlt = modify_value_in_dict(elt, td.v_false, dictionary, query, symb)
-                if rlt is not None:
-                    return rlt
-                return td.v_true
 
-            return td.v_false
+                val[i] = rlt if rlt is not None else dictionary[elt][0]
+
+            return wanted if val.count(wanted) == 2 else val[0 if val[0] < 0 else 1]
 
 
     def _logic_and(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
+        #print("FIRST IF", rpolish_lst)
+        val = [-1, -1]
         if len(rpolish_lst[1]) == 1 and len(rpolish_lst[2]) == 1:
-            #print("FIRST IF", rpolish_lst)
-            for fact in rpolish_lst[1:]:
+            print("FIRST IF", rpolish_lst)
+            for i, fact in enumerate(rpolish_lst[1:]):
                 #print("FACT???", fact)
 
                 if fact.isupper():
                     rlt = modify_value_in_dict(fact, wanted, dictionary, query, symb)
                     #print("rlt", rlt)
-                    if rlt is not None:
-                        return rlt
-                elif rpolish_lst[rpolish_lst.index(fact)] != wanted:
-                    return error(-6)
+                    val[i] = rlt if rlt is not None else dictionary[fact][0]
 
-            return wanted
+                elif rpolish_lst[i + 1] != wanted:
+                    val[i] = error(-6)
+                    #            return check_error(dictionary, , wanted)
+
+
+
+            return wanted if val.count(wanted) == 2 else val[0 if val[0] < 0 else 1]
 
         val = [-1, -1]
         #print(">>>>>>>>>>>>>>>>>> IN ADD CC", rpolish_lst)
         for i, elt in enumerate(rpolish_lst[1:]):
-            #print("NOT FIRST IF")
+            print("NOT FIRST IF")
 
             if len(elt) > 1:
                 val[i] = self._recu_solver(dictionary, elt, wanted, query, symb)
@@ -216,22 +221,18 @@ class Conclusion:
             elif elt.isupper():
                 #print("ELIF => wanted(%s)" % wanted)
                 rlt = modify_value_in_dict(elt, wanted, dictionary, query, symb)
-                if rlt is not None:
-                    return rlt
-                val[i] = wanted
+                val[i] = rlt if rlt is not None else dictionary[elt][0]
 
             else:
                 val[i] = int(elt)
 
-        if val.count(wanted) is not 2:
-            return td.Error
-
-        return wanted
+        return wanted if val.count(wanted) == 2 else val[0 if val[0] < 0 else 1]
 
 
     def _logic_not(self, dictionary, rpolish_lst, wanted, query, symb):
         """ """
 
+        print("FIRST IF", rpolish_lst)
         inv_rlt = op.logic_not(wanted)
 
         if len(rpolish_lst[1]) > 1:

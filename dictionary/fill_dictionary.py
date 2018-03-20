@@ -22,10 +22,10 @@ def modify_value_in_dict(elt, value, dictionary, query, prio=td.m_modif):
     and set it to the given value if it is not incoherent
     """
 
-    #print("in MODIF DICT", elt, value, query, prio)
     if not elt.isupper():
         return error(-7)
 
+    print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s) in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0], dictionary[elt][2]))
     if value == dictionary[elt][0]:
         if prio > dictionary[elt][2] and elt is query:
             dictionary[elt][2] = prio
@@ -44,11 +44,13 @@ def modify_value_in_dict(elt, value, dictionary, query, prio=td.m_modif):
                 return error(-4)
 
         if prio == dictionary[elt][2]:
+            print("MODIFY with same prio")
             if dictionary[elt][0] is td.v_undef:
                 dictionary[elt][0] = value
                 dictionary[elt][2] = prio if elt is query else td.m_nset
 
             else:
+                print("bugged")
                 dictionary[elt][0] = td.v_bugged
                 return error(-5)
 
@@ -58,7 +60,7 @@ def modify_value_in_dict(elt, value, dictionary, query, prio=td.m_modif):
             #ret = True if dictionary[elt][0] is not td.v_undef else False
             ##print("RET ========> (%s)" % ret)
             dictionary[elt][0] = value
-            dictionary[elt][2] = prio #if elt is query else td.m_nset
+            dictionary[elt][2] = prio if elt is query else td.m_nset
             ##print("HERE??§?§?§?§?§")
             #cust_ret(error(-5)) if ret is True else None
 

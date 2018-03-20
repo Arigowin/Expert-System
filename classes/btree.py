@@ -1,7 +1,6 @@
 import tools.defines as td
 from classes.enum import Btype
 from error.error import error
-from dictionary.fill_dictionary import modify_value_in_dict
 from tools.custom_return import enable_ret, cust_ret
 
 
@@ -50,7 +49,7 @@ class Btree:
     @enable_ret
     def _recu(self, dictionary, rule_lst, curr_bnode, prev_rule):
         """ specify which element is needed in a specific bnode """
-        ##print(" -- RECU -- ")
+        print(" -- RECU -- ")
 
         if curr_bnode.btype is Btype.CC:
             self._node_cc(dictionary, curr_bnode, rule_lst, prev_rule)
@@ -60,7 +59,7 @@ class Btree:
 
 
     def _node_cdt(self, dictionary, curr_bnode, rule_lst, prev_rule):
-        ##print(" -- NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
+        print(" -- NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
 
         val = curr_bnode.value
         ##print("VAL IN CDT", val)
@@ -69,7 +68,7 @@ class Btree:
            ##print("VAL IN CDT IF 1", val)
 
            for fact in curr_bnode.rule.cdt_lst:
-               ##print("FACT in CDT FOR", fact, dictionary[fact][1])
+               #print("FACT in CDT FOR", fact, dictionary[fact][1])
                if dictionary[fact][1] < 2:
                    child_node, curr_bnode = \
                        self._create_bnode(dictionary,
@@ -79,7 +78,7 @@ class Btree:
 
                    ##print("BEFORE RECU CDT")
                    ret_cdt = self._recu(dictionary, rule_lst, child_node, prev_rule)
-                   ##print(" -- DEPIL CDT --")
+                   print(" -- DEPIL CDT --")
 
            return curr_bnode.rule.cdt.solver(dictionary)
         ##print("END CDT", val)
@@ -88,11 +87,11 @@ class Btree:
 
 
     def _node_cc(self, dictionary, curr_bnode, rule_lst, prev_rule):
-        ##print(" -- NODE CC -- ", curr_bnode.query)
+        print(" -- NODE CC -- ", curr_bnode.query, dictionary[curr_bnode.query])
         query = curr_bnode.query
         val = dictionary[query][0]
 
-        if val is not td.v_true and val is not td.v_bugged and (dictionary[query][2] <= 0 or dictionary[query][0] is td.v_undef):
+        if dictionary[query][2] <= 0 or dictionary[query][0] is td.v_undef:
 
             needed_rule = dict((rule, -1) for rule in rule_lst if
                           query in rule.cc_lst and rule is not prev_rule)
@@ -107,21 +106,21 @@ class Btree:
                                       btype=Btype.CDT,
                                       rule=rule,
                                       tree=curr_bnode)
-
+                print("children", curr_bnode.children, child_node.rule.expr)
                 ret_recu = self._recu(dictionary, rule_lst, child_node, prev_rule)
-                ##print(" -- DEPIL CC --", )
+                print(" -- DEPIL CC --", )
                 needed_rule[rule] = ret_recu
 
             for rule in needed_rule:
 
-                ##print("in 2nd for", rule.expr, needed_rule[rule])
+                print("in 2nd for", rule.expr, needed_rule[rule], rule.prio)
                 if needed_rule[rule] is td.v_true:
 
                     val_cc = rule.cc.solver(dictionary, query, rule.prio)
-                    ##print("VAL CC", query,  val_cc, dictionary[query][2])
+                    print("VAL CC", query,  val_cc, dictionary[query][2])
                     rule.used.append(query)
                     if (val_cc is td.v_undef or val_cc < 0) \
-                       and ('^' in rule.cc.cc or '|' in rule.cc.cc): # and dictionary[query][2] == -1:
+                       and ('^' in rule.cc.cc or '|' in rule.cc.cc) or dictionary[query][2] == -1:
 
                         ##print("not here??????????????")
                         cc_lst = rule.cc_lst if rule.cc_lst[0] is not query else rule.cc_lst[::-1]
@@ -133,6 +132,9 @@ class Btree:
                         for elt in cc_lst:
                             new_tree = Btree(dictionary, rule_lst, elt)
                             new_tree.recu_launcher(dictionary, rule_lst, curr_bnode.rule)
+
+                        if dictionary[query][0] is not td.v_bugged and rule.prio > dictionary[query][2]:
+                            dictionary[query][2] = rule.prio
 
                         rule.cc.solver(dictionary, query, rule.prio)
                         #rule.used.copy()

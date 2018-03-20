@@ -38,7 +38,7 @@ class Rule:
         self.cdt_lst = [fact for fact in self.cdt.cdt if fact.isupper()]
         self.cc_lst = [fact for fact in self.cc.cc if fact.isupper()]
 
-        self.prio = td.m_iif if '<' in self.symb else td.m_modif
+        self.prio = td.m_iif if '<' in self.expr else td.m_modif
 
 
     def _check_syntax(self, split_line):

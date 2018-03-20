@@ -2,7 +2,6 @@ import sys
 
 import tools.defines as td
 from classes.rule import Rule
-from dictionary.fill_dictionary import modify_value_in_dict
 
 
 def create_rule(expr, dictionary):

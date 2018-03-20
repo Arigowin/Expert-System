@@ -81,8 +81,25 @@ class Condition:
 
         rlt = ""
 
+        cc_list = [fact for fact in dictionary
+                        if dictionary[fact][1] is not td.q_unused]
         for elt in fact:
-            rlt += str(get_value_from_dict(elt, dictionary))
+            ret_val = str(get_value_from_dict(elt, dictionary))
+
+            print("ELT (%s) ret val (%s) rlt (%s) cc list (%s)" % (elt, ret_val, rlt, cc_list))
+            print("cdt elif", int(ret_val) is td.v_undef, elt in cc_list)
+            rlt += elt if elt.isdigit() else ret_val if int(ret_val) == td.v_undef and elt in cc_list else str(dictionary[elt][0])
+            #if elt.isdigit():
+            #    print("digit")
+            #    rlt += elt
+            #elif ret_val == td.v_undef and elt in cc_list:
+            #    print("cc list")
+            #    rlt += ret_val
+            #else:
+            #    print("else")
+            #    rlt += str(dictionary[elt][0])
+
+
 
         return rlt
 
