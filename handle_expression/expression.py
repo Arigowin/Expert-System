@@ -5,7 +5,9 @@ from classes.rule import Rule
 
 
 def create_rule(expr, dictionary):
-    """  """
+    """ create a list of Rule object with all the rules needed to resolve the
+    given expression
+    """
 
     split = split_expr(expr)
 
@@ -23,6 +25,10 @@ def create_rule(expr, dictionary):
 def split_expr(expr):
     """ split the expression in 3 part: condition, symbol, conclusion """
 
+    cdt = expr
+    symb = None
+    cc = None
+
     if '=' in expr:
         i = expr.index('=')
 
@@ -37,16 +43,11 @@ def split_expr(expr):
         cdt = expr[:symb_beg]
         cc = expr[symb_end:]
 
-    else:
-        cdt = expr
-        symb = None
-        cc = None
-
     return [cdt, symb, cc]
 
 
 def handle_iif(expr, split_expr, dictionary):
-    """  """
+    """ create the 4 rules related to the iif expression """
 
     symb = "=>"
 

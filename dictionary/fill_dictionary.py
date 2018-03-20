@@ -1,6 +1,5 @@
 import tools.defines as td
 from error.error import error
-from tools.custom_return import enable_ret, cust_ret
 
 
 def init_dictionary(init, query, dictionary):
@@ -16,53 +15,45 @@ def init_dictionary(init, query, dictionary):
     return dictionary
 
 
-@enable_ret
-def modify_value_in_dict(elt, value, dictionary, query, prio=td.m_modif):
+def modify_dict(elt, value, dictionary, query, prio=td.m_modif):
     """ check if the given fact has a define value
     and set it to the given value if it is not incoherent
     """
 
+    ### REMOVE WHEN PROJECT DONE
     if not elt.isupper():
         return error(-7)
 
-    print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s) in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0], dictionary[elt][2]))
+    print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s)\
+          in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0],
+                                  dictionary[elt][2]))
+
     if value == dictionary[elt][0]:
-        if prio > dictionary[elt][2] and elt is query:
-            dictionary[elt][2] = prio
-        elif elt is not query and dictionary[elt][2] < prio:
-            dictionary[elt][2] = td.m_nset
 
+        dictionary[elt][2] = (prio if prio > dictionary[elt][2] and elt is query
+                              else td.m_nset if elt is not query
+                                             and dictionary[elt][2] < prio
+                              else dictionary[elt][2])
 
-    else:  # value != dictionary[elt][0]:
-        #print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s) in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0], dictionary[elt][2]))
-        if prio < dictionary[elt][2]:
-            if dictionary[elt][0] is td.v_undef:
+        return None
 
-                dictionary[elt][0] = value
-                dictionary[elt][2] = prio if elt is query else td.m_nset
-            else:
-                return error(-4)
+    ## if value != dictionary[elt][0]:
+    # element values modification in the dictionary
+    if ((prio < dictionary[elt][2] and dictionary[elt][0] is td.v_undef)
+      or (prio == dictionary[elt][2] and dictionary[elt][0] is td.v_undef)
+      or prio > dictionary[elt][2]):
 
-        if prio == dictionary[elt][2]:
-            print("MODIFY with same prio")
-            if dictionary[elt][0] is td.v_undef:
-                dictionary[elt][0] = value
-                dictionary[elt][2] = prio if elt is query else td.m_nset
+        dictionary[elt][0] = value
+        dictionary[elt][2] = prio if elt is query else td.m_nset
 
-            else:
-                print("bugged")
-                dictionary[elt][0] = td.v_bugged
-                return error(-5)
+        return None
 
-        if prio > dictionary[elt][2]:
-            ##print(">>>>>>>>>>>>>>>>> tell me here!!!!")
-
-            #ret = True if dictionary[elt][0] is not td.v_undef else False
-            ##print("RET ========> (%s)" % ret)
-            dictionary[elt][0] = value
-            dictionary[elt][2] = prio if elt is query else td.m_nset
-            ##print("HERE??§?§?§?§?§")
-            #cust_ret(error(-5)) if ret is True else None
+    # error checking and returns
+    if prio < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef:
+        return error(-4)
+    if prio == dictionary[elt][2] and dictionary[elt][0] is not td.v_undef:
+        dictionary[elt][0] = td.v_bugged
+        return error(-5)
 
     return None
 

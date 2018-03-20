@@ -3,7 +3,6 @@ import re
 import sys
 import string
 
-import tools.defines as td
 import tools.functions as tf
 from handle_expression.expression import create_rule
 from dictionary.fill_dictionary import init_dictionary

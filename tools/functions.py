@@ -1,4 +1,4 @@
-def usage(error_str):
+def usage(error_str=None):
     """ display the expert system program usage """
 
     print("\t\t  -- EXPERT SYSTEM -- \n\n\tUsage:\t\t./expert_system.py [file_to_test]")
@@ -13,9 +13,11 @@ def usage(error_str):
 
 
 def get_first_index(to_find, to_search):
+    """ return the index of the first element contains in 'to_find'
+    in 'to_search'
+    """
 
     index = -1
-
     for i, elt in enumerate(to_search):
         if elt in to_find:
             index = i
@@ -24,6 +26,8 @@ def get_first_index(to_find, to_search):
 
 
 def print_dict(dictionary):
+    """ print the whole dictionary with the values of all possible facts """
 
     for elt in sorted(dictionary):
         print("[%s:%s]" % (elt, dictionary[elt]))
+

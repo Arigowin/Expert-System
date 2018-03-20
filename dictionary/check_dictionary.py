@@ -5,7 +5,9 @@ def get_queries(dictionary, query_list=[]):
     """ get the list of the fact we need to find the value of """
 
     for elt in dictionary:
-        if dictionary[elt][2] is td.m_default and dictionary[elt][1] is not td.q_unused and elt not in query_list:
+        if (dictionary[elt][2] is td.m_default
+          and dictionary[elt][1] is not td.q_unused
+          and elt not in query_list):
             query_list.insert(0, elt)
 
     if len(query_list) > 1:
@@ -25,8 +27,8 @@ def get_value_from_dict(fact, dictionary):
     if not fact.isupper():
         return td.Error
 
-    val = dictionary[fact][0] if dictionary[fact][2] is not td.m_default else td.v_undef
-    #dictionary[fact][1] = td.q_needed if val is td.v_undef and dictionary[fact][1] is not td.q_initial else dictionary[fact][1]
+    val = (dictionary[fact][0] if dictionary[fact][2] is not td.m_default
+           else td.v_undef)
 
     return val
 
@@ -36,9 +38,8 @@ def fact_to_value(expr, dictionary):
 
     for i, elt in enumerate(expr):
 
-        if elt.isupper():
-
-            if dictionary[elt][2] > td.m_default and dictionary[elt][0] is not td.v_undef:
-                expr[i] = str(dictionary[elt][0])
+        if (elt.isupper() and dictionary[elt][2] > td.m_default
+          and dictionary[elt][0] is not td.v_undef):
+            expr[i] = str(dictionary[elt][0])
 
     return ''.join(expr)

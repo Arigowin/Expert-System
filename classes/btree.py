@@ -4,12 +4,14 @@ from error.error import error
 from tools.custom_return import enable_ret, cust_ret
 
 
+#### modifier dico par dic
+
 class _BNode:
-    """ """
+    """ A node containing either a condition expression or a conclusion fact """
 
     __slots__ = "btype", "rule", "query", "children", "value"
 
-    def __init__(self, dictionary, btype, rule=None, query=None):
+    def __init__(self, dico, btype, rule=None, query=None):
 
         #if query and rule:
         #    ##print("ERROR!!!!!!!!!!! BNODE INIT")
@@ -20,9 +22,9 @@ class _BNode:
         self.children = []
 
         if self.btype is Btype.CDT:
-            self.value = self.rule.cdt.solver(dictionary)
+            self.value = self.rule.cdt.solver(dico)
         else:
-            self.value = dictionary[query][0]
+            self.value = dico[query][0]
 
 
 class Btree:
@@ -30,84 +32,81 @@ class Btree:
 
     __slots__ = "_query", "_root"
 
-    def __init__(self, dictionary, rule_lst, query):
+
+    def __init__(self, dico, rule_lst, query):
         self._query = query
 
-        # self._rule_lst = rule_lst  # => cf si on la garde en variable
-
         needed_rule = [rule for rule in rule_lst if query in rule.cc_lst]
-        _, self._root = self._create_bnode(dictionary, Btype.CC, query=query)
+        _, self._root = self._new_node(dico, Btype.CC, query=query)
 
-    def recu_launcher(self, dictionary, rule_lst, prev_rule=None):
+
+    def recu_launcher(self, dico, rule_lst, prev_rule=None):
         """ """
 
         ##print("RECU LAUNCHER START", self._root.query)
-        ret = self._recu(dictionary, rule_lst, self._root, prev_rule)
+
+        ret = self._recu(dico, rule_lst, self._root, prev_rule)
+
         ##print("RECU LAUNCHER EXIT", self._root.query, "\n")
         return ret
 
+
     @enable_ret
-    def _recu(self, dictionary, rule_lst, curr_bnode, prev_rule):
+    def _recu(self, dico, rule_lst, curr_bnode, prev_rule):
         """ specify which element is needed in a specific bnode """
         print(" -- RECU -- ")
 
         if curr_bnode.btype is Btype.CC:
-            self._node_cc(dictionary, curr_bnode, rule_lst, prev_rule)
-            return dictionary[curr_bnode.query][0]
 
-        return self._node_cdt(dictionary, curr_bnode, rule_lst, prev_rule)
+            self._node_cc(dico, curr_bnode, rule_lst, prev_rule)
+            return dico[curr_bnode.query][0]
+
+        return self._node_cdt(dico, curr_bnode, rule_lst, prev_rule)
 
 
-    def _node_cdt(self, dictionary, curr_bnode, rule_lst, prev_rule):
+    def _node_cdt(self, dico, curr_bnode, rule_lst, prev_rule):
+        """ """
+
         print(" -- NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
 
         val = curr_bnode.value
-        ##print("VAL IN CDT", val)
-
         if val is td.v_undef:
-           ##print("VAL IN CDT IF 1", val)
 
            for fact in curr_bnode.rule.cdt_lst:
-               #print("FACT in CDT FOR", fact, dictionary[fact][1])
-               if dictionary[fact][1] < 2:
-                   child_node, curr_bnode = \
-                       self._create_bnode(dictionary,
-                                          btype=Btype.CC,
-                                          query=fact,
-                                          tree=curr_bnode)
 
-                   ##print("BEFORE RECU CDT")
-                   ret_cdt = self._recu(dictionary, rule_lst, child_node, prev_rule)
+               if dico[fact][1] < 2:
+                   child_node, curr_bnode = self._new_node(dico,
+                                                           btype=Btype.CC,
+                                                           query=fact,
+                                                           tree=curr_bnode)
+
+                   ret_cdt = self._recu(dico, rule_lst, child_node, prev_rule)
                    print(" -- DEPIL CDT --")
 
-           return curr_bnode.rule.cdt.solver(dictionary)
-        ##print("END CDT", val)
+           return curr_bnode.rule.cdt.solver(dico)
 
         return val
 
 
-    def _node_cc(self, dictionary, curr_bnode, rule_lst, prev_rule):
-        print(" -- NODE CC -- ", curr_bnode.query, dictionary[curr_bnode.query])
+    def _node_cc(self, dico, curr_bnode, rule_lst, prev_rule):
+        print(" -- NODE CC -- ", curr_bnode.query, dico[curr_bnode.query])
         query = curr_bnode.query
-        val = dictionary[query][0]
+        val = dico[query][0]
 
-        if dictionary[query][2] <= 0 or dictionary[query][0] is td.v_undef:
+        if dico[query][2] <= 0 or dico[query][0] is td.v_undef:
 
             needed_rule = dict((rule, -1) for rule in rule_lst if
                           query in rule.cc_lst and rule is not prev_rule)
 
-            #i = 0
-            #while i in range(len(needed_rule)):
             for rule in needed_rule:
-                ##print("rule (%s)" % rule.expr)
 
-                child_node, curr_bnode = \
-                   self._create_bnode(dictionary,
-                                      btype=Btype.CDT,
-                                      rule=rule,
-                                      tree=curr_bnode)
-                print("children", curr_bnode.children, child_node.rule.expr)
-                ret_recu = self._recu(dictionary, rule_lst, child_node, prev_rule)
+                child_node, curr_bnode = self._new_node(dico,
+                                                        btype=Btype.CDT,
+                                                        rule=rule,
+                                                        tree=curr_bnode)
+
+                ret_recu = self._recu(dico, rule_lst, child_node, prev_rule)
+
                 print(" -- DEPIL CC --", )
                 needed_rule[rule] = ret_recu
 
@@ -116,44 +115,33 @@ class Btree:
                 print("in 2nd for", rule.expr, needed_rule[rule], rule.prio)
                 if needed_rule[rule] is td.v_true:
 
-                    val_cc = rule.cc.solver(dictionary, query, rule.prio)
-                    print("VAL CC", query,  val_cc, dictionary[query][2])
+                    val_cc = rule.cc.solver(dico, query, rule.prio)
+                    #print("VAL CC", query,  val_cc, dico[query][2])
                     rule.used.append(query)
-                    if (val_cc is td.v_undef or val_cc < 0) \
-                       and ('^' in rule.cc.cc or '|' in rule.cc.cc) or dictionary[query][2] == -1:
 
-                        ##print("not here??????????????")
+                    if ((val_cc is td.v_undef or val_cc < 0)
+                         and ('^' in rule.cc.cc or '|' in rule.cc.cc)
+                         or dico[query][2] == -1):
+
                         cc_lst = rule.cc_lst if rule.cc_lst[0] is not query else rule.cc_lst[::-1]
-                        #bck_used = rule.used.copy()
-                        #rule.used = []
-
                         cc_lst.remove(query)
 
                         for elt in cc_lst:
-                            new_tree = Btree(dictionary, rule_lst, elt)
-                            new_tree.recu_launcher(dictionary, rule_lst, curr_bnode.rule)
 
-                        if dictionary[query][0] is not td.v_bugged and rule.prio > dictionary[query][2]:
-                            dictionary[query][2] = rule.prio
+                            new_tree = Btree(dico, rule_lst, elt)
+                            new_tree.recu_launcher(dico, rule_lst, curr_bnode.rule)
 
-                        rule.cc.solver(dictionary, query, rule.prio)
-                        #rule.used.copy()
+                        if dico[query][0] is not td.v_bugged and rule.prio > dico[query][2]:
+                            dico[query][2] = rule.prio
 
-            ##print(" >> BEFORE new fct << ", [key for key, value in needed_rule.items() if value is td.v_undef])
+                        rule.cc.solver(dico, query, rule.prio)
 
-            # on check si il y a un undef dans la liste des retours
-            #   si non: pas de pb rien a faire
-            #   si oui
             if len([key for key, value in needed_rule.items() if value is td.v_undef]):
-                ret = self._node_checking(dictionary, list(map(list, needed_rule.items())), curr_bnode)
+                ret = self._node_checking(dico, list(map(list, needed_rule.items())), curr_bnode)
 
 
-               #if rule.used.count(query) == 2:
-               ##if query in rule.used:
-               #    return error(-6)
 
-
-    def _node_checking(self, dictionary, sorted_rule, curr_bnode):
+    def _node_checking(self, dico, sorted_rule, curr_bnode):
         """ check if rules that contain the requested fact in cc can be
         determined
         """
@@ -165,7 +153,7 @@ class Btree:
         while i in range(len(sorted_rule)):
             if sorted_rule[i][1] is td.v_undef:
 
-                val = self._tree_skimming(dictionary, curr_bnode)
+                val = self._tree_skimming(dico, curr_bnode)
                 if val != sorted_rule[i][1]:
                     sorted_rule[i][1] = val
 
@@ -179,39 +167,33 @@ class Btree:
                 i = 0
 
 
-    def _tree_skimming(self, dictionary, curr_bnode):
+    def _tree_skimming(self, dico, curr_bnode):
         """ skim the tree to check every child node """
 
         for child in curr_bnode.children:
 
             if child.btype is Btype.CDT and child.value is td.v_undef:
-                val = child.rule.cdt.solver(dictionary)
+                val = child.rule.cdt.solver(dico)
                 if val == child.value:
-                    self._tree_skimming(dictionary, child)
+                    self._tree_skimming(dico, child)
 
             elif child.btype is Btype.CC and child.value is td.v_undef:
-                if dictionary[child.query][0] is td.v_undef or dictionary[child.query][2] < child.rule.prio:
-                    child.rule.cc.solver(dictionary, child.query, child.rule.prio)
-                    if dictionary[child.query][0] == child.value:
-                        self._tree_skimming(dictionary, child)
+                if dico[child.query][0] is td.v_undef or dico[child.query][2] < child.rule.prio:
+                    child.rule.cc.solver(dico, child.query, child.rule.prio)
+                    if dico[child.query][0] == child.value:
+                        self._tree_skimming(dico, child)
 
 
-    def _create_bnode(self, dictionary, btype, rule=None, query=None, tree=None):
+    def _new_node(self, dico, btype, rule=None, query=None, tree=None):
         """ create a new child node to be attach to the tree """
 
-        ###print("ENTER BNODE", query, rule, btype)
-
         if not tree:
-            child = _BNode(dictionary, btype, rule, query)
-
-            ###print("EXIT BNODE", child.value, child.query, "\n")
+            child = _BNode(dico, btype, rule, query)
 
             return None, child
 
-        child = _BNode(dictionary, btype, rule, query)
+        child = _BNode(dico, btype, rule, query)
         tree.children.append(child)
-
-        ###print("EXIT BNODE", child.value, child.query, "\n")
 
         return child, tree
 

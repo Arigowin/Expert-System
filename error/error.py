@@ -34,8 +34,9 @@ def error_tbl(code, msg=""):
 def error(code, msg=""):
     """ display error message, return specific error code and exit if needed """
 
-    print("\tERROR !!!! no (%d)\n" % code)
     err_lst = error_tbl(abs(code), msg)
+
+    print("EXPERT SYSTEM - Error: %s" % err_lst[0])
 
     if err_lst[1]:
         sys.exit(abs(code))
