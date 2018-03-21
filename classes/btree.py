@@ -43,7 +43,7 @@ class Btree:
     def recu_launcher(self, dico, rule_lst, prev_rule=None):
         """ """
 
-        ##print("RECU LAUNCHER START", self._root.query)
+        print("RECU LAUNCHER START", self._root.query)
 
         ret = self._recu(dico, rule_lst, self._root, prev_rule)
 
@@ -51,7 +51,6 @@ class Btree:
         return ret
 
 
-    @enable_ret
     def _recu(self, dico, rule_lst, curr_bnode, prev_rule):
         """ specify which element is needed in a specific bnode """
         print(" -- RECU -- ")
@@ -100,15 +99,17 @@ class Btree:
 
             for rule in needed_rule:
 
-                child_node, curr_bnode = self._new_node(dico,
-                                                        btype=Btype.CDT,
-                                                        rule=rule,
-                                                        tree=curr_bnode)
+                if query not in rule.used:
+                    child_node, curr_bnode = self._new_node(dico,
+                                                            btype=Btype.CDT,
+                                                            rule=rule,
+                                                            tree=curr_bnode)
 
-                ret_recu = self._recu(dico, rule_lst, child_node, prev_rule)
+                    rule.used.append(query)
+                    ret_recu = self._recu(dico, rule_lst, child_node, prev_rule)
 
-                print(" -- DEPIL CC --", )
-                needed_rule[rule] = ret_recu
+                    print(" -- DEPIL CC --", ret_recu)
+                    needed_rule[rule] = ret_recu
 
             for rule in needed_rule:
 
@@ -146,7 +147,7 @@ class Btree:
         determined
         """
 
-        ##print(" -- NODE CHECK -- ", curr_bnode, curr_bnode.rule)#, curr_bnode.rule.expr)
+        print(" -- NODE CHECK -- ", curr_bnode, curr_bnode.rule)#, curr_bnode.rule.expr)
         i = 0
         bck_sorted = sorted_rule.copy()
 
@@ -170,18 +171,23 @@ class Btree:
     def _tree_skimming(self, dico, curr_bnode):
         """ skim the tree to check every child node """
 
+        print("-- TREE SKIM --", curr_bnode.btype,  curr_bnode.query if curr_bnode.query else curr_bnode.rule.cc.cc)
+
         for child in curr_bnode.children:
+            print(child.query)
 
             if child.btype is Btype.CDT and child.value is td.v_undef:
                 val = child.rule.cdt.solver(dico)
-                if val == child.value:
+                if val and val == child.value:
                     self._tree_skimming(dico, child)
 
             elif child.btype is Btype.CC and child.value is td.v_undef:
-                if dico[child.query][0] is td.v_undef or dico[child.query][2] < child.rule.prio:
-                    child.rule.cc.solver(dico, child.query, child.rule.prio)
-                    if dico[child.query][0] == child.value:
-                        self._tree_skimming(dico, child)
+                print("child rule  (%s)" % child.rule)
+                self._tree_skimming(dico, child)
+                #if dico[child.query][0] is td.v_undef or dico[child.query][2] < child.rule.prio:
+                #    child.rule.cc.solver(dico, child.query, child.rule.prio)
+                #    if dico[child.query][0] == child.value:
+                #        self._tree_skimming(dico, child)
 
 
     def _new_node(self, dico, btype, rule=None, query=None, tree=None):

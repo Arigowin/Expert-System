@@ -40,7 +40,14 @@ def logic_xor(val, fact, dictionary):
     if str(td.v_true) in val:
 
         fact_false = fact[1] if int(val[0]) is td.v_true else fact[0]
-        rlt = modify_dict(fact_false, td.v_false, dictionary, fact_false)
+
+        print(fact_false in [elt for elt in dictionary if dictionary[elt][1] is not td.q_unused])
+        if fact_false not in [elt for elt in dictionary if dictionary[elt][1] is not td.q_unused]:
+            rlt = modify_dict(fact_false, td.v_false, dictionary, fact_false)
+        else:
+            rlt = modify_dict(fact_false, td.v_undef, dictionary, fact_false)
+            print("return undef")
+            return td.v_undef
 
         return rlt if rlt is not None else td.v_true
 
