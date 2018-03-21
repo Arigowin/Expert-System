@@ -7,11 +7,11 @@ for i in range(100):
     process = Popen(["python3", "main.py", "tests/test_xorcdt.txt"], stdout=PIPE)
     (ret, err) = process.communicate()
     exit_code = process.wait()
-    if (str(ret).find("[A:[1, 2, 2]]") == -1 or
-        str(ret).find("[B:[1, 1, 2]]") == -1 or
-        str(ret).find("[C:[1, 1, 2]]") == -1 or
+    if (str(ret).find("[A:[0, 2, 0]]") == -1 or
+        str(ret).find("[B:[0, 1, 0]]") == -1 or
+        str(ret).find("[C:[0, 1, 0]]") == -1 or
         str(ret).find("[D:[1, 0, 3]]") == -1 or
-        str(ret).find("[E:[3, 1, 2]]") == -1 or
+        str(ret).find("[E:[2, 1, 2]]") == -1 or
         str(ret).find("[F:[0, 0, 0]]") == -1 or
         str(ret).find("[G:[0, 0, 0]]") == -1 or
         str(ret).find("[H:[0, 0, 0]]") == -1 or

@@ -22,10 +22,13 @@ class _BNode:
         self.children = []
 
         if self.btype is Btype.CDT:
-            self.value = self.rule.cdt.solver(dico)
+            self.value = self.get_value_cdt_solver(dico)
         else:
             self.value = dico[query][0]
 
+    def get_value_cdt_solver(self, dico):
+        self.value = self.rule.cdt.solver(dico)
+        return self.value
 
 class Btree:
     """ """
@@ -82,7 +85,7 @@ class Btree:
                    ret_cdt = self._recu(dico, rule_lst, child_node, prev_rule)
                    print(" -- DEPIL CDT --")
 
-           return curr_bnode.rule.cdt.solver(dico)
+           curr_bnode.get_value_cdt_solver(dico)
 
         return val
 
@@ -111,31 +114,36 @@ class Btree:
                     print(" -- DEPIL CC --", ret_recu)
                     needed_rule[rule] = ret_recu
 
-            for rule in needed_rule:
+            for node in curr_bnode.children:
 
-                print("in 2nd for", rule.expr, needed_rule[rule], rule.prio)
-                if needed_rule[rule] is td.v_true:
+                print("in 2nd for", node.rule.expr)
+                if node.value is td.v_true:
 
-                    val_cc = rule.cc.solver(dico, query, rule.prio)
-                    #print("VAL CC", query,  val_cc, dico[query][2])
-                    rule.used.append(query)
+                    val_cc = node.rule.cc.solver(dico, query, node.rule.prio)
+                    print("VAL CC", query,  val_cc, dico[query][2])
+                    node.rule.used.append(query)
 
                     if ((val_cc is td.v_undef or val_cc < 0)
-                         and ('^' in rule.cc.cc or '|' in rule.cc.cc)
+                         and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc)
                          or dico[query][2] == -1):
 
-                        cc_lst = rule.cc_lst if rule.cc_lst[0] is not query else rule.cc_lst[::-1]
-                        cc_lst.remove(query)
+                        print("IN VAL CC IF")
+                        cc_lst = (node.rule.cc_lst if node.rule.cc_lst[0]
+                                                    is not query
+                                  else node.rule.cc_lst[::-1])
+                        print("IN VAL CC IF", cc_lst)
 
+                        cust_rule_lst = [rule for rule in rule_lst if rule.expr is not node.rule.expr]
+                        print(node.rule.expr, [rule.expr for rule in cust_rule_lst])
                         for elt in cc_lst:
 
-                            new_tree = Btree(dico, rule_lst, elt)
-                            new_tree.recu_launcher(dico, rule_lst, curr_bnode.rule)
+                            new_tree = Btree(dico, cust_rule_lst, elt)
+                            new_tree.recu_launcher(dico, cust_rule_lst, curr_bnode.rule)
 
-                        if dico[query][0] is not td.v_bugged and rule.prio > dico[query][2]:
-                            dico[query][2] = rule.prio
+                        if dico[query][0] is not td.v_bugged and node.rule.prio > dico[query][2]:
+                            dico[query][2] = node.rule.prio
 
-                        rule.cc.solver(dico, query, rule.prio)
+                        node.rule.cc.solver(dico, query, node.rule.prio)
 
             if len([key for key, value in needed_rule.items() if value is td.v_undef]):
                 ret = self._node_checking(dico, list(map(list, needed_rule.items())), curr_bnode)
@@ -177,17 +185,18 @@ class Btree:
             print(child.query)
 
             if child.btype is Btype.CDT and child.value is td.v_undef:
-                val = child.rule.cdt.solver(dico)
-                if val and val == child.value:
+
+                val = child.value
+                child.get_value_cdt_solver(dico)
+
+                if val == child.value:
                     self._tree_skimming(dico, child)
+                if child.value is td.v_true:
+                    child.rule.cc.solver(dico, query, rule.prio)
 
             elif child.btype is Btype.CC and child.value is td.v_undef:
                 print("child rule  (%s)" % child.rule)
                 self._tree_skimming(dico, child)
-                #if dico[child.query][0] is td.v_undef or dico[child.query][2] < child.rule.prio:
-                #    child.rule.cc.solver(dico, child.query, child.rule.prio)
-                #    if dico[child.query][0] == child.value:
-                #        self._tree_skimming(dico, child)
 
 
     def _new_node(self, dico, btype, rule=None, query=None, tree=None):

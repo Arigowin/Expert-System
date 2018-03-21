@@ -1,0 +1,10 @@
+A => !G
+A + B => X ^ E
+X | F => C | G
+D ^ H => J
+J => H
+C => D + E 
+
+=DAX
+
+?J

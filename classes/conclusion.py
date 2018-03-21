@@ -250,13 +250,14 @@ class Conclusion:
             cust_ret(ret) if ret is not None else None
             #if ret is not None:
             #    return ret
-            val = inv_rlt
+            # val = inv_rlt
+            val = wanted
 
         else:
             val = rpolish_lst[1]
 
 
-        if int(val) == int(wanted):
+        if int(val) != int(wanted):
             return error(-6)
 
         return val
