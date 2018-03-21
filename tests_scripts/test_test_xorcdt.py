@@ -11,7 +11,7 @@ for i in range(100):
         str(ret).find("[B:[1, 1, 2]]") == -1 or
         str(ret).find("[C:[1, 1, 2]]") == -1 or
         str(ret).find("[D:[1, 0, 3]]") == -1 or
-        str(ret).find("[E:[0, 1, 2]]") == -1 or
+        str(ret).find("[E:[3, 1, 2]]") == -1 or
         str(ret).find("[F:[0, 0, 0]]") == -1 or
         str(ret).find("[G:[0, 0, 0]]") == -1 or
         str(ret).find("[H:[0, 0, 0]]") == -1 or
