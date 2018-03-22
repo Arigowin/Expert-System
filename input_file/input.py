@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import string
+import argparse
 
 import tools.functions as tf
 from handle_expression.expression import create_rule
@@ -52,6 +53,49 @@ def parse(filename, dictionary):
     return dictionary, rules
 
 
+def parse_arg():
+    """ """
+
+    parser = argparse.ArgumentParser()
+
+    # Fixed argument
+    parser.add_argument("file", type=str,
+                        help="input file : it will contain a list of rules, "
+                             "then a list of initial facts, "
+                             "then a list of queries.")
+
+    # Optional argument
+    parser.add_argument("-v", "--visualisation",
+                        help="display regular visualisation",
+                        action="store_true")
+    parser.add_argument("-d", "--dictionary",
+                        help="show filled dictionary at the end of the program",
+                        action="store_true")
+
+    parser.add_argument("-c", "--color",
+                        help="display colorized visualisation",
+                        action="store_true")
+
+    args = parser.parse_args()
+
+    if args.dictionary:
+        print("dictionary turned on")  # Create global variable for store it
+
+    if args.visualisation:
+        print("visualisation turned on")  # Create global variable for store it
+
+    if args.color:
+        print("color turned on")  # Create global variable for store it
+
+    if os.path.isfile(args.file):
+        print(args.file)
+        return args.dictionary, args.visualisation, args.color, args.file
+
+    print("EXPERT SYSTEM - Error: File not found or it's not a file")
+    parser.print_help()
+    sys.exit()
+
+
 def get_file():
     """ """
 
@@ -76,10 +120,12 @@ def get_file():
 def main_input():
     """ """
 
-    filename = get_file()
+    # filename = get_file()
+    #
+    # if not filename:
+    #     return None
 
-    if not filename:
-        return None
+    arg_d, arg_v, arg_c, filename = parse_arg()
 
     dictionary = dict((letter, [0, 0, 0]) for letter in string.ascii_uppercase)
     dictionary, rules = parse(filename, dictionary)
