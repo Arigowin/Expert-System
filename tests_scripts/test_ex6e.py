@@ -36,5 +36,5 @@ for i in range(100):
         print("ET NOP!")
         print(ret)
         break
-    print(i)
+    print("%d " % i, end='')
 

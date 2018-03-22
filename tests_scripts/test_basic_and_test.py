@@ -1,7 +1,7 @@
 import os
 from subprocess import Popen, PIPE
 
-print(__file__)
+print("\n", __file__)
 for i in range(100):
     process = Popen(["python3", "main.py", "tests/basic_and_test.txt"], stdout=PIPE)
     (ret, err) = process.communicate()
@@ -35,5 +35,6 @@ for i in range(100):
         print("ET NOP!")
         print(ret)
         break
-    print(i)
+    print("%d " % i, end='')
+
 

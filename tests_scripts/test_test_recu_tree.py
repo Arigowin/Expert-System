@@ -1,5 +1,5 @@
 import os
-print(__file__)
+print("\n", __file__)
 from subprocess import Popen, PIPE
 
 
@@ -36,5 +36,5 @@ for i in range(100):
         print("ET NOP!")
         print(ret)
         break
-    print(i)
+    print("%d " % i, end='')
 
