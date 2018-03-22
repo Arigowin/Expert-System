@@ -5,10 +5,11 @@ def error_tbl(code, msg=""):
     """ set an error table to be called by the error handler to get the correct
     error messages and return
 
-    In the folowing table:
+    In the following table:
         key: error code
         value[0]: error message
         value[1]: exit boolean
+
     """
 
     error_tbl = {# rule inconstitiency but priority say we modify

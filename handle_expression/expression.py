@@ -61,4 +61,3 @@ def handle_iif(expr, split_expr, dictionary):
     rules.append(Rule(expr, [not_cc, symb, not_cdt], dictionary))
 
     return rules
-

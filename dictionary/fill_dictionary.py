@@ -3,7 +3,7 @@ from error.error import error
 
 
 def init_dictionary(init, query, dictionary):
-    """ create an empty dictionary and fill in the initial queries and values"""
+    """ create an empty dictionary and fill in the initial queries and values """
 
     for elt in init:
         dictionary[elt][0] = td.v_true
@@ -56,4 +56,3 @@ def modify_dict(elt, value, dictionary, query, prio=td.m_modif):
         return error(-5)
 
     return None
-

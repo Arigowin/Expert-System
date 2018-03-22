@@ -22,9 +22,10 @@ class Rule:
         _check_syntax(self, split_line)
         _check_regex(self, regex, str)
         _check_cond_recu(self, regex, strm lmodif)
+
     """
 
-    def __init__(self, expr, split_line, dictionary):
+    def __init__(self, expr, split_line, dic):
 
         self.expr = expr
         self.used = []
@@ -33,7 +34,7 @@ class Rule:
 
         self.cdt = Condition(split_line[0])
         self.symb = split_line[1]
-        self.cc = Conclusion(split_line[2], dictionary)
+        self.cc = Conclusion(split_line[2], dic)
 
         self.cdt_lst = [fact for fact in self.cdt.cdt if fact.isupper()]
         self.cc_lst = [fact for fact in self.cc.cc if fact.isupper()]

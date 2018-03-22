@@ -16,4 +16,3 @@ if __name__ == "__main__":
             pouet = new_tree.recu_launcher(dictionary, expr_lst)
 
     print_dict(dictionary)
-

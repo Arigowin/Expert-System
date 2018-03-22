@@ -9,6 +9,7 @@ from dictionary.fill_dictionary import init_dictionary
 
 
 def strip_line(line):
+    """ """
 
     if '#' in line:
         line = line[:line.index("#")]
@@ -21,6 +22,7 @@ def strip_line(line):
 
 
 def parse(filename, dictionary):
+    """ """
 
     init = ''
     query = ''
@@ -51,6 +53,7 @@ def parse(filename, dictionary):
 
 
 def get_file():
+    """ """
 
     arg = sys.argv
     nb_arg = len(arg)
@@ -71,6 +74,7 @@ def get_file():
 
 
 def main_input():
+    """ """
 
     filename = get_file()
 
