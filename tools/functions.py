@@ -1,3 +1,6 @@
+import tools.defines as td
+
+
 def usage(error_str=None):
     """ display the expert system program usage """
 
@@ -31,3 +34,18 @@ def print_dict(dictionary):
     for elt in sorted(dictionary):
         print("[%s:%s]" % (elt, dictionary[elt]))
 
+    # for elt in sorted(dictionary):
+    #     value = "True" if dictionary[elt][0] is td.v_true else "False" \
+    #                  if dictionary[elt][0] is td.v_false else "Undefined"
+    #     print("[%s : %s]" % (elt, value))
+
+
+def print_query(dictionary):
+    """ Print the facts query """
+
+    print("Query : ")
+    for elt in sorted(dictionary):
+        if dictionary[elt][1] is td.q_initial:
+            value = "True" if dictionary[elt][0] is td.v_true else "False" \
+                         if dictionary[elt][0] is td.v_false else "Undefined"
+            print("\t%s : %s" % (elt, value))

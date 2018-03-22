@@ -5,6 +5,7 @@ import string
 import argparse
 
 import tools.functions as tf
+import tools.defines as td
 from handle_expression.expression import create_rule
 from dictionary.fill_dictionary import init_dictionary
 
@@ -35,7 +36,6 @@ def parse(filename, dictionary):
         for line in content:
             print(line[:-1])
             rule = strip_line(line)
-            print("in parse rule", rule)
 
             if rule and rule[0] == '=':
                 init += rule[1:]
@@ -71,21 +71,15 @@ def parse_arg():
     parser.add_argument("-d", "--dictionary",
                         help="show filled dictionary at the end of the program",
                         action="store_true")
-
     parser.add_argument("-c", "--color",
                         help="display colorized visualisation",
                         action="store_true")
 
     args = parser.parse_args()
 
-    if args.dictionary:
-        print("dictionary turned on")  # Create global variable for store it
-
-    if args.visualisation:
-        print("visualisation turned on")  # Create global variable for store it
-
-    if args.color:
-        print("color turned on")  # Create global variable for store it
+    td.op_visualisation = args.visualisation
+    td.op_dictionary = args.dictionary
+    td.op_color = args.color
 
     if os.path.isfile(args.file):
         print(args.file)
@@ -96,25 +90,25 @@ def parse_arg():
     sys.exit()
 
 
-def get_file():
-    """ """
-
-    arg = sys.argv
-    nb_arg = len(arg)
-
-    if nb_arg == 1:
-        tf.usage()
-        sys.exit()
-
-    elif nb_arg > 2:
-        tf.usage()
-        sys.exit()
-
-    if not os.path.isfile(arg[1]):
-        tf.usage()
-        sys.exit()
-
-    return arg[1]
+# def get_file():
+#     """ """
+#
+#     arg = sys.argv
+#     nb_arg = len(arg)
+#
+#     if nb_arg == 1:
+#         tf.usage()
+#         sys.exit()
+#
+#     elif nb_arg > 2:
+#         tf.usage()
+#         sys.exit()
+#
+#     if not os.path.isfile(arg[1]):
+#         tf.usage()
+#         sys.exit()
+#
+#     return arg[1]
 
 
 def main_input():

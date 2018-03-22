@@ -43,6 +43,7 @@ class Conclusion:
 
         #print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.rpolish))
         rpolish_cpy = self.rpolish
+        print("rp cpy 1 ", rpolish_cpy)
 
         rlt = self._recu_solver(dic, rpolish_cpy, td.v_true, query, symb)
         #print("CONCLUSION last rlt : ", rlt)
@@ -56,8 +57,11 @@ class Conclusion:
 
         rpolish_lst = []
 
+        print("if suspect ", get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1)
         if get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1:
+
             rpolish_lst = self._split_rpolish(rpolish_cpy)
+            print("rpolish_lst", rpolish_lst)
 
         elif rpolish_cpy[0] is '!':
             rpolish_lst = ['!', rpolish_cpy[1:]]
@@ -268,6 +272,7 @@ class Conclusion:
 
         if get_first_index(td.Symbols[:-1], rpolish_cpy[1:]) is -1:
 
+            print("rp cpy [%s] s-1[%s] rp1[%s]" % (rpolish_cpy, td.Symbols[:-1], rpolish_cpy[1:]))
             match = re.match("([+|^])(!?[A-Z0-2])(!?[A-Z0-2])", rpolish_cpy)
             if match.lastindex == 3:
                 return [match.group(1), match.group(2), match.group(3)]
@@ -278,6 +283,7 @@ class Conclusion:
         rpolish_lst = [rpolish_cpy[0]]
         b, index = False, -1
         for i, elt in enumerate(rpolish_cpy[1:]):
+            print("INDEX {%d} - b:{%s} - rp[index]:{%s}" % (i + 1, b, rpolish_cpy[i + 1]))
 
             if elt in "^|+" and b is True:
                 index = i + 1

@@ -19,3 +19,7 @@ m_initial = 3
 
 Symbols = "^|+!"
 Error = -1
+
+op_visualisation = False
+op_dictionary = False
+op_color = False
