@@ -29,6 +29,7 @@ class Conclusion:
 
     """
 
+    __slots__ = "cc", "rpolish"
 
     def __init__(self, cc, dic):
 

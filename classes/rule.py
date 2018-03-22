@@ -25,6 +25,8 @@ class Rule:
 
     """
 
+    __slots__ = "expr", "used", "cdt", "symb", "cc", "cdt_lst", "cc_lst", "prio"
+
     def __init__(self, expr, split_line, dic):
 
         self.expr = expr

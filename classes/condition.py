@@ -25,6 +25,8 @@ class Condition:
 
     """
 
+    __slots__ = "cdt", "polish_rule", "pmodif"
+
     def __init__(self, cdt):
         self.cdt = cdt
         self.polish_rule = get_polish_notation(cdt)
