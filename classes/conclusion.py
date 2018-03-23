@@ -15,12 +15,12 @@ class Conclusion:
 
     Variables:
         cc
-        rpolish
+        r_rpn
 
     Functions:
         solver
         _recu_solver
-        _split_rpolish
+        _split_r_rpn
         _fill_dict
         _logic_not
         _logic_and
@@ -29,278 +29,298 @@ class Conclusion:
 
     """
 
-    __slots__ = "cc", "rpolish"
+    __slots__ = "cc", "r_rpn"
 
     def __init__(self, cc, dic):
 
         self.cc = cc
-        self.rpolish = get_polish_notation(cc)[::-1]
+        self.r_rpn = get_polish_notation(cc)[::-1]
         self._fill_dict(dic)
 
 
     def solver(self, dic, query, symb):
         """ call the recursive solver function """
 
-        #print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.rpolish))
-        rpolish_cpy = self.rpolish
-        print("rp cpy 1 ", rpolish_cpy)
+        print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.r_rpn))
+        r_rpn_cpy = self.r_rpn
 
-        rlt = self._recu_solver(dic, rpolish_cpy, td.v_true, query, symb)
-        #print("CONCLUSION last rlt : ", rlt)
+        rlt = self._recu_solver(dic, r_rpn_cpy, td.v_true, query, symb)
 
         return rlt
 
 
     @enable_ret
-    def _recu_solver(self, dic, rpolish_cpy, wanted, query, symb):
+    def _recu_solver(self, dic, r_rpn_cpy, wanted, query, symb):
         """ recursive function to call the correct operator function """
 
-        rpolish_lst = []
+        r_rpn_lst = []
+        print("-- RECU SOLVER CC", wanted)
 
-        print("if suspect ", get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1)
-        if get_first_index(td.Symbols[:-1], rpolish_cpy) is not -1:
+        if get_first_index(td.Symbols, r_rpn_cpy) is not -1:
+            r_rpn_lst = self._split_r_rpn(r_rpn_cpy)
 
-            rpolish_lst = self._split_rpolish(rpolish_cpy)
-            print("rpolish_lst", rpolish_lst)
+        elif r_rpn_cpy[0].isupper():
+            #if wanted is td.v_true:
+            ret = modify_dict(r_rpn_cpy[0], wanted, dic, query, symb)
+            cust_ret(ret) if ret is not None else None
 
-        elif rpolish_cpy[0] is '!':
-            rpolish_lst = ['!', rpolish_cpy[1:]]
-
-        elif rpolish_cpy[0].isupper():
-            if wanted is td.v_true:
-                ret = modify_dict(rpolish_cpy[0], td.v_true, dic, query, symb)
-                #if ret is not None:
-                #    return ret
-                cust_ret(ret) if ret is not None else None
-
-            return get_value_from_dict(rpolish_cpy[0], dic)
+            return get_value_from_dict(r_rpn_cpy[0], dic)
 
         func_tbl = {'^': self._logic_xor,
                     '|': self._logic_or,
                     '+': self._logic_and,
                     '!': self._logic_not}
 
-        if rpolish_cpy[0] in '^|+!':
-            rlt = func_tbl[rpolish_cpy[0]](dic, rpolish_lst, wanted, query, symb)
+        if r_rpn_cpy[0] in '^|+!':
+            rlt = func_tbl[r_rpn_cpy[0]](dic, r_rpn_lst, wanted, query, symb)
 
         else:
-            rlt = get_value_from_dict(rpolish_cpy[0], dic)
+            rlt = get_value_from_dict(r_rpn_cpy[0], dic)
 
         return rlt
 
 
     @enable_ret
-    def _logic_xor(self, dic, rpolish_lst, wanted, query, symb):
+    def _logic_xor(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic XOR in the conclusion of the expression """
 
-        val = [-1, -1]
-        for i, elt in enumerate(rpolish_lst[1:]):
+        print("-- LOGIC XOR CC", wanted)
+        val = fact_to_value(r_rpn_lst[1:], dic)
+
+        if (-1 not in val and ((wanted is td.v_true and val[0] == val[1])
+                or (wanted is td.v_false and val[0] != val[1]))):
+            error(-6)  # new msg 'c'est tout bugge' and return bugged
+
+            elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            ret = modify_dict(elts, td.v_bugged, dic, query, symb)
+            print("BUGGED LOGIC XOR 1")
+
+            return td.v_bugged
+
+        for i, elt in enumerate(r_rpn_lst[1:]):
+
+            to_give = td.v_undef
+            if wanted is not td.v_undef:
+                print("3", val, elt)
+                other_val = val[0 if i == 1 else 1]
+
+                to_give = (td.v_false if wanted == other_val
+                            and -1 not in val
+                        else td.v_true if val.count(-1) != 2
+                            and -1 not in val
+                        else td.v_undef)
+
+                wanted == (other_val and -1 not in val,
+                        val.count(-1) != 2 and -1 not in val)
 
             if len(elt) > 1:
-                val[i] = self._recu_solver(dic, elt, wanted, query, symb)
-            else:
-                val[i] = get_value_from_dict(elt, dic)
-
-        if -1 in val:
-            return td.Error
-
-        if wanted is td.v_true:
-
-            if val[0] != val[1] and td.v_undef not in val:
-                return wanted
-            if val[0] == val[1] and val[0] is not td.v_undef:
-                return td.Error
-            if val[0] == val[1]:
-                ret = modify_dict(rpolish_lst[1], td.v_undef, dic, query, symb)
-                #if ret is not None:
-                #    return ret
-                cust_ret(ret) if ret is not None else None
-
-                ret = modify_dict(rpolish_lst[2], td.v_undef, dic, query, symb)
-                return td.v_undef if ret is None else ret
-
-            melt = 1 if val[0] is td.v_undef else 2
-            value = td.v_false if td.v_true in val else td.v_true
-            ret = modify_dict(rpolish_lst[melt], value, dic, query, symb)
-            #if ret is not None:
-            #    return ret
-            cust_ret(ret) if ret is not None else None
-
-            return wanted
-
-        if wanted is td.v_false:
-            if val[0] != val[1] and td.v_undef not in val:
-                return td.Error
-            if val[0] == val[1] and td.v_undef not in val:
-                return wanted
-            if val[0] == val[1] and td.v_undef in val:
-                return td.v_undef
-
-            melt = 1 if val[0] is td.v_undef else 2
-            value = td.v_false if td.v_false in val else td.v_true
-            ret = modify_dict(rpolish_lst[melt], value, dic, query, symb)
-            cust_ret(ret) if ret is not None else None
-            #if ret is not None:
-            #    return ret
-
-            return wanted
-
-
-    @enable_ret
-    def _logic_or(self, dic, rpolish_lst, wanted, query, symb):
-        """ handle the logic OR in the conclusion of the expression """
-
-        val = [-1, -1]
-        for i, elt in enumerate(rpolish_lst[1:]):
-            if len(elt) > 1:
-                val[i] = self._recu_solver(dic, elt, wanted, query, symb)
-            else:
-                val[i] = get_value_from_dict(elt, dic)
-
-        if wanted is td.v_true:
-
-            if td.v_true in val:
-                return td.v_true
-
-            if val.count(td.v_false) == 1:
-
-                if val[0] is td.v_false:
-                    ret = modify_dict(rpolish_lst[2], td.v_true, dic, query, symb)
-                    cust_ret(ret) if ret is not None else None
-                    #if ret is not None:
-                    #    return ret
-
-                else:
-                    ret = modify_dict(rpolish_lst[1], td.v_true, dic, query, symb)
-                    cust_ret(ret) if ret is not None else None
-                    #if ret is not None:
-                    #    return ret
-
-                return td.v_true
-
-            if val.count(td.v_undef) == 2:
-                ret = modify_dict(rpolish_lst[1], td.v_undef, dic, query, symb)
-                cust_ret(ret) if ret is not None else None
-                #if ret is not None:
-                #    return ret
-
-                rlt = modify_dict(rpolish_lst[2], td.v_undef, dic, query, symb)
-                cust_ret(ret) if ret is not None else None
-                #if ret is not None:
-                #    return ret
-
-                return td.v_undef
-
-            if val.count(td.v_false) == 2:
-                return td.Error
-
-        if wanted is td.v_false:
-            if td.v_true in val:
-                return td.Error
-
-            val = [-1, -1]
-            for i, elt in enumerate(rpolish_lst[1:]):
-                rlt = modify_dict(elt, td.v_false, dic, query, symb)
-                val[i] = rlt if rlt is not None else dic[elt][0]
-
-            return wanted if val.count(wanted) == 2 else val[0 if val[0] < 0 else 1]
-
-
-    def _logic_and(self, dic, rpolish_lst, wanted, query, symb):
-        """ handle the logic AND in the conclusion of the expression """
-
-        val = [-1, -1]
-        if len(rpolish_lst[1]) == 1 and len(rpolish_lst[2]) == 1:
-
-            for i, fact in enumerate(rpolish_lst[1:]):
-
-                if fact.isupper():
-                    rlt = modify_dict(fact, wanted, dic, query, symb)
-                    val[i] = rlt if rlt is not None else dic[fact][0]
-
-                elif rpolish_lst[i + 1] != wanted:
-                    val[i] = error(-6)
-                    ### TO DO !! return check_error(dic, , wanted)
-
-            return wanted if val.count(wanted) == 2 else val[0 if val[0] < 0 else 1]
-
-        val = [-1, -1]
-        for i, elt in enumerate(rpolish_lst[1:]):
-
-            if len(elt) > 1:
-                val[i] = self._recu_solver(dic, elt, wanted, query, symb)
+                print("2", val, elt, to_give)
+                val[i] = self._recu_solver(dic, elt, to_give, query, symb)
+                print("4", val, elt)
 
             elif elt.isupper():
-                rlt = modify_dict(elt, wanted, dic, query, symb)
-                val[i] = rlt if rlt is not None else dic[elt][0]
+                print("1", val, elt, to_give)
+                ret = modify_dict(elt, to_give, dic, query, symb)
+                cust_ret(ret) if ret is not None else None
+                val[i] = to_give
+
+        not_wanted = (td.v_true if wanted is td.v_false
+                    else td.v_false if wanted is td.v_true
+                    else td.v_undef)
+
+        if (val.count(td.v_undef) == 0
+                and ((wanted is td.v_true and val[0] != val[1])
+                    or (wanted is td.v_false and val[0] == val[1]))):
+            return wanted
+        elif (val.count(td.v_undef) == 0
+                and ((wanted is td.v_true and val[0] == val[1])
+                    or (wanted is td.v_false and val[0] != val[1]))):
+            error(-6)  # new msg 'c'est tout bugge' and return bugged
+
+            elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            ret = modify_dict(elts, td.v_bugged, dic, query, symb)
+            print("BUGGED LOGIC XOR 2")
+
+            return td.v_bugged
+        elif (val.count(td.v_undef) == 1):
+            print("--------------------------------------------------------------------- TOTO")
+            to_give = (td.v_true if (wanted is td.v_true and td.v_false in val)
+                or (wanted is td.v_false and td.v_true in val) else td.v_false)
+
+            ret = modify_dict(r_rpn_lst[1 + val.index(td.v_undef)],
+                              to_give,
+                              dic,
+                              query,
+                              symb)
+
+            return wanted if ret is None else ret
+
+        return td.v_undef
+
+
+    # OR -- OK
+    @enable_ret
+    def _logic_or(self, dic, r_rpn_lst, wanted, query, symb):
+        """ handle the logic OR in the conclusion of the expression """
+
+        print("-- LOGIC OR CC", wanted)
+
+        val = fact_to_value(r_rpn_lst[1:], dic)
+        if ((wanted is td.v_false and td.v_true in val)
+                or (wanted is td.v_true and val.count(td.v_false) == 2)):
+            error(-6)  # new msg 'c'est tout bugge' and return bugged
+
+            elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            ret = modify_dict(elts, td.v_bugged, dic, query, symb)
+
+            return td.v_bugged
+
+        for i, elt in enumerate(r_rpn_lst[1:]):
+
+            to_give = td.v_undef
+            if wanted is not td.v_undef:
+                other_val = val[0 if i == 1 else 1]
+
+                to_give = (td.v_true if wanted is td.v_true
+                                     and other_val is td.v_false
+                        else td.v_false if wanted is td.v_false else td.v_undef)
+                print("LOGIC OR FOR TO GIVE", to_give, val)
+
+            if len(elt) > 1:
+                val[i] = self._recu_solver(dic, elt, to_give, query, symb)
+
+            elif elt.isupper():
+                ret = modify_dict(elt, to_give, dic, query, symb)
+                cust_ret(ret) if ret is not None else None
+                val[i] = to_give
+
+        return (wanted if val.count(wanted) == 2
+                     or (val.count(wanted) == 1 and wanted is td.v_true)
+                else td.v_undef)
+
+
+    # AND -- OK
+    def _logic_and(self, dic, r_rpn_lst, wanted, query, symb):
+        """ handle the logic AND in the conclusion of the expression """
+
+        print("-- LOGIC AND CC", wanted)
+
+        val = fact_to_value(r_rpn_lst[1:], dic)
+        if ((wanted is td.v_true and td.v_false in val)
+          or (wanted is td.v_false and val.count(td.v_true) == 2)):
+            error(-6)  # new msg 'c'est tout bugge' and return bugged
+
+            print(" -- ", val, wanted, r_rpn_lst)
+
+            not_wanted = (td.v_true if wanted is td.v_false
+                        else td.v_false if wanted is td.v_true
+                        else td.v_undef)
+
+            tmp = ''.join(elt for i, elt in enumerate(r_rpn_lst[1:])
+                            if val[i] is not_wanted)
+
+            bug = set([elt for elt in tmp if elt.isupper()])
+            ret = modify_dict(bug, td.v_bugged, dic, query, symb)
+
+            und = set([elt for elt in tmp if elt.isupper() and elt not in bug])
+            ret = modify_dict(und, td.v_undef, dic, query, symb)
+
+            return td.v_bugged
+
+        for i, elt in enumerate(r_rpn_lst[1:]):
+
+            if len(elt) > 1:
+                val[i] = self._recu_solver(dic, elt, wanted, query, symb)
 
             else:
-                val[i] = int(elt)
+                value = (td.v_true if wanted is td.v_true
+                        else td.v_false if wanted is td.v_false
+                            and val[0 if i == 1 else 1] is td.v_true
+                        else td.v_undef)
 
-        return wanted if val.count(wanted) == 2 else val[0 if val[0] < 0 else 1]
+                ret = modify_dict(elt, value, dic, query, symb)
+                cust_ret(ret) if ret is not None else None
 
+        return wanted
 
     @enable_ret
-    def _logic_not(self, dic, rpolish_lst, wanted, query, symb):
+    def _logic_not(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic NOT in the conclusion of the expression """
 
-        inv_rlt = op.logic_not(wanted)
+        print("-- LOGIC NOT CC", wanted)
+        inv_rlt = op.logic_not(wanted) if wanted < 2 else td.v_undef
 
-        if len(rpolish_lst[1]) > 1:
-            val = self._recu_solver(dic, rpolish_lst[1], inv_rlt, query, symb)
+        if len(r_rpn_lst[1]) > 1:
+            val = self._recu_solver(dic, r_rpn_lst[1], inv_rlt, query, symb)
+            val = td.v_true if val == td.v_false else td.v_false if val == td.v_true else val
 
-        elif rpolish_lst[1].isupper():
+        elif r_rpn_lst[1].isupper():
 
-            ret = modify_dict(rpolish_lst[1], inv_rlt, dic, query, symb)
-            cust_ret(ret) if ret is not None else None
-            #if ret is not None:
-            #    return ret
-            # val = inv_rlt
-            val = wanted
+            if dic[r_rpn_lst[1]][2] >= symb:
+                val = dic[r_rpn_lst[1]][0] if dic[r_rpn_lst[1]][0] is not td.v_undef else inv_rlt
+                ret = modify_dict(r_rpn_lst[1], val, dic, query, symb)
+                cust_ret(ret) if ret is not None else None
+
+                val = (td.v_true if val is td.v_false
+                        else td.v_false if val is td.v_true else td.v_undef)
+
+            else:
+                ret = modify_dict(r_rpn_lst[1], inv_rlt, dic, query, symb)
+                cust_ret(ret) if ret is not None else None
+                val = wanted
 
         else:
-            val = rpolish_lst[1]
+            val = r_rpn_lst[1]
 
-        if int(val) != int(wanted):
-            return error(-6)
+        if int(val) != int(wanted) and wanted is not td.v_undef:
+            error(-6)  # new msg 'c'est tout bugge' and return bugged
+
+            elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
+            ret = modify_dict(elts, td.v_bugged, dic, query, symb)
+            return td.v_bugged
 
         return val
 
 
-    def _split_rpolish(self, rpolish_cpy):
+    def _split_r_rpn(self, r_rpn_cpy):
         """ """
 
-        if get_first_index(td.Symbols[:-1], rpolish_cpy[1:]) is -1:
+        print("RP SPLIT RPO", r_rpn_cpy)
+       # if get_first_index(td.Symbols[:-1], r_rpn_cpy[1:]) != -1:
+       #     match = re.match("([+|^])(!?[A-Z0-2])(!?[A-Z0-2])", r_rpn_cpy)
+       #     if match.lastindex == 3:
+       #         return [match.group(1), match.group(2), match.group(3)]
 
-            print("rp cpy [%s] s-1[%s] rp1[%s]" % (rpolish_cpy, td.Symbols[:-1], rpolish_cpy[1:]))
-            match = re.match("([+|^])(!?[A-Z0-2])(!?[A-Z0-2])", rpolish_cpy)
-            if match.lastindex == 3:
-                return [match.group(1), match.group(2), match.group(3)]
+        op, index = [], 0
 
-        if rpolish_cpy[0] is '!' and not rpolish_cpy[1].isupper():
-            return [rpolish_cpy[0], rpolish_cpy[1:]]
+        for i, elt in enumerate(r_rpn_cpy):
 
-        rpolish_lst = [rpolish_cpy[0]]
-        b, index = False, -1
-        for i, elt in enumerate(rpolish_cpy[1:]):
-            print("INDEX {%d} - b:{%s} - rp[index]:{%s}" % (i + 1, b, rpolish_cpy[i + 1]))
+            while op and op[-1] == 0:
+                op.remove(op[-1])
+                op[-1] -= 1
 
-            if elt in "^|+" and b is True:
-                index = i + 1
-                break
+            if elt in "^|+":
+                op.append(2)
+            elif elt is '!':
+                op.append(1)
+            else:
+                op[-1] -= 1
 
-            elif elt.isupper() or elt.isdigit():
-                b = True
+            if sum(op) == 0:
+                index = i
 
-        if index is not -1:
-            rpolish_lst.extend((rpolish_cpy[1:index], rpolish_cpy[index:]))
+        if len(op) > 1 and sum(op) / (len(op) - 1) == 1:
+            index = get_first_index("^|+!", r_rpn_cpy, op.count(1), False)
 
-        return rpolish_lst
+        return ([r_rpn_cpy[0], r_rpn_cpy[1:]] if r_rpn_cpy[0] == '!'
+                else [r_rpn_cpy[0], r_rpn_cpy[1:index], r_rpn_cpy[index:]])
+
+        return r_rpn_lst
 
 
     def _fill_dict(self, dic):
         """ """
 
-        for elt in self.rpolish:
+        for elt in self.r_rpn:
             if elt.isupper() and dic[elt][2] is td.m_default and dic[elt][1] is not td.q_initial:
                 dic[elt][1] = td.q_needed

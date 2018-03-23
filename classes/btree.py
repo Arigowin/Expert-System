@@ -152,9 +152,13 @@ class Btree:
                     print("VAL CC", query,  val_cc, dic[query][2])
                     node.rule.used.append(query)
 
+                    print("TOTO ", (val_cc is td.v_undef or val_cc < 0),
+                         ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc),
+                         dic[query][2] == -1)
+
                     if ((val_cc is td.v_undef or val_cc < 0)
                          and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc)
-                         or dic[query][2] == -1):
+                         or dic[query][2] is td.m_nset):
 
                         print("IN VAL CC IF")
                         cc_lst = (node.rule.cc_lst if node.rule.cc_lst[0]
@@ -166,6 +170,7 @@ class Btree:
                         print(node.rule.expr, [rule.expr for rule in cust_rule_lst])
                         for elt in cc_lst:
 
+                            print("--------------------------------------------- NEW TREE")
                             new_tree = Btree(dic, cust_rule_lst, elt)
                             new_tree.recu_launcher(dic, cust_rule_lst, curr_bnode.rule)
 

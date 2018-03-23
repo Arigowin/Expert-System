@@ -37,7 +37,7 @@ def error(code, msg=""):
 
     err_lst = error_tbl(abs(code), msg)
 
-    print("EXPERT SYSTEM - Error: %s" % err_lst[0])
+    print("EXPERT SYSTEM - %d - Error: %s" % (abs(code), err_lst[0]))
 
     if err_lst[1]:
         sys.exit(abs(code))

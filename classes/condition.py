@@ -10,7 +10,7 @@ class Condition:
 
     Variables:
         cdt
-        polish_rule
+        rpn_rule
         pmodif
 
     Function:
@@ -25,17 +25,17 @@ class Condition:
 
     """
 
-    __slots__ = "cdt", "polish_rule", "pmodif"
+    __slots__ = "cdt", "rpn_rule", "pmodif"
 
     def __init__(self, cdt):
         self.cdt = cdt
-        self.polish_rule = get_polish_notation(cdt)
+        self.rpn_rule = get_polish_notation(cdt)
 
 
     def solver(self, dic):
         """ find the result of the given RPN expression """
 
-        self.pmodif = self.polish_rule
+        self.pmodif = self.rpn_rule
         self._recu_solver(dic)
 
         return int(self.pmodif)

@@ -13,3 +13,7 @@ A => R ^ ((S + T) | (!U))
 =AR
 
 ?ABCDEFGHIJKLMNOPQRSTUVWXYZ
+# true  : ABCIJLOPQR
+# false : KFG
+# undef : DEHSTU
+# bugged: 

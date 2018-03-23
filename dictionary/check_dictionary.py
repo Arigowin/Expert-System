@@ -36,10 +36,12 @@ def get_value_from_dict(fact, dictionary):
 def fact_to_value(expr, dictionary):
     """ modify 'expr' by getting values from dictionary """
 
+    lst = []
     for i, elt in enumerate(expr):
 
-        if (elt.isupper() and dictionary[elt][2] > td.m_default
-          and dictionary[elt][0] is not td.v_undef):
-            expr[i] = str(dictionary[elt][0])
+        if elt[0].isupper():
+            lst.append(get_value_from_dict(elt, dictionary))
+        else:
+            lst.append(-1)
 
-    return ''.join(expr)
+    return lst
