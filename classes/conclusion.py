@@ -12,20 +12,23 @@ from tools.custom_return import enable_ret, cust_ret
 
 class Conclusion:
     """
+    the class that handle the conclusion side of the expression
 
     Variables:
-        cc
-        r_rpn
 
-    Functions:
-        solver
-        _recu_solver
-        _split_r_rpn
-        _fill_dict
-        _logic_not
-        _logic_and
-        _logic_or
-        _logic_xor
+        cc     variable holding the conclusion side of the expression
+        r_rpn  custum 'reverse reverse polish notation' to ease conclusion solve
+
+    Methods:
+
+        solver        public method to launch the conclusion solver method
+        _recu_solver  recursive method to call the correct operator method
+        _split_r_rpn  split our custum RPN into subgroups
+        _fill_dict    call the modify_dict method for all the given facts
+        _logic_not    logic not handler for the conclusion side
+        _logic_and    logic and handler for the conclusion side
+        _logic_or     logic or handler for the conclusion side
+        _logic_xor    logic xor handler for the conclusion side
 
     """
 
@@ -39,7 +42,7 @@ class Conclusion:
 
 
     def solver(self, dic, query, symb):
-        """ call the recursive solver function """
+        """ public method to launch the conclusion solver function """
 
         print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.r_rpn))
         r_rpn_cpy = self.r_rpn
@@ -93,7 +96,6 @@ class Conclusion:
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
-            print("BUGGED LOGIC XOR 1")
 
             return td.v_bugged
 
@@ -101,7 +103,7 @@ class Conclusion:
 
             to_give = td.v_undef
             if wanted is not td.v_undef:
-                print("3", val, elt)
+                #print("logic xor 1", val, elt)
                 other_val = val[0 if i == 1 else 1]
 
                 to_give = (td.v_false if wanted == other_val
@@ -114,12 +116,12 @@ class Conclusion:
                         val.count(-1) != 2 and -1 not in val)
 
             if len(elt) > 1:
-                print("2", val, elt, to_give)
+                #print("logic xor 2", val, elt, to_give)
                 val[i] = self._recu_solver(dic, elt, to_give, query, symb)
-                print("4", val, elt)
+                #print("logic xor 3", val, elt)
 
             elif elt.isupper():
-                print("1", val, elt, to_give)
+                #print("logic xor 4", val, elt, to_give)
                 ret = modify_dict(elt, to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
                 val[i] = to_give
@@ -139,11 +141,10 @@ class Conclusion:
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
-            print("BUGGED LOGIC XOR 2")
+            #print("bugged xor 1")
 
             return td.v_bugged
         elif (val.count(td.v_undef) == 1):
-            print("--------------------------------------------------------------------- TOTO")
             to_give = (td.v_true if (wanted is td.v_true and td.v_false in val)
                 or (wanted is td.v_false and td.v_true in val) else td.v_false)
 
@@ -163,7 +164,7 @@ class Conclusion:
     def _logic_or(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic OR in the conclusion of the expression """
 
-        print("-- LOGIC OR CC", wanted)
+        print("-- LOGIC OR CC -- rule(%s)(%s) wanted(%s) query(%s)" % (self.cc, self.r_rpn, wanted, query))
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
@@ -171,6 +172,7 @@ class Conclusion:
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            print("or cc - in if bugged -- elts(%s) query(%s) list(%s)" %(elts, query, list(r_rpn_lst[1:]) ))
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
@@ -184,7 +186,7 @@ class Conclusion:
                 to_give = (td.v_true if wanted is td.v_true
                                      and other_val is td.v_false
                         else td.v_false if wanted is td.v_false else td.v_undef)
-                print("LOGIC OR FOR TO GIVE", to_give, val)
+                print("or - in for to give", to_give, val)
 
             if len(elt) > 1:
                 val[i] = self._recu_solver(dic, elt, to_give, query, symb)
@@ -210,7 +212,7 @@ class Conclusion:
           or (wanted is td.v_false and val.count(td.v_true) == 2)):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
-            print(" -- ", val, wanted, r_rpn_lst)
+            #print(" -- ", val, wanted, r_rpn_lst)
 
             not_wanted = (td.v_true if wanted is td.v_false
                         else td.v_false if wanted is td.v_true
