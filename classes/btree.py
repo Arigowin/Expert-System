@@ -2,6 +2,7 @@ import tools.defines as td
 from classes.enum import Btype
 from error.error import error
 from tools.custom_return import enable_ret, cust_ret
+from tools.functions import print_dict
 
 
 class _BNode:
@@ -86,7 +87,6 @@ class Btree:
         print(" -- RECU -- ")
 
         if curr_bnode.btype is Btype.CC:
-
             self._node_cc(dic, curr_bnode, rule_lst, prev_rule)
             return dic[curr_bnode.query][0]
 
@@ -100,9 +100,7 @@ class Btree:
 
         val = curr_bnode.value
         if val is td.v_undef:
-
            for fact in curr_bnode.rule.cdt_lst:
-
                if dic[fact][1] < 2:
                    child_node, curr_bnode = self._new_node(dic,
                                                            btype=Btype.CC,
@@ -125,12 +123,10 @@ class Btree:
         query = curr_bnode.query
 
         if dic[query][2] <= 0 or dic[query][0] is td.v_undef:
-
             needed_rule = dict((rule, -1) for rule in rule_lst if
                           query in rule.cc_lst and rule is not prev_rule)
 
             for rule in needed_rule:
-
                 if query not in rule.used:
                     child_node, curr_bnode = self._new_node(dic,
                                                             btype=Btype.CDT,
@@ -152,10 +148,10 @@ class Btree:
                     print("VAL CC", query,  val_cc, dic[query][2])
                     node.rule.used.append(query)
 
-                    print("TOTO ", (val_cc is td.v_undef or val_cc < 0),
+                    print("TOTO  val undef(%s) or/xor in cc(%s) query modif -1(%s)" % ((val_cc is td.v_undef or val_cc < 0),
                          ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc),
-                         dic[query][2] == -1)
-
+                         dic[query][2] == -1))
+                    print_dict(dic)
                     if ((val_cc is td.v_undef or val_cc < 0)
                          and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc)
                          or dic[query][2] is td.m_nset):

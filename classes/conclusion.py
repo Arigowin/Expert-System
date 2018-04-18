@@ -200,8 +200,6 @@ class Conclusion:
                      or (val.count(wanted) == 1 and wanted is td.v_true)
                 else td.v_undef)
 
-
-    # AND -- OK
     def _logic_and(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic AND in the conclusion of the expression """
 
