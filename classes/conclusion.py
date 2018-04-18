@@ -315,8 +315,6 @@ class Conclusion:
         return ([r_rpn_cpy[0], r_rpn_cpy[1:]] if r_rpn_cpy[0] == '!'
                 else [r_rpn_cpy[0], r_rpn_cpy[1:index], r_rpn_cpy[index:]])
 
-        return r_rpn_lst
-
 
     def _fill_dict(self, dic):
         """ """
