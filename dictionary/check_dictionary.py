@@ -35,13 +35,15 @@ def get_value_from_dict(fact, dictionary):
 
 def fact_to_value(expr, dictionary):
     """ modify 'expr' by getting values from dictionary """
-
+    print("fact to val", expr)
     lst = []
     for i, elt in enumerate(expr):
-
+        print("fact to val- before modif", lst)
+        
         if elt[0].isupper():
             lst.append(get_value_from_dict(elt, dictionary))
         else:
             lst.append(-1)
-
+        print("fact to val - after modif", lst)
+            
     return lst

@@ -53,7 +53,7 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
           or (prio == dictionary[elt][2] and dictionary[elt][0] is td.v_undef and value is not td.v_undef)
           or (prio > dictionary[elt][2] and ((value is not td.v_undef and dictionary[elt][2] > 0)
               or dictionary[elt][2] <= 0))):
-
+            print("==== NOT HERE ====")
             dictionary[elt][0] = value
             dictionary[elt][2] = prio if elt is query else td.m_nset
 
@@ -63,14 +63,15 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
         if prio < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef and value is not td.v_undef:
             ret.append(error(-4))
             continue
+            
         if prio == dictionary[elt][2] and dictionary[elt][0] is not td.v_undef and value is not td.v_undef:
             print("BUGGED", prio, dictionary[elt][2], dictionary[elt][0], value)
             dictionary[elt][0] = td.v_bugged
             dictionary[elt][2] = prio
             ret.append(error(-5))
-            continue
+            # continue
 
-        continue
+        # continue
 
     return None if len(ret) == 0 else min(ret)
 
