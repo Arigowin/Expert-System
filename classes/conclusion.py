@@ -98,13 +98,13 @@ class Conclusion:
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
-            
-        for i, elt in enumerate(r_rpn_lst[1:]):
 
+        i = 1
+        while i < 3:
             to_give = td.v_undef
             if wanted is not td.v_undef:
                 #print("logic xor 1", val, elt)
-                other_val = val[0 if i == 1 else 1]
+                other_val = val[0 if i == 2 else 1]
 
                 to_give = (td.v_false if wanted == other_val
                             and -1 not in val
@@ -115,16 +115,22 @@ class Conclusion:
                 wanted == (other_val and -1 not in val,
                         val.count(-1) != 2 and -1 not in val)
 
-            if len(elt) > 1:
+            if len(r_rpn_lst[i]) > 1:
                 #print("logic xor 2", val, elt, to_give)
-                val[i] = self._recu_solver(dic, elt, to_give, query, symb)
+                tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
                 #print("logic xor 3", val, elt)
 
-            elif elt.isupper():
+            elif r_rpn_lst[i].isupper():
                 #print("logic xor 4", val, elt, to_give)
-                ret = modify_dict(elt, to_give, dic, query, symb)
+                ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
-                val[i] = to_give
+                tmp = to_give
+
+            if tmp != val[i - 1]:
+                val[i - 1] = tmp
+                i = 0
+
+            i += 1
 
         not_wanted = (td.v_true if wanted is td.v_false
                     else td.v_false if wanted is td.v_true
@@ -180,7 +186,7 @@ class Conclusion:
         while i < 3:
             to_give = td.v_undef
             if wanted is not td.v_undef:
-                other_val = val[0 if (i - 1) == 1 else 1]
+                other_val = val[0 if i == 2 else 1]
                 to_give = (td.v_true if wanted is td.v_true
                                      and other_val is td.v_false
                         else td.v_false if wanted is td.v_false else td.v_undef)
