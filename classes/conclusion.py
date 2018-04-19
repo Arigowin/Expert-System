@@ -98,6 +98,7 @@ class Conclusion:
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
+            
         for i, elt in enumerate(r_rpn_lst[1:]):
 
             to_give = td.v_undef
@@ -163,7 +164,7 @@ class Conclusion:
     def _logic_or(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic OR in the conclusion of the expression """
 
-        print("-- LOGIC OR CC -- rule(%s)(%s) wanted(%s) query(%s)" % (self.cc, self.r_rpn, wanted, query))
+        # print("-- LOGIC OR CC -- rule(%s)(%s) wanted(%s) query(%s)" % (self.cc, self.r_rpn, wanted, query))
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
@@ -171,41 +172,37 @@ class Conclusion:
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
-            #print("or cc - in if bugged -- elts(%s) query(%s) list(%s)" %(elts, query, list(r_rpn_lst[1:]) ))
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
-        print(">>>>>>>>>> RPN", r_rpn_lst)
-        # for i, elt in enumerate(r_rpn_lst[1:]):
+
         i = 1
         while i < 3:
             to_give = td.v_undef
             if wanted is not td.v_undef:
                 other_val = val[0 if (i - 1) == 1 else 1]
-                print("other val", val, other_val, wanted)
                 to_give = (td.v_true if wanted is td.v_true
                                      and other_val is td.v_false
                         else td.v_false if wanted is td.v_false else td.v_undef)
-            print("or - in for to give", to_give, val)
 
             if len(r_rpn_lst[i]) > 1:
-                # val[i - 1] = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
-                
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
-                print("++++++++++++++++ CC OR -- ret recu", tmp)
-                val[i - 1] = tmp
 
             if len(r_rpn_lst[i]) == 1 and r_rpn_lst[i].isupper():
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
-                val[i - 1] = dic[r_rpn_lst[i]][0]
+                tmp = dic[r_rpn_lst[i]][0]
 
-            print("---------------- rpn", val)
+            if tmp != val[i - 1]:
+                val[i - 1] = tmp
+                i = 0
+
             i += 1
 
         return (wanted if val.count(wanted) == 2
                      or (val.count(wanted) == 1 and wanted is td.v_true)
                 else td.v_undef)
+
 
     def _logic_and(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic AND in the conclusion of the expression """
@@ -247,8 +244,7 @@ class Conclusion:
 
                 ret = modify_dict(elt, value, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
-
-        return wanted
+        return td.v_false if val.count(td.v_false) > 0 else td.v_undef if val.count(td.v_undef) > 0 else td.v_true
 
     @enable_ret
     def _logic_not(self, dic, r_rpn_lst, wanted, query, symb):
