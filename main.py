@@ -7,6 +7,9 @@ from tools.functions import print_dict
 from input_file.input import main_input
 
 
+def check_with_curr_value(rule, dic):
+    
+
 if __name__ == "__main__":
 
     dictionary, expr_lst = main_input()
@@ -18,15 +21,15 @@ if __name__ == "__main__":
 
     print("`````````````````````` END", [fact for fact in dictionary if dictionary[fact][2] == -1])
     input()
-    # if not td.op_dictionary:  # TODO: Remove the NOT because by default do not show dictionary
-    #     print_dict(dictionary)
-    # for elt in [fact for fact in dictionary if dictionary[fact][2] == -1]:
-    #     needed_rule = [rule for rule in expr_lst if elt in rule.cc_lst]
-    #     print(" *** END", needed_rule)
-    #     for rule in needed_rule:
-    #         print("rules to check", rule.expr, rule.cdt.solver(dictionary))
-    #         if rule.cdt.solver(dictionary) is td.v_true:
-    #             check_with_curr_value() # TODO!!!
+    if not td.op_dictionary:  # TODO: Remove the NOT because by default do not show dictionary
+        print_dict(dictionary)
+    for elt in [fact for fact in dictionary if dictionary[fact][2] == -1]:
+        needed_rule = [rule for rule in expr_lst if elt in rule.cc_lst]
+        print(" *** END", needed_rule)
+        for rule in needed_rule:
+            print("rules to check", rule.expr, rule.cdt.solver(dictionary))
+            if rule.cdt.solver(dictionary) is td.v_true:
+                check_with_curr_value() # TODO!!!
     
     if not td.op_dictionary:  # TODO: Remove the NOT because by default do not show dictionary
         print_dict(dictionary)
