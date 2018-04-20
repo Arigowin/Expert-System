@@ -23,18 +23,12 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
     ret = []
 
     for elt in elts:
-        print("in FOR MODIF value in dict", elt, elts)
         ### REMOVE WHEN PROJECT DONE
         if not elt.isupper():
-            print("BUUUGGGED?????")
             ret.append(error(-7))
             continue
 
-        # print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s)\
-        #       in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0],
-        #                               dictionary[elt][2]))
         if value is td.v_bugged:
-            print("BUGGED")
             dictionary[elt][0] = value
             dictionary[elt][2] = prio
             continue
@@ -49,31 +43,23 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
 
             continue
 
-        ## if value != dictionary[elt][0]:
-        # element values modification in the dictionary
         if ((prio < dictionary[elt][2] and dictionary[elt][0] is td.v_undef and value is not td.v_undef)
           or (prio == dictionary[elt][2] and dictionary[elt][0] is td.v_undef and value is not td.v_undef)
           or (prio > dictionary[elt][2] and ((value is not td.v_undef and dictionary[elt][2] > 0)
               or dictionary[elt][2] <= 0))):
-            print("==== NOT HERE ====")
             dictionary[elt][0] = value
             dictionary[elt][2] = prio if elt is query else td.m_nset
 
             continue
 
-        # error checking and returns
         if prio < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef and value is not td.v_undef:
             ret.append(error(-4))
             continue
             
         if prio == dictionary[elt][2] and dictionary[elt][0] is not td.v_undef and value is not td.v_undef:
-            print("BUGGED", prio, dictionary[elt][2], dictionary[elt][0], value)
             dictionary[elt][0] = td.v_bugged
             dictionary[elt][2] = prio
             ret.append(error(-5))
-            # continue
-
-        # continue
 
     return None if len(ret) == 0 else min(ret)
 

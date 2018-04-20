@@ -43,7 +43,7 @@ class Condition:
 
     def _recu_solver(self, dic):
         """ """
-
+        
         if len(self.pmodif) == 1:
             self.pmodif = self._get_value(self.pmodif, dic)
             return None
@@ -142,12 +142,10 @@ class Condition:
 
             fact_false = fact[1] if int(val[0]) is td.v_true else fact[0]
 
-            print(fact_false in [elt for elt in dic if dic[elt][1] is not td.q_unused])
             if fact_false not in [elt for elt in dic if dic[elt][1] is not td.q_unused]:
                 rlt = modify_dict(fact_false, td.v_false, dic, fact_false)
             else:
                 rlt = modify_dict(fact_false, td.v_undef, dic, fact_false)
-                print("return undef")
                 return td.v_undef if rlt is None else rlt
 
             return rlt if rlt is not None else td.v_true

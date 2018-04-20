@@ -44,7 +44,6 @@ class Conclusion:
     def solver(self, dic, query, symb):
         """ public method to launch the conclusion solver function """
 
-        # print("in CC SOLVER query (%s) symb (%s) RPN (%s)" % (query, symb, self.r_rpn))
         r_rpn_cpy = self.r_rpn
 
         rlt = self._recu_solver(dic, r_rpn_cpy, td.v_true, query, symb)
@@ -103,7 +102,6 @@ class Conclusion:
         while i < 3:
             to_give = td.v_undef
             if wanted is not td.v_undef:
-                #print("logic xor 1", val, elt)
                 other_val = val[0 if i == 2 else 1]
 
                 to_give = (td.v_false if wanted == other_val
@@ -116,15 +114,9 @@ class Conclusion:
                         val.count(-1) != 2 and -1 not in val)
 
             if len(r_rpn_lst[i]) > 1:
-                print("logic xor 2", val, r_rpn_lst[i], to_give)
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
                
-                print(">>> DEPIL XOR")
-                #print("logic xor 3", val, elt)
-
             elif r_rpn_lst[i].isupper():
-                #print("logic xor 4", val, elt, to_give)
-                print("bugged xor 0")
                 
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
@@ -140,7 +132,6 @@ class Conclusion:
                     else td.v_false if wanted is td.v_true
                     else td.v_undef)
 
-        print("VAL IN XOR", val)
         if (val.count(td.v_undef) == 0
                 and ((wanted is td.v_true and val[0] != val[1])
                     or (wanted is td.v_false and val[0] == val[1]))):
@@ -152,7 +143,6 @@ class Conclusion:
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
-            print("bugged xor 1")
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
@@ -160,7 +150,6 @@ class Conclusion:
         elif (val.count(td.v_undef) == 1 and len(r_rpn_lst[1]) == 1 and len(r_rpn_lst[2]) == 1):
             to_give = (td.v_true if (wanted is td.v_true and td.v_false in val)
                 or (wanted is td.v_false and td.v_true in val) else td.v_false)
-            print("bugged xor 2", r_rpn_lst, val.index(td.v_undef), to_give)
 
             ret = modify_dict(r_rpn_lst[1 + val.index(td.v_undef)], to_give,
                               dic, query, symb)
@@ -227,8 +216,6 @@ class Conclusion:
           or (wanted is td.v_false and val.count(td.v_true) == 2)):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
-            #print(" -- ", val, wanted, r_rpn_lst)
-
             not_wanted = (td.v_true if wanted is td.v_false
                         else td.v_false if wanted is td.v_true
                         else td.v_undef)
@@ -259,7 +246,6 @@ class Conclusion:
                         else td.v_undef)
                 ret = modify_dict(elt, value, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
-            print("{{{{ in for AND }}}}", i, elt, wanted, value)
         return td.v_false if val.count(td.v_false) > 0 else td.v_undef if val.count(td.v_undef) > 0 else td.v_true
 
     @enable_ret
@@ -293,7 +279,6 @@ class Conclusion:
             val = r_rpn_lst[1]
 
         if int(val) != int(wanted) and wanted is not td.v_undef and val is not td.v_undef:
-            print("NOT BUGGED", val, wanted, r_rpn_lst)
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
@@ -305,12 +290,6 @@ class Conclusion:
 
     def _split_r_rpn(self, r_rpn_cpy):
         """ """
-
-        # print("RP SPLIT RPO", r_rpn_cpy)
-       # if get_first_index(td.Symbols[:-1], r_rpn_cpy[1:]) != -1:
-       #     match = re.match("([+|^])(!?[A-Z0-2])(!?[A-Z0-2])", r_rpn_cpy)
-       #     if match.lastindex == 3:
-       #         return [match.group(1), match.group(2), match.group(3)]
 
         op, index = [], 0
 

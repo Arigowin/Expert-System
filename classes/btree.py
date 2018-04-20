@@ -24,9 +24,6 @@ class _BNode:
 
     def __init__(self, dic, btype, rule=None, query=None):
 
-        #if query and rule:
-        #    ##print("ERROR!!!!!!!!!!! BNODE INIT")
-
         self.btype = btype
         self.rule = rule
         self.query = query
@@ -77,7 +74,6 @@ class Btree:
 
         ret = self._recu(dic, rule_lst, self._root, prev_rule)
 
-        ##print("RECU LAUNCHER EXIT", self._root.query, "\n")
         return ret
 
 
@@ -100,17 +96,19 @@ class Btree:
 
         val = curr_bnode.value
         if val is td.v_undef:
-           for fact in curr_bnode.rule.cdt_lst:
-               if dic[fact][1] < 2:
-                   child_node, curr_bnode = self._new_node(dic,
+            for fact in curr_bnode.rule.cdt_lst:
+                if dic[fact][1] < 2:
+                    child_node, curr_bnode = self._new_node(dic,
                                                            btype=Btype.CC,
                                                            query=fact,
                                                            tree=curr_bnode)
 
-                   ret_cdt = self._recu(dic, rule_lst, child_node, prev_rule)
-                   print(" -- DEPIL CDT --")
+                    ret_cdt = self._recu(dic, rule_lst, child_node, prev_rule)
+                    print(" -- DEPIL CDT --", curr_bnode.rule.cdt_lst, fact)
+                    if dic[fact][2] is td.m_default:
+                        dic[fact][2] = td.m_iif
 
-           curr_bnode.get_value_cdt_solver(dic)
+            curr_bnode.get_value_cdt_solver(dic)
 
         return val
 
@@ -141,31 +139,21 @@ class Btree:
 
             for node in curr_bnode.children:
 
-                print("in 2nd for", node.rule.expr)
                 if node.value is td.v_true:
 
                     val_cc = node.rule.cc.solver(dic, query, node.rule.prio)
-                    print("VAL CC", query,  val_cc, dic[query][2])
                     node.rule.used.append(query)
 
-                    print("TOTO  val undef(%s) or/xor in cc(%s) query modif -1(%s)" % ((val_cc is td.v_undef or val_cc < 0),
-                         ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc),
-                         dic[query][2] == -1))
                     if ((val_cc is td.v_undef or val_cc < 0)
                          and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc)
                          or dic[query][2] is td.m_nset):
 
-                        print("IN VAL CC IF")
                         cc_lst = (node.rule.cc_lst if node.rule.cc_lst[0]
                                                     is not query
                                   else node.rule.cc_lst[::-1])
-                        print("IN VAL CC IF", cc_lst)
 
                         cust_rule_lst = [rule for rule in rule_lst if rule.expr is not node.rule.expr]
-                        print(node.rule.expr, [rule.expr for rule in cust_rule_lst])
                         for elt in cc_lst:
-
-                            print("--------------------------------------------- NEW TREE")
                             new_tree = Btree(dic, cust_rule_lst, elt)
                             new_tree.recu_launcher(dic, cust_rule_lst, curr_bnode.rule)
 
@@ -210,7 +198,6 @@ class Btree:
         print("-- TREE SKIM --", curr_bnode.btype,  curr_bnode.query if curr_bnode.query else curr_bnode.rule.cc.cc)
 
         for child in curr_bnode.children:
-            print(child.query)
 
             if child.btype is Btype.CDT and child.value is td.v_undef:
 
@@ -223,7 +210,6 @@ class Btree:
                     child.rule.cc.solver(dic, child.query, child.rule.prio)
 
             elif child.btype is Btype.CC and child.value is td.v_undef:
-                print("child rule  (%s)" % child.rule)
                 self._tree_skimming(dic, child)
 
 

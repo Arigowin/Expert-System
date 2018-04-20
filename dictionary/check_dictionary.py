@@ -16,7 +16,7 @@ def get_queries(dictionary, query_list=[]):
     return query_list
 
 
-def get_value_from_dict(fact, dictionary):
+def get_value_from_dict(fact, dictionary, cdt=False):
     """ get the value of the given fact from dictionary
     and add this fact to custom queries if its value is not determined
     """
@@ -27,7 +27,7 @@ def get_value_from_dict(fact, dictionary):
     if not fact.isupper():
         return td.Error
 
-    val = (dictionary[fact][0] if dictionary[fact][2] is not td.m_default
+    val = (dictionary[fact][0] if dictionary[fact][2] is not td.m_default or cdt == True
            else td.v_undef)
 
     return val
