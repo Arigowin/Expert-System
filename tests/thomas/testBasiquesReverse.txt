@@ -13,3 +13,7 @@ A => !H | H
 =AR
 
 ?ABCDEFGHIJKLMNOPQRSTUVWXYZ
+# true  : ABCIJLOPQRU
+# false : KFG
+# undef : DEHST
+# bugged:

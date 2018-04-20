@@ -4,4 +4,4 @@ A | B + C => E
 ?E
 
 
-=G #, E should be false.
+=G # E should be false.

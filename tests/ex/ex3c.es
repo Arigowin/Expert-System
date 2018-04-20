@@ -2,5 +2,5 @@ B + C => A
 D ^ E => B
 B => C
 
-=E # A should be true.
+=E # ABCE should be true.
 ?A
