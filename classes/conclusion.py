@@ -270,18 +270,23 @@ class Conclusion:
                 ret = modify_dict(r_rpn_lst[1], val, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
 
+                print("val0", val)
                 val = (td.v_true if val is td.v_false
                         else td.v_false if val is td.v_true else td.v_undef)
-
+                print("val1", val)
             else:
                 ret = modify_dict(r_rpn_lst[1], inv_rlt, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
                 val = wanted
+                print("val2", val)
 
         else:
             val = r_rpn_lst[1]
+            print("val3", val)
 
-        if int(val) != int(wanted) and wanted is not td.v_undef and val is not td.v_undef:
+
+        print("val=%d, wanted=%d, " % (val, wanted))
+        if int(val) != int(wanted) and wanted is not td.v_undef and val is not td.v_undef and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
