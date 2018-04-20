@@ -3,4 +3,4 @@ D => C
 
 ?A
 
-=B # A should be true.
+=B # AB should be true.

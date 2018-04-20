@@ -3,7 +3,7 @@ D ^ E => B
 B => C
 
 
-=D # ABCD should be true.
+=D # D should be true. # E undef
 ?A
 	#pouet
 B => E

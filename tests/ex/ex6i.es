@@ -4,4 +4,4 @@ A | B + C => E
 ?E
 
 
-=GH #, E should be true.
+=GH # EGH should be true.

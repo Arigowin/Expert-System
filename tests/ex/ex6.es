@@ -5,4 +5,4 @@ A | B + C => E
 
 
 
-=F #, E should be false.
+=F # E should be false.
