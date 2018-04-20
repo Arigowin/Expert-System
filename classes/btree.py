@@ -143,9 +143,10 @@ class Btree:
 
                     val_cc = node.rule.cc.solver(dic, query, node.rule.prio)
                     node.rule.used.append(query)
-
+                    print("VALCC", val_cc)
+                    print(dic[query], node.rule.cc.r_rpn)
                     if ((val_cc is td.v_undef or val_cc < 0)
-                         and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc)
+                         and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc or "!+" in node.rule.cc.r_rpn)
                          or dic[query][2] is td.m_nset):
 
                         cc_lst = (node.rule.cc_lst if node.rule.cc_lst[0]
@@ -225,4 +226,3 @@ class Btree:
         tree.children.append(child)
 
         return child, tree
-

@@ -86,10 +86,10 @@ class Conclusion:
     def _logic_xor(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic XOR in the conclusion of the expression """
 
-        print("-- LOGIC XOR CC", wanted)
+        print("-- LOGIC XOR CC", wanted, r_rpn_lst)
         val = fact_to_value(r_rpn_lst[1:], dic)
 
-        if (-1 not in val and ((wanted is td.v_true and val[0] == val[1])
+        if (-1 not in val and 2 not in val and ((wanted is td.v_true and val[0] == val[1])
                 or (wanted is td.v_false and val[0] != val[1]))):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
@@ -100,30 +100,33 @@ class Conclusion:
 
         i = 1
         while i < 3:
+            print("while")
             to_give = td.v_undef
             if wanted is not td.v_undef:
                 other_val = val[0 if i == 2 else 1]
 
-                to_give = (td.v_false if wanted == other_val
-                            and -1 not in val
-                        else td.v_true if val.count(-1) != 2
-                            and -1 not in val
-                        else td.v_undef)
+                if other_val == td.v_undef and other_val == -1:
+                    to_give = td.v_undef
+                elif wanted == other_val and other_val != -1:
+                    to_give = td.v_false
+                elif val.count(-1) == 0 and other_val is not td.v_undef:
+                    to_give = td.v_true
 
                 wanted == (other_val and -1 not in val,
-                        val.count(-1) != 2 and -1 not in val)
+                           val.count(-1) != 2 and -1 not in val)
 
             if len(r_rpn_lst[i]) > 1:
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
-               
+
             elif r_rpn_lst[i].isupper():
-                
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
                 tmp = to_give
+                print("Modif i=%d, val=%s, tmp=%d" % (i, val, tmp))
 
             if tmp != val[i - 1]:
                 val[i - 1] = tmp
+                print("set i 0 | i=%d, val=%s, tmp=%d" % (i, val, tmp))
                 i = 0
 
             i += 1
@@ -188,7 +191,7 @@ class Conclusion:
             if len(r_rpn_lst[i]) > 1:
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
                 print(">>> DEPIL OR")
-                
+
 
             if len(r_rpn_lst[i]) == 1 and r_rpn_lst[i].isupper():
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
@@ -224,11 +227,11 @@ class Conclusion:
                             if val[i] is not_wanted)
 
             bug = set([elt for elt in tmp if elt.isupper()])
-            
+
             ret = modify_dict(bug, td.v_bugged, dic, query, symb)
 
             und = set([elt for elt in tmp if elt.isupper() and elt not in bug])
-            
+
             ret = modify_dict(und, td.v_undef, dic, query, symb)
 
             return td.v_bugged
@@ -237,7 +240,7 @@ class Conclusion:
             if len(elt) > 1:
                 val[i] = self._recu_solver(dic, elt, wanted, query, symb)
                 print(">>> DEPIL AND")
-                
+
 
             else:
                 value = (td.v_true if wanted is td.v_true

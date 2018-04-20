@@ -28,11 +28,12 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
             ret.append(error(-7))
             continue
 
+        print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s) in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0], dictionary[elt][2]))
+
         if value is td.v_bugged:
             dictionary[elt][0] = value
             dictionary[elt][2] = prio
             continue
-
 
         if value == dictionary[elt][0]:
 
@@ -55,11 +56,10 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
         if prio < dictionary[elt][2] and dictionary[elt][0] is not td.v_undef and value is not td.v_undef:
             ret.append(error(-4))
             continue
-            
+
         if prio == dictionary[elt][2] and dictionary[elt][0] is not td.v_undef and value is not td.v_undef:
             dictionary[elt][0] = td.v_bugged
             dictionary[elt][2] = prio
             ret.append(error(-5))
 
     return None if len(ret) == 0 else min(ret)
-
