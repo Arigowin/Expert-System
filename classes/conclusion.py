@@ -237,7 +237,7 @@ class Conclusion:
                             if val[i] is not_wanted)
 
             bug = set([elt for elt in tmp if elt.isupper()])
-            print("1 - AND BEFOR MODIF", r_rpn_lst, r_rpn_lst[i], i, elts)
+            print("1 - AND BEFOR MODIF", r_rpn_lst,  elts)
             
             ret = modify_dict(bug, td.v_bugged, dic, query, symb)
 

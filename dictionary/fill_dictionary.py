@@ -30,9 +30,9 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
             ret.append(error(-7))
             continue
 
-        print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s)\
-              in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0],
-                                      dictionary[elt][2]))
+        # print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s)\
+        #       in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0],
+        #                               dictionary[elt][2]))
         if value is td.v_bugged:
             print("BUGGED")
             dictionary[elt][0] = value
