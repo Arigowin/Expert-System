@@ -151,7 +151,6 @@ class Btree:
                     print("TOTO  val undef(%s) or/xor in cc(%s) query modif -1(%s)" % ((val_cc is td.v_undef or val_cc < 0),
                          ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc),
                          dic[query][2] == -1))
-                    print_dict(dic)
                     if ((val_cc is td.v_undef or val_cc < 0)
                          and ('^' in node.rule.cc.cc or '|' in node.rule.cc.cc)
                          or dic[query][2] is td.m_nset):

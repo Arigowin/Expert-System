@@ -31,4 +31,4 @@ if __name__ == "__main__":
     if not td.op_dictionary:  # TODO: Remove the NOT because by default do not show dictionary
         print_dict(dictionary)
 
-    tf.print_query(dictionary)
+    # tf.print_query(dictionary)

@@ -57,7 +57,7 @@ class Conclusion:
         """ recursive function to call the correct operator function """
 
         r_rpn_lst = []
-        # print("-- RECU SOLVER CC", wanted)
+        print("-- RECU SOLVER CC", wanted)
 
         if get_first_index(td.Symbols, r_rpn_cpy) is not -1:
             r_rpn_lst = self._split_r_rpn(r_rpn_cpy)
@@ -87,7 +87,7 @@ class Conclusion:
     def _logic_xor(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic XOR in the conclusion of the expression """
 
-        # print("-- LOGIC XOR CC", wanted)
+        print("-- LOGIC XOR CC", wanted)
         val = fact_to_value(r_rpn_lst[1:], dic)
 
         if (-1 not in val and ((wanted is td.v_true and val[0] == val[1])
@@ -116,12 +116,16 @@ class Conclusion:
                         val.count(-1) != 2 and -1 not in val)
 
             if len(r_rpn_lst[i]) > 1:
-                #print("logic xor 2", val, elt, to_give)
+                print("logic xor 2", val, r_rpn_lst[i], to_give)
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
+               
+                print(">>> DEPIL XOR")
                 #print("logic xor 3", val, elt)
 
             elif r_rpn_lst[i].isupper():
                 #print("logic xor 4", val, elt, to_give)
+                print("bugged xor 0")
+                
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
                 tmp = to_give
@@ -136,29 +140,30 @@ class Conclusion:
                     else td.v_false if wanted is td.v_true
                     else td.v_undef)
 
+        print("VAL IN XOR", val)
         if (val.count(td.v_undef) == 0
                 and ((wanted is td.v_true and val[0] != val[1])
                     or (wanted is td.v_false and val[0] == val[1]))):
             return wanted
+
         elif (val.count(td.v_undef) == 0
                 and ((wanted is td.v_true and val[0] == val[1])
                     or (wanted is td.v_false and val[0] != val[1]))):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            print("bugged xor 1")
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
-            #print("bugged xor 1")
 
             return td.v_bugged
-        elif (val.count(td.v_undef) == 1):
+
+        elif (val.count(td.v_undef) == 1 and len(r_rpn_lst[1]) == 1 and len(r_rpn_lst[2]) == 1):
             to_give = (td.v_true if (wanted is td.v_true and td.v_false in val)
                 or (wanted is td.v_false and td.v_true in val) else td.v_false)
+            print("bugged xor 2", r_rpn_lst, val.index(td.v_undef), to_give)
 
-            ret = modify_dict(r_rpn_lst[1 + val.index(td.v_undef)],
-                              to_give,
-                              dic,
-                              query,
-                              symb)
+            ret = modify_dict(r_rpn_lst[1 + val.index(td.v_undef)], to_give,
+                              dic, query, symb)
 
             return wanted if ret is None else ret
 
@@ -170,7 +175,7 @@ class Conclusion:
     def _logic_or(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic OR in the conclusion of the expression """
 
-        # print("-- LOGIC OR CC -- rule(%s)(%s) wanted(%s) query(%s)" % (self.cc, self.r_rpn, wanted, query))
+        print("-- LOGIC OR CC -- rule(%s)(%s) wanted(%s) query(%s)" % (self.cc, self.r_rpn, wanted, query))
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
@@ -193,6 +198,8 @@ class Conclusion:
 
             if len(r_rpn_lst[i]) > 1:
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
+                print(">>> DEPIL OR")
+                
 
             if len(r_rpn_lst[i]) == 1 and r_rpn_lst[i].isupper():
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
@@ -213,7 +220,7 @@ class Conclusion:
     def _logic_and(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic AND in the conclusion of the expression """
 
-        # print("-- LOGIC AND CC", wanted)
+        print("-- LOGIC AND CC", wanted)
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_true and td.v_false in val)
@@ -230,38 +237,44 @@ class Conclusion:
                             if val[i] is not_wanted)
 
             bug = set([elt for elt in tmp if elt.isupper()])
+            print("1 - AND BEFOR MODIF", r_rpn_lst, r_rpn_lst[i], i, elts)
+            
             ret = modify_dict(bug, td.v_bugged, dic, query, symb)
 
             und = set([elt for elt in tmp if elt.isupper() and elt not in bug])
+            print("2 - AND BEFOR MODIF", r_rpn_lst, r_rpn_lst[i], i, elts)
+            
             ret = modify_dict(und, td.v_undef, dic, query, symb)
 
             return td.v_bugged
 
         for i, elt in enumerate(r_rpn_lst[1:]):
-
             if len(elt) > 1:
                 val[i] = self._recu_solver(dic, elt, wanted, query, symb)
+                print(">>> DEPIL AND")
+                
 
             else:
                 value = (td.v_true if wanted is td.v_true
                         else td.v_false if wanted is td.v_false
                             and val[0 if i == 1 else 1] is td.v_true
                         else td.v_undef)
-
                 ret = modify_dict(elt, value, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
+            print("{{{{ in for AND }}}}", i, elt, wanted, value)
         return td.v_false if val.count(td.v_false) > 0 else td.v_undef if val.count(td.v_undef) > 0 else td.v_true
 
     @enable_ret
     def _logic_not(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic NOT in the conclusion of the expression """
 
-        # print("-- LOGIC NOT CC", wanted)
+        print("-- LOGIC NOT CC", wanted)
         inv_rlt = op.logic_not(wanted) if wanted < 2 else td.v_undef
 
         if len(r_rpn_lst[1]) > 1:
             val = self._recu_solver(dic, r_rpn_lst[1], inv_rlt, query, symb)
             val = td.v_true if val == td.v_false else td.v_false if val == td.v_true else val
+            print(">>> DEPIL NOT")
 
         elif r_rpn_lst[1].isupper():
 
@@ -281,7 +294,8 @@ class Conclusion:
         else:
             val = r_rpn_lst[1]
 
-        if int(val) != int(wanted) and wanted is not td.v_undef:
+        if int(val) != int(wanted) and wanted is not td.v_undef and val is not td.v_undef:
+            print("NOT BUGGED", val, wanted, r_rpn_lst)
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])

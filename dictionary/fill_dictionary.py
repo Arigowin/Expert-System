@@ -23,8 +23,10 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
     ret = []
 
     for elt in elts:
+        print("in FOR MODIF value in dict", elt, elts)
         ### REMOVE WHEN PROJECT DONE
         if not elt.isupper():
+            print("BUUUGGGED?????")
             ret.append(error(-7))
             continue
 
