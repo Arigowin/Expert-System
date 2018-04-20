@@ -43,8 +43,8 @@ for i in range(i):
     exit_code = process.wait()
 
     b = False
-    for k, v in enumerate(tmp):
-        if str(ret).find(v) == -1:
+    for k in tmp:
+        if str(ret).find(tmp[k]) == -1:
             print("Diff on", k)
             b = True
 
