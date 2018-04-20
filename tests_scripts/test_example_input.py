@@ -8,6 +8,33 @@ i = 1
 if (len(arg) > 1):
     i = int(arg[1])
 
+tmp = {'A': "[A:[1,",
+       'B': "[B:[1,",
+       'C': "[C:[1,",
+       'D': "[D:[1,",
+       'E': "[E:[1,",
+       'F': "[F:[0,",
+       'G': "[G:[1,",
+       'H': "[H:[1,",
+       'I': "[I:[0,",
+       'J': "[J:[0,",
+       'K': "[K:[0,",
+       'L': "[L:[0,",
+       'M': "[M:[0,",
+       'N': "[N:[0,",
+       'O': "[O:[0,",
+       'P': "[P:[0,",
+       'Q': "[Q:[0,",
+       'R': "[R:[0,",
+       'S': "[S:[0,",
+       'T': "[T:[0,",
+       'U': "[U:[0,",
+       'V': "[V:[2,",
+       'W': "[W:[0,",
+       'X': "[X:[2,",
+       'Y': "[Y:[1,",
+       'Z': "[Z:[1,"}
+
 for i in range(i):
     process = Popen(["python3", "main.py", "tests/example_input.txt"], stdout=PIPE)
 
@@ -15,84 +42,11 @@ for i in range(i):
 
     exit_code = process.wait()
 
-    if str(ret).find("[A:[1, ") == -1:
-        print("Diff on A")
-        b = True
-    if str(ret).find("[B:[1, ") == -1:
-        print("Diff on B")
-        b = True
-    if str(ret).find("[C:[1, ") == -1:
-        print("Diff on C")
-        b = True
-    if str(ret).find("[D:[1, ") == -1:
-        print("Diff on D")
-        b = True
-    if str(ret).find("[E:[1, ") == -1:
-        print("Diff on E")
-        b = True
-    if str(ret).find("[F:[0, ") == -1:
-        print("Diff on F")
-        b = True
-    if str(ret).find("[G:[1, ") == -1:
-        print("Diff on G")
-        b = True
-    if str(ret).find("[H:[1, ") == -1:
-        print("Diff on H")
-        b = True
-    if str(ret).find("[I:[0, ") == -1:
-        print("Diff on I")
-        b = True
-    if str(ret).find("[J:[0, ") == -1:
-        print("Diff on J")
-        b = True
-    if str(ret).find("[K:[0, ") == -1:
-        print("Diff on K")
-        b = True
-    if str(ret).find("[L:[0, ") == -1:
-        print("Diff on L")
-        b = True
-    if str(ret).find("[M:[0, ") == -1:
-        print("Diff on M")
-        b = True
-    if str(ret).find("[N:[0, ") == -1:
-        print("Diff on N")
-        b = True
-    if str(ret).find("[O:[0, ") == -1:
-        print("Diff on O")
-        b = True
-    if str(ret).find("[P:[0, ") == -1:
-        print("Diff on P")
-        b = True
-    if str(ret).find("[Q:[0, ") == -1:
-        print("Diff on Q")
-        b = True
-    if str(ret).find("[R:[0, ") == -1:
-        print("Diff on R")
-        b = True
-    if str(ret).find("[S:[0, ") == -1:
-        print("Diff on S")
-        b = True
-    if str(ret).find("[T:[0, ") == -1:
-        print("Diff on T")
-        b = True
-    if str(ret).find("[U:[0, ") == -1:
-        print("Diff on U")
-        b = True
-    if str(ret).find("[V:[2, ") == -1:
-        print("Diff on V")
-        b = True
-    if str(ret).find("[W:[0, ") == -1:
-        print("Diff on W")
-        b = True
-    if str(ret).find("[X:[2, ") == -1:
-        print("Diff on X")
-        b = True
-    if str(ret).find("[Y:[1, ") == -1:
-        print("Diff on Y")
-        b = True
-    if str(ret).find("[Z:[1, ") == -1:
-        print("Diff on Z")
-        b = True
+    b = False
+    for k, v in enumerate(tmp):
+        if str(ret).find(v) == -1:
+            print("Diff on", k)
+            b = True
 
     if b is True:
         print(ret)

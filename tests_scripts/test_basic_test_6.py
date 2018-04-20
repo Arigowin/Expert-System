@@ -1,41 +1,55 @@
-import os
-print("\n", __file__)
+import sys
 from subprocess import Popen, PIPE
 
+print("\n", __file__)
+arg = sys.argv
+i = 1
 
-for i in range(100):
+if (len(arg) > 1):
+    i = int(arg[1])
+
+tmp = {'A': "[A:[1,",
+       'B': "[B:[0,",
+       'C': "[C:[1,",
+       'D': "[D:[0,",
+       'E': "[E:[0,",
+       'F': "[F:[0,",
+       'G': "[G:[0,",
+       'H': "[H:[0,",
+       'I': "[I:[0,",
+       'J': "[J:[0,",
+       'K': "[K:[0,",
+       'L': "[L:[0,",
+       'M': "[M:[0,",
+       'N': "[N:[0,",
+       'O': "[O:[0,",
+       'P': "[P:[0,",
+       'Q': "[Q:[0,",
+       'R': "[R:[0,",
+       'S': "[S:[0,",
+       'T': "[T:[0,",
+       'U': "[U:[0,",
+       'V': "[V:[0,",
+       'W': "[W:[0,",
+       'X': "[X:[0,",
+       'Y': "[Y:[0,",
+       'Z': "[Z:[0,"}
+
+for i in range(i):
     process = Popen(["python3", "main.py", "tests/basic_test_6.txt"], stdout=PIPE)
+
     (ret, err) = process.communicate()
+
     exit_code = process.wait()
-    if (str(ret).find("[A:[1,") == -1 or
-        str(ret).find("[B:[0,") == -1 or
-        str(ret).find("[C:[1,") == -1 or
-        str(ret).find("[D:[0,") == -1 or
-        str(ret).find("[E:[0,") == -1 or
-        str(ret).find("[F:[0,") == -1 or
-        str(ret).find("[G:[0,") == -1 or
-        str(ret).find("[H:[0,") == -1 or
-        str(ret).find("[I:[0,") == -1 or
-        str(ret).find("[J:[0,") == -1 or
-        str(ret).find("[K:[0,") == -1 or
-        str(ret).find("[L:[0,") == -1 or
-        str(ret).find("[M:[0,") == -1 or
-        str(ret).find("[N:[0,") == -1 or
-        str(ret).find("[O:[0,") == -1 or
-        str(ret).find("[P:[0,") == -1 or
-        str(ret).find("[Q:[0,") == -1 or
-        str(ret).find("[R:[0,") == -1 or
-        str(ret).find("[S:[0,") == -1 or
-        str(ret).find("[T:[0,") == -1 or
-        str(ret).find("[U:[0,") == -1 or
-        str(ret).find("[V:[0,") == -1 or
-        str(ret).find("[W:[0,") == -1 or
-        str(ret).find("[X:[0,") == -1 or
-        str(ret).find("[Y:[0,") == -1 or
-        str(ret).find("[Z:[0,") == -1):
-        print("ET NOP!")
+
+    b = False
+    for k, v in enumerate(tmp):
+        if str(ret).find(v) == -1:
+            print("Diff on", k)
+            b = True
+
+    if b is True:
         print(ret)
         break
-    print("%d " % i, end='')
 
-
+    print("%d " % (i + 1), end='', flush=True)
