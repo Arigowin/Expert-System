@@ -186,7 +186,9 @@ class Btree:
             if sorted_rule[i][1] is td.v_undef:
                 val = -1
                 ret = self._tree_skimming(dic, rule_lst, sorted_rule[i][0].cdt_lst)
-                if ret and sorted_rule[i][0].cdt.solver(dic) is td.v_true:
+                a = sorted_rule[i][0].cdt.solver(dic)
+                print("BAC", ret, a, sorted_rule[i][0].cdt_lst)
+                if ret and a is td.v_true:
                     val = sorted_rule[i][0].cc.solver(dic, query, sorted_rule[i][0].prio)
 
                 if val != sorted_rule[i][1]:
@@ -210,7 +212,7 @@ class Btree:
         b = False
 
         for elt in cdt_lst:
-            if dic[elt][2] is td.m_default:
+            # if dic[elt][2] is td.m_default:
                 print("\nSTART NEW TREE", elt)
                 new_tree = Btree(dic, rule_lst, elt)
                 ret = new_tree.recu_launcher(dic, rule_lst)
