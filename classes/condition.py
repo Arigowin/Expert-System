@@ -132,23 +132,31 @@ class Condition:
     def _logic_xor(self, val, fact, dic):
         """ handle the logic XOR in the condition of the expression """
 
-        if int(val[0]) == td.v_undef and int(val[1]) == td.v_undef:
+        ival = [int(val[0]), int(val[1])]
+
+        if ival[0] == td.v_undef and ival[1] == td.v_undef:
+            print("val1")
             return td.v_undef
 
-        if int(val[0]) == int(val[1]):
+        if ival[0] == ival[1]:
             return td.v_false
 
-        if str(td.v_true) in val:
-            fact_false = fact[1] if int(val[0]) is td.v_true else fact[0]
+        if ival[0] != ival[1] and td.v_undef not in ival:
+            return td.v_true
+
+        if td.v_true in ival:
+            fact_false = fact[1] if ival[0] is td.v_true else fact[0]
 
             if fact_false[0].isupper():
                 if fact_false not in [elt for elt in dic if dic[elt][1] is not td.q_unused]:
                     rlt = modify_dict(fact_false, td.v_false, dic, fact_false)
                 else:
                     rlt = modify_dict(fact_false, td.v_undef, dic, fact_false)
+                    print("val3")
                     return td.v_undef if rlt is None else rlt
-
                 return rlt if rlt is not None else td.v_true
+
             return td.v_true
 
+        print("val2")
         return td.v_undef
