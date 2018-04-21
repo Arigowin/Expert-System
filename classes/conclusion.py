@@ -305,14 +305,16 @@ class Conclusion:
 
             while op and op[-1] == 0:
                 op.remove(op[-1])
-                op[-1] -= 1
+                if (len(op) > 0):
+                    op[-1] -= 1
 
             if elt in "^|+":
                 op.append(2)
             elif elt is '!':
                 op.append(1)
             else:
-                op[-1] -= 1
+                if (len(op) > 0):
+                    op[-1] -= 1
 
             if sum(op) == 0:
                 index = i
