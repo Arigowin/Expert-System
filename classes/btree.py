@@ -126,7 +126,7 @@ class Btree:
                           query in rule.cc_lst and rule is not prev_rule)
 
             for rule in needed_rule:
-                print("∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏∏ ", rule.expr, rule.cdt.solver(dic))
+                print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx", rule.expr, rule.cdt.solver(dic))
                 if query not in rule.used:
                     child_node, curr_bnode = self._new_node(dic,
                                                             btype=Btype.CDT,
@@ -183,11 +183,11 @@ class Btree:
         while i in range(len(sorted_rule)):
             print("_node_checking ", [(elt[0].expr, elt[1]) for elt in sorted_rule], (sorted_rule[i][0].expr, sorted_rule[i][1]))
 
-
             if sorted_rule[i][1] is td.v_undef:
-
-                val = self._tree_skimming(dic, rule_lst, sorted_rule[i][0].cdt_lst)
-                sorted_rule[i][0].cc.solver(dic, query, sorted_rule[i][0].prio)
+                val = -1
+                ret = self._tree_skimming(dic, rule_lst, sorted_rule[i][0].cdt_lst)
+                if ret and sorted_rule[i][0].cdt.solver(dic) is td.v_true:
+                    val = sorted_rule[i][0].cc.solver(dic, query, sorted_rule[i][0].prio)
 
                 if val != sorted_rule[i][1]:
                     sorted_rule[i][1] = val
@@ -207,6 +207,7 @@ class Btree:
         """ skim the tree to check every child node """
 
         print("-- TREE SKIM --")
+        b = False
 
         for elt in cdt_lst:
             if dic[elt][2] is td.m_default:
@@ -215,26 +216,9 @@ class Btree:
                 ret = new_tree.recu_launcher(dic, rule_lst)
                 print("val from new Tree", ret)
                 print("\nEND NEW TREE", elt)
+                b = True
 
-
-        # for child in curr_bnode.children:
-        #     print("A")
-        #
-        #     if child.btype is Btype.CDT and child.value is td.v_undef:
-        #
-        #         val = child.value
-        #         child.get_value_cdt_solver(dic)
-        #
-        #         print("_tree_skimming1", child.query, child.rule.expr, child.value, val)
-        #
-        #         if val == child.value:
-        #             self._tree_skimming(dic, child)
-        #         if child.value is td.v_true:
-        #             child.rule.cc.solver(dic, child.query, child.rule.prio)
-        #
-        #     elif child.btype is Btype.CC and child.value is td.v_undef:
-        #         print("_tree_skimming2", child.query, child.rule)
-        #         self._tree_skimming(dic, child)
+        return b
 
 
     def _new_node(self, dic, btype, rule=None, query=None, tree=None):
