@@ -70,7 +70,7 @@ class Btree:
     def recu_launcher(self, dic, rule_lst, prev_rule=None):
         """ """
 
-        print("RECU LAUNCHER START", self._root.query)
+        print("\nRECU LAUNCHER START", self._root.query)
 
         ret = self._recu(dic, rule_lst, self._root, prev_rule)
 

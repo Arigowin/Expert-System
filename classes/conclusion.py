@@ -1,5 +1,3 @@
-import re
-
 import tools.defines as td
 import handle_expression.operators as op
 from error.error import error
@@ -93,7 +91,12 @@ class Conclusion:
                 or (wanted is td.v_false and val[0] != val[1]))):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
-            elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            elts = []
+            for elt in list(r_rpn_lst[1:]):
+                for letter in elt:
+                    if letter.isupper():
+                        elts += letter
+
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
@@ -174,7 +177,12 @@ class Conclusion:
                 or (wanted is td.v_true and val.count(td.v_false) == 2)):
             error(-6)  # new msg 'c'est tout bugge' and return bugged
 
-            elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
+            elts = []
+            for elt in list(r_rpn_lst[1:]):
+                for letter in elt:
+                    if letter.isupper():
+                        elts += letter
+
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
             return td.v_bugged
@@ -303,24 +311,20 @@ class Conclusion:
 
         for i, elt in enumerate(r_rpn_cpy):
 
-            while op and op[-1] == 0:
-                op.remove(op[-1])
-                if (len(op) > 0):
-                    op[-1] -= 1
-
             if elt in "^|+":
                 op.append(2)
             elif elt is '!':
                 op.append(1)
             else:
-                if (len(op) > 0):
-                    op[-1] -= 1
-
-            if sum(op) == 0:
-                index = i
-
-        if len(op) > 1 and sum(op) / (len(op) - 1) == 1:
-            index = get_first_index("^|+!", r_rpn_cpy, op.count(1), False)
+                if len(op) == 1 and index == 0:
+                    index = i + 1
+                op[-1] -= 1
+                while op and op[-1] == 0:
+                    op.remove(op[-1])
+                    if (len(op) > 0):
+                        op[-1] -= 1
+                    if len(op) == 1 and index == 0:
+                        index = i + 1
 
         return ([r_rpn_cpy[0], r_rpn_cpy[1:]] if r_rpn_cpy[0] == '!'
                 else [r_rpn_cpy[0], r_rpn_cpy[1:index], r_rpn_cpy[index:]])

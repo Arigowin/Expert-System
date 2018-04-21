@@ -17,3 +17,8 @@ A => O | P
                         # If no facts are initially true, then a simple "=" followed
                         # by a newline is used
 ?ABCDEFGHIJKLMNOPQRSTUVWXYZ                  # Queries : What are G, V and X ?
+
+
+# true  : ABCDGOX
+# false : EFHIJKLMNQRSTUVZ
+# undef : P
