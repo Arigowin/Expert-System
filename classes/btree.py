@@ -1,3 +1,5 @@
+import copy
+
 import tools.defines as td
 from classes.enum import Btype
 from error.error import error
@@ -142,7 +144,8 @@ class Btree:
             for node in curr_bnode.children:
                 print("NODE EXPR", node.rule.expr)
                 if node.value is td.v_true:
-                    val_cc = node.rule.cc.solver(dic, query, node.rule.prio)
+                    # val_cc = node.rule.cc.solver(dic, query, node.rule.prio)
+                    val_cc = self._cc_solver_checker(dic, rule_lst, node.rule, query, node.rule.prio)
                     node.rule.used.append(query)
 
                     if ((val_cc is td.v_undef or val_cc < 0)
@@ -164,11 +167,39 @@ class Btree:
                         if dic[query][0] is not td.v_bugged and node.rule.prio > dic[query][2]:
                             dic[query][2] = node.rule.prio
 
-                        node.rule.cc.solver(dic, query, node.rule.prio)
+                        self._cc_solver_checker(dic, rule_lst, node.rule, query, node.rule.prio)
+
+                        # node.rule.cc.solver(dic, query, node.rule.prio)
 
             if len([key for key, value in needed_rule.items() if value is td.v_undef]):
                 ret = self._node_checking(dic, list(map(list, needed_rule.items())), rule_lst, query)
 
+
+    def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
+
+        print("_cc_solver_checker")
+        bck_dic = copy.deepcopy(dic)
+        print_dict(dic)
+
+        ret = curr_rule.cc.solver(dic, query, prio)
+
+        print_dict(bck_dic)
+        print("----")
+        print_dict(dic)
+
+        if bck_dic != dic:
+            print("Dic modify in cc solver")
+            new_lst = [elt for elt in rule_lst if query in elt.expr]
+            print([elt.expr for elt in new_lst])
+
+            for elt in new_lst:
+                if elt.cdt.solver(dic) is td.v_true:
+                    tmp = elt.cc.solver(dic, query, prio)
+
+                    if elt == curr_rule:
+                        ret = tmp
+
+        return ret
 
     def _node_checking(self, dic, sorted_rule, rule_lst, query):
         """ check if rules that contain the requested fact in cc can be
@@ -189,7 +220,9 @@ class Btree:
                 a = sorted_rule[i][0].cdt.solver(dic)
                 print("BAC", ret, a, sorted_rule[i][0].cdt_lst)
                 if ret and a is td.v_true:
-                    val = sorted_rule[i][0].cc.solver(dic, query, sorted_rule[i][0].prio)
+                    # val = sorted_rule[i][0].cc.solver(dic, query, sorted_rule[i][0].prio)
+                    val = self._cc_solver_checker(dic, rule_lst, sorted_rule[i][0], query, sorted_rule[i][0].prio)
+
 
                 if val != sorted_rule[i][1]:
                     sorted_rule[i][1] = val
