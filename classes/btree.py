@@ -85,7 +85,7 @@ class Btree:
 
         if curr_bnode.btype is Btype.CC:
             
-            print(" -- QUERY", curr_bnode.query, prev_rule)
+            # print(" -- QUERY", curr_bnode.query, prev_rule)
             self._node_cc(dic, curr_bnode, rule_lst, prev_rule)
             return dic[curr_bnode.query][0]
 
@@ -96,7 +96,7 @@ class Btree:
     def _node_cdt(self, dic, curr_bnode, rule_lst, prev_rule):
         """ """
 
-        print("NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
+        # print("NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
 
         val = curr_bnode.value
         if val is td.v_undef:
@@ -108,7 +108,7 @@ class Btree:
                                                            tree=curr_bnode)
 
                     ret_cdt = self._recu(dic, rule_lst, child_node, prev_rule)
-                    print("DEPIL CDT --", curr_bnode.rule.cdt_lst, fact)
+                    # print("DEPIL CDT --", curr_bnode.rule.cdt_lst, fact)
                     if dic[fact][2] is td.m_default:
                         dic[fact][2] = td.m_iif
 
@@ -142,7 +142,6 @@ class Btree:
             for node in curr_bnode.children:
                 if node.rule.prio is 1:
                     display_steps("\nNext expression containing", " %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule), query=curr_bnode.query, dic=dic)
-                    # print("\nNext expression containing %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule))
                 else:
                     display_steps("\nNext expression containing", " %s: %s" % (curr_bnode.query, node.rule.expr), query=curr_bnode.query, dic=dic)
 
@@ -175,6 +174,10 @@ class Btree:
 
             if len([key for key, value in needed_rule.items() if value is td.v_undef]):
                 ret = self._node_checking(dic, list(map(list, needed_rule.items())), rule_lst, query)
+
+        else:
+            display_steps("\tValue of", " %s already known." % curr_bnode.query, query=curr_bnode.query, dic=dic)
+
 
 
     def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
