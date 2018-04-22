@@ -60,24 +60,24 @@ def parse_arg():
                              "then a list of queries.")
 
     # Optional arguments
-    parser.add_argument("-v", "--visualisation",
-                        help="display regular visualisation",
-                        action="store_true")
+    parser.add_argument("-v", "--no_visualisation",
+                        help="do not display regular visualisation",
+                        action="store_false")
     parser.add_argument("-d", "--dictionary",
                         help="show filled dictionary at the end of the program",
                         action="store_true")
-    parser.add_argument("-c", "--color",
-                        help="display colorized visualisation",
-                        action="store_true")
+    parser.add_argument("-c", "--no_color",
+                        help="do not display colorized visualisation",
+                        action="store_false")
 
     args = parser.parse_args()
 
-    td.op_visualisation = args.visualisation
+    td.op_visualisation = args.no_visualisation
     td.op_dictionary = args.dictionary
-    td.op_color = args.color
+    td.op_color = args.no_color
 
     if os.path.isfile(args.file):
-        return args.dictionary, args.visualisation, args.color, args.file
+        return args.dictionary, args.no_visualisation, args.no_color, args.file
 
     print("EXPERT SYSTEM - Error: non valid file name")
     parser.print_help()
