@@ -4,7 +4,6 @@ import tools.defines as td
 from classes.enum import Btype
 from error.error import error
 from tools.custom_return import enable_ret, cust_ret
-from tools.functions import print_dict
 
 
 class _BNode:
@@ -73,7 +72,6 @@ class Btree:
         """ """
 
         print("\nRECU LAUNCHER START", self._root.query)
-        print_dict(dic)
 
         ret = self._recu(dic, rule_lst, self._root, prev_rule)
 
@@ -179,13 +177,8 @@ class Btree:
 
         print("_cc_solver_checker")
         bck_dic = copy.deepcopy(dic)
-        print_dict(dic)
 
         ret = curr_rule.cc.solver(dic, query, prio)
-
-        print_dict(bck_dic)
-        print("----")
-        print_dict(dic)
 
         if bck_dic != dic:
             print("Dic modify in cc solver")

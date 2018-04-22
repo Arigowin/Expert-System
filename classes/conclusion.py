@@ -1,5 +1,4 @@
 import tools.defines as td
-import handle_expression.operators as op
 from error.error import error
 from tools.functions import get_first_index
 from handle_expression.create_RPN import get_polish_notation
@@ -27,6 +26,7 @@ class Conclusion:
         _logic_and    logic and handler for the conclusion side
         _logic_or     logic or handler for the conclusion side
         _logic_xor    logic xor handler for the conclusion side
+        _not          return the NOT value
 
     """
 
@@ -275,7 +275,7 @@ class Conclusion:
         """ handle the logic NOT in the conclusion of the expression """
 
         print("-- LOGIC NOT CC", wanted)
-        inv_rlt = op.logic_not(wanted) if wanted < 2 else td.v_undef
+        inv_rlt = self._not(wanted) if wanted < 2 else td.v_undef
 
         if len(r_rpn_lst[1]) > 1:
             val = self._recu_solver(dic, r_rpn_lst[1], inv_rlt, query, symb)
@@ -315,6 +315,12 @@ class Conclusion:
 
         return val
 
+    def _not(self, val):
+        """ return the NOT value """
+
+        return (td.v_undef if int(val) == td.v_undef
+                else td.v_true if int(val) is td.v_false
+                else td.v_false)
 
     def _split_r_rpn(self, r_rpn_cpy):
         """ """

@@ -31,4 +31,4 @@ if __name__ == "__main__":
     if td.op_dictionary:
         print_dict(dictionary)
 
-    # tf.print_query(dictionary)
+    tf.print_query(dictionary)

@@ -23,12 +23,6 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
     ret = []
 
     for elt in elts:
-        print("*********************** MODIFY query(%s) elt(%s) val(%s)prio(%s) in dico(%s)prio(%s)" % (query, elt, value, prio, dictionary[elt][0], dictionary[elt][2]))
-
-        ### TODO: REMOVE WHEN PROJECT DONE
-        if not elt.isupper():
-            ret.append(error(-7))
-            continue
 
         if dictionary[elt][2] is td.m_initial:
             continue

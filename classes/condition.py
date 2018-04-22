@@ -1,5 +1,4 @@
 import tools.defines as td
-from tools.functions import print_dict
 from handle_expression.create_RPN import get_polish_notation
 from dictionary.check_dictionary import get_value_from_dict
 from dictionary.fill_dictionary import modify_dict
