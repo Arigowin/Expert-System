@@ -66,19 +66,19 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                         elif dic[letter][0] is td.v_bugged: 
                             option.append("fg_dark_grey") 
                         else:
-                            option.append("fg_light_grey")
+                            option.append("reset")
 
                     else:
-                        option.append("fg_light_grey")
+                        option.append("reset")
 
                     colored_display(option)
                     print("%s%s" % (letter, '\033[0;0m'), end='', flush=True)
-                    
+
                 else:
                     print("%s" % letter, end='', flush=True)
                     
 
         print(end_display)
-        if sleep is True:
-            time.sleep(1)
+        # if sleep is True:
+        #     time.sleep(1)
 

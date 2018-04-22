@@ -78,17 +78,13 @@ class Btree:
 
         if curr_bnode.btype is Btype.CC:
 
-            # print(" -- QUERY", curr_bnode.query, prev_rule)
             self._node_cc(dic, curr_bnode, rule_lst, prev_rule)
             return dic[curr_bnode.query][0]
 
-        # print("-- EXPRESSION", curr_bnode.rule.expr, prev_rule)
         return self._node_cdt(dic, curr_bnode, rule_lst, prev_rule)
 
     def _node_cdt(self, dic, curr_bnode, rule_lst, prev_rule):
         """ """
-
-        # print("NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
 
         val = curr_bnode.value
         if val is td.v_undef:
@@ -100,7 +96,6 @@ class Btree:
                                                             tree=curr_bnode)
 
                     self._recu(dic, rule_lst, child_node, prev_rule)
-                    # print("DEPIL CDT --", curr_bnode.rule.cdt_lst, fact)
                     if dic[fact][2] is td.m_default:
                         dic[fact][2] = td.m_iif
 
@@ -116,6 +111,9 @@ class Btree:
         if dic[query][2] <= 0 or dic[query][0] is td.v_undef:
             needed_rule = dict((rule, -1) for rule in rule_lst if
                                query in rule.cc_lst and rule is not prev_rule)
+            
+            if len(needed_rule) == 0:
+                display_steps("\tNo rule for", " %s" % curr_bnode.query, query=curr_bnode.query, dic=dic)
 
             for rule in needed_rule:
                 if query not in rule.used:
@@ -151,12 +149,18 @@ class Btree:
                         cust_rule_lst = [rule for rule in rule_lst if rule.expr
                                          is not node.rule.expr]
                         for elt in cc_lst:
-                            print("\nSTART NEW TREE CC", elt)
-
+                            display_steps("\nWe need to know the value of", " %s" % elt, query=curr_bnode.query, dic=dic)
+                            
                             new_tree = Btree(dic, cust_rule_lst, elt)
                             new_tree.recu_launcher(dic, cust_rule_lst,
                                                    curr_bnode.rule)
-                            print("\nEND NEW TREE CC", elt)
+
+                            value = ("True" if dic[elt][0] is td.v_true 
+                                     else "False" if dic[elt][0] is td.v_false 
+                                     else "Not define" if dic[elt][0] is 
+                                         td.v_undef 
+                                     else "Bugged")
+                            display_steps("\tNewly found value for", " %s: " % elt, end_display=value, query=curr_bnode.query, dic=dic)
 
                         if (dic[query][0] is not td.v_bugged
                                 and node.rule.prio > dic[query][2]):
@@ -170,7 +174,7 @@ class Btree:
                                     rule_lst, query)
 
         else:
-            display_steps("\t\tValue of", " %s already known." % curr_bnode.query, query=curr_bnode.query, dic=dic)
+            display_steps("\tValue of", " %s already known." % curr_bnode.query, query=curr_bnode.query, dic=dic)
 
     def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
 

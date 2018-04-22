@@ -25,7 +25,7 @@ if __name__ == "__main__":
     for fact in dic:
         if dic[fact][1] is not td.q_unused:
             new_tree = Btree(dic, expr_lst, fact)
-            pouet = new_tree.recu_launcher(dic, expr_lst)
+            new_tree.recu_launcher(dic, expr_lst)
 
     for elt in [fact for fact in dic if dic[fact][2] == -1]:
         check_with_curr_value(elt, expr_lst, dic)
