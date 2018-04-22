@@ -89,17 +89,17 @@ class Conclusion:
 
         if (-1 not in val and 2 not in val and ((wanted is td.v_true and val[0] == val[1])
                 or (wanted is td.v_false and val[0] != val[1]))):
-            error(-6)  # new msg 'c'est tout bugge' and return bugged
+            error(-6, "logic xor cc 1")  # new msg 'c'est tout bugge' and return bugged
+            if query in r_rpn_lst:
+                elts = []
+                for elt in list(r_rpn_lst[1:]):
+                    for letter in elt:
+                        if letter.isupper():
+                            elts += letter
 
-            elts = []
-            for elt in list(r_rpn_lst[1:]):
-                for letter in elt:
-                    if letter.isupper():
-                        elts += letter
+                ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
-            ret = modify_dict(elts, td.v_bugged, dic, query, symb)
-
-            return td.v_bugged
+                return td.v_bugged
 
         i = 1
         while i < 3:
@@ -146,7 +146,7 @@ class Conclusion:
         elif (val.count(td.v_undef) == 0
                 and ((wanted is td.v_true and val[0] == val[1])
                     or (wanted is td.v_false and val[0] != val[1]))):
-            error(-6)  # new msg 'c'est tout bugge' and return bugged
+            error(-6, "logic xor cc 2")  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
@@ -175,17 +175,17 @@ class Conclusion:
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
                 or (wanted is td.v_true and val.count(td.v_false) == 2)):
-            error(-6)  # new msg 'c'est tout bugge' and return bugged
+            error(-6, "logic or cc")  # new msg 'c'est tout bugge' and return bugged
+            if query in r_rpn_lst:
+                elts = []
+                for elt in list(r_rpn_lst[1:]):
+                    for letter in elt:
+                        if letter.isupper():
+                            elts += letter
 
-            elts = []
-            for elt in list(r_rpn_lst[1:]):
-                for letter in elt:
-                    if letter.isupper():
-                        elts += letter
+                ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
-            ret = modify_dict(elts, td.v_bugged, dic, query, symb)
-
-            return td.v_bugged
+                return td.v_bugged
 
         i = 1
         while i < 3:
@@ -225,24 +225,27 @@ class Conclusion:
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_true and td.v_false in val)
           or (wanted is td.v_false and val.count(td.v_true) == 2)):
-            error(-6)  # new msg 'c'est tout bugge' and return bugged
+            print("rpn in and CC [%s] (%s)" % (r_rpn_lst, query))
+            error(-6, "logic and cc")  # new msg 'c'est tout bugge' and return bugged
 
-            not_wanted = (td.v_true if wanted is td.v_false
-                        else td.v_false if wanted is td.v_true
-                        else td.v_undef)
+            if query in r_rpn_lst:
+                print("TROLOLO")
+                not_wanted = (td.v_true if wanted is td.v_false
+                            else td.v_false if wanted is td.v_true
+                            else td.v_undef)
 
-            tmp = ''.join(elt for i, elt in enumerate(r_rpn_lst[1:])
-                            if val[i] is not_wanted)
+                tmp = ''.join(elt for i, elt in enumerate(r_rpn_lst[1:])
+                                if val[i] is not_wanted)
 
-            bug = set([elt for elt in tmp if elt.isupper()])
+                bug = set([elt for elt in tmp if elt.isupper()])
 
-            ret = modify_dict(bug, td.v_bugged, dic, query, symb)
+                ret = modify_dict(bug, td.v_bugged, dic, query, symb)
 
-            und = set([elt for elt in tmp if elt.isupper() and elt not in bug])
+                und = set([elt for elt in tmp if elt.isupper() and elt not in bug])
 
-            ret = modify_dict(und, td.v_undef, dic, query, symb)
+                ret = modify_dict(und, td.v_undef, dic, query, symb)
 
-            return td.v_bugged
+                return td.v_bugged
 
         for i, elt in enumerate(r_rpn_lst[1:]):
             if len(elt) > 1:
@@ -294,8 +297,9 @@ class Conclusion:
 
 
         print("val=%d, wanted=%d, " % (val, wanted))
-        if int(val) != int(wanted) and wanted is not td.v_undef and val is not td.v_undef and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb):
-            error(-6)  # new msg 'c'est tout bugge' and return bugged
+        if int(val) != int(wanted) and wanted is not td.v_undef and val >= 0 and val is not td.v_undef and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb):
+            
+            error(-6, "logic not cc")  # new msg 'c'est tout bugge' and return bugged
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)

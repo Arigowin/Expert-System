@@ -30,7 +30,7 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
             ret.append(error(-7))
             continue
 
-        if value is td.v_bugged:
+        if value is td.v_bugged and dictionary[elt][2]: # is not td.m_initial:
             dictionary[elt][0] = value
             dictionary[elt][2] = prio
             continue
