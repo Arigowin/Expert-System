@@ -28,7 +28,7 @@ if __name__ == "__main__":
     for elt in [fact for fact in dictionary if dictionary[fact][2] == -1]:
         check_with_curr_value(elt, expr_lst, dictionary)
 
-    if not td.op_dictionary:  # TODO: Remove the NOT because by default do not show dictionary
+    if td.op_dictionary:
         print_dict(dictionary)
 
     # tf.print_query(dictionary)

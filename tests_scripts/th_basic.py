@@ -36,7 +36,7 @@ tmp = {'A': "[A:[1,",
        'Z': "[Z:[0,"}
 
 for i in range(i):
-    process = Popen(["python3", "main.py", "tests/thomas/testBasiques.txt"], stdout=PIPE)
+    process = Popen(["python3", "main.py", "-d", "tests/thomas/testBasiques.txt"], stdout=PIPE)
 
     (ret, err) = process.communicate()
 
