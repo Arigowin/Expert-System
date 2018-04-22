@@ -42,7 +42,7 @@ def colored_display(options):
         print(styles[elt], end='', flush=True)
     
 
-def display_steps(*args, query, dic, end_display=""):
+def display_steps(*args, query, dic, end_display="", sleep=True):
     
     print(args[0], end='', flush=True)
     for arg in args[1:]:
@@ -73,5 +73,6 @@ def display_steps(*args, query, dic, end_display=""):
             print("%s%s" % (letter, '\033[0;0m'), end='', flush=True)
 
     print(end_display)
-    time.sleep(1)
+    if sleep is True:
+        time.sleep(1)
 
