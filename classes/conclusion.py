@@ -54,7 +54,7 @@ class Conclusion:
         """ recursive function to call the correct operator function """
 
         r_rpn_lst = []
-        print("-- RECU SOLVER CC", wanted, r_rpn_cpy, symb)
+        # print("-- RECU SOLVER CC", wanted, r_rpn_cpy, symb)
 
         if get_first_index(td.Symbols, r_rpn_cpy) is not -1:
             r_rpn_lst = self._split_r_rpn(r_rpn_cpy)

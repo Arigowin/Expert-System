@@ -72,7 +72,7 @@ class Btree:
     def recu_launcher(self, dic, rule_lst, prev_rule=None):
         """ """
 
-        print("\nFinding the value of", self._root.query)
+        display_steps("\nFinding the value of ", self._root.query, query=self._root.query, dic=dic)
 
         ret = self._recu(dic, rule_lst, self._root, prev_rule)
 
@@ -84,12 +84,12 @@ class Btree:
 
 
         if curr_bnode.btype is Btype.CC:
-            display_steps("TROLOLO", "POUET", "TOTO")
+            
             print(" -- QUERY", curr_bnode.query, prev_rule)
             self._node_cc(dic, curr_bnode, rule_lst, prev_rule)
             return dic[curr_bnode.query][0]
 
-        print("-- EXPRESSION", curr_bnode.rule.expr, prev_rule)
+        # print("-- EXPRESSION", curr_bnode.rule.expr, prev_rule)
         return self._node_cdt(dic, curr_bnode, rule_lst, prev_rule)
 
 
@@ -141,9 +141,10 @@ class Btree:
 
             for node in curr_bnode.children:
                 if node.rule.prio is 1:
-                    print("\nNext expression containing %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule))
+                    display_steps("\nNext expression containing", " %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule), query=curr_bnode.query, dic=dic)
+                    # print("\nNext expression containing %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule))
                 else:
-                    print("\nNext expression containing %s: %s" % (curr_bnode.query, node.rule.expr))
+                    display_steps("\nNext expression containing", " %s: %s" % (curr_bnode.query, node.rule.expr), query=curr_bnode.query, dic=dic)
 
                 if node.value is td.v_true:
                     val_cc = self._cc_solver_checker(dic, rule_lst, node.rule, query, node.rule.prio)
@@ -192,7 +193,7 @@ class Btree:
                     if elt == curr_rule:
                         ret = tmp
 
-        print("Expression with the newly found values: %s" % curr_rule.expr)
+        display_steps("Expression with the newly found values: ", "%s" % curr_rule.expr, query=query, dic=dic)
         return ret
 
     def _node_checking(self, dic, sorted_rule, rule_lst, query):
