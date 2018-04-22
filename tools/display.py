@@ -71,7 +71,7 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                     else:
                         option.append("fg_light_grey")
                 else:
-                    option.append("fg_light_grey")
+                    option.append("reset")
 
                 colored_display(option)
                 print("%s%s" % (letter, '\033[0;0m'), end='', flush=True)
