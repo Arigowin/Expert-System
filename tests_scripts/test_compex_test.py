@@ -9,13 +9,13 @@ if (len(arg) > 1):
     i = int(arg[1])
 
 tmp = {'A': "[A:[1,",
-       'B': "[B:[0,",
+       'B': "[B:[1,",
        'C': "[C:[1,",
-       'D': "[D:[0,",
-       'E': "[E:[0,",
+       'D': "[D:[1,",
+       'E': "[E:[1,",
        'F': "[F:[0,",
        'G': "[G:[1,",
-       'H': "[H:[0,",
+       'H': "[H:[1,",
        'I': "[I:[0,",
        'J': "[J:[0,",
        'K': "[K:[0,",
@@ -29,14 +29,14 @@ tmp = {'A': "[A:[1,",
        'S': "[S:[0,",
        'T': "[T:[0,",
        'U': "[U:[0,",
-       'V': "[V:[0,",
+       'V': "[V:[2,",
        'W': "[W:[0,",
-       'X': "[X:[0,",
-       'Y': "[Y:[0,",
-       'Z': "[Z:[0,"}
+       'X': "[X:[2,",
+       'Y': "[Y:[1,",
+       'Z': "[Z:[1,"}
 
 for i in range(i):
-    process = Popen(["python3", "main.py", "tests/thomas/testThomReverse.txt"], stdout=PIPE)
+    process = Popen(["python3", "main.py", "tests/complex_test.txt"], stdout=PIPE)
 
     (ret, err) = process.communicate()
 

@@ -30,13 +30,15 @@ def modify_dict(elts, value, dictionary, query, prio=td.m_modif):
             ret.append(error(-7))
             continue
 
-        if value is td.v_bugged and dictionary[elt][2]: # is not td.m_initial:
+        if dictionary[elt][2] is td.m_initial:
+            continue
+
+        if value is td.v_bugged and dictionary[elt][2] <= prio:
             dictionary[elt][0] = value
             dictionary[elt][2] = prio
             continue
 
         if value == dictionary[elt][0]:
-
             dictionary[elt][2] = (prio if prio > dictionary[elt][2] and elt is query
                                   else td.m_nset if elt is not query
                                                  and dictionary[elt][2] < prio

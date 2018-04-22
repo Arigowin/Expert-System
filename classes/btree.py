@@ -194,7 +194,7 @@ class Btree:
 
             for elt in new_lst:
                 if elt.cdt.solver(dic) is td.v_true:
-                    tmp = elt.cc.solver(dic, query, prio)
+                    tmp = elt.cc.solver(dic, query, elt.prio)
 
                     if elt == curr_rule:
                         ret = tmp

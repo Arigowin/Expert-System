@@ -54,7 +54,7 @@ class Conclusion:
         """ recursive function to call the correct operator function """
 
         r_rpn_lst = []
-        print("-- RECU SOLVER CC", wanted)
+        print("-- RECU SOLVER CC", wanted, r_rpn_cpy, symb)
 
         if get_first_index(td.Symbols, r_rpn_cpy) is not -1:
             r_rpn_lst = self._split_r_rpn(r_rpn_cpy)
@@ -220,12 +220,12 @@ class Conclusion:
     def _logic_and(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic AND in the conclusion of the expression """
 
-        print("-- LOGIC AND CC", wanted)
+        print("-- LOGIC AND CC", wanted, r_rpn_lst)
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_true and td.v_false in val)
           or (wanted is td.v_false and val.count(td.v_true) == 2)):
-            print("rpn in and CC [%s] (%s)" % (r_rpn_lst, query))
+            print("rpn in and CC [%s] (%s) %s" % (r_rpn_lst, query, val))
             error(-6, "logic and cc")  # new msg 'c'est tout bugge' and return bugged
 
             if query in r_rpn_lst:
@@ -249,9 +249,17 @@ class Conclusion:
 
         for i, elt in enumerate(r_rpn_lst[1:]):
             if len(elt) > 1:
-                val[i] = self._recu_solver(dic, elt, wanted, query, symb)
-                print(">>> DEPIL AND")
+                other_val = val[0 if i == 1 else 1]
 
+                to_give = td.v_undef
+                if wanted is td.v_true:
+                    to_give = wanted
+                elif wanted is td.v_false and other_val is td.v_true:
+                    to_give = td.v_false
+
+                print("_logic_and ", r_rpn_lst, val)
+                val[i] = self._recu_solver(dic, elt, to_give, query, symb)
+                print(">>> DEPIL AND")
 
             else:
                 value = (td.v_true if wanted is td.v_true
@@ -295,11 +303,11 @@ class Conclusion:
             val = r_rpn_lst[1]
             print("val3", val)
 
+        if int(val) != int(wanted) and wanted is not td.v_undef and int(val) >= 0 and int(val) is not td.v_undef and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb):
 
-        print("val=%d, wanted=%d, " % (val, wanted))
-        if int(val) != int(wanted) and wanted is not td.v_undef and val >= 0 and val is not td.v_undef and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb):
-            
             error(-6, "logic not cc")  # new msg 'c'est tout bugge' and return bugged
+
+            print("logic not BUGGED", r_rpn_lst, self.r_rpn)
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
