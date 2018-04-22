@@ -131,9 +131,9 @@ class Btree:
 
             for node in curr_bnode.children:
                 if node.rule.prio is 1:
-                    display_steps("\nNext expression containing", " %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule), query=curr_bnode.query, dic=dic)
+                    display_steps("\tNext expression containing", " %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule), query=curr_bnode.query, dic=dic)
                 else:
-                    display_steps("\nNext expression containing", " %s: %s" % (curr_bnode.query, node.rule.expr), query=curr_bnode.query, dic=dic)
+                    display_steps("\tNext expression containing", " %s: %s" % (curr_bnode.query, node.rule.expr), query=curr_bnode.query, dic=dic)
 
                 if node.value is td.v_true:
                     val_cc = self._cc_solver_checker(dic, rule_lst, node.rule,
@@ -170,7 +170,7 @@ class Btree:
                                     rule_lst, query)
 
         else:
-            display_steps("\tValue of", " %s already known." % curr_bnode.query, query=curr_bnode.query, dic=dic)
+            display_steps("\t\tValue of", " %s already known." % curr_bnode.query, query=curr_bnode.query, dic=dic)
 
     def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
 
@@ -188,7 +188,7 @@ class Btree:
                     if elt == curr_rule:
                         ret = tmp
 
-        display_steps("Expression with the newly found values: ", "%s" % curr_rule.expr, query=query, dic=dic)
+        display_steps("\t\tExpression with the newly found values: ", "%s" % curr_rule.expr, query=query, dic=dic)
         return ret
 
     def _node_checking(self, dic, sorted_rule, rule_lst, query):

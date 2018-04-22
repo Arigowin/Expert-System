@@ -31,8 +31,9 @@ def print_dict(dictionary):
         value = ("True" if dictionary[elt][0] is td.v_true else "False"
                  if dictionary[elt][0] is td.v_false else "Undefined"
                  if dictionary[elt][0] is td.v_undef else "Bugged")
-        display_steps("\t", elt, query=elt, dic=dictionary,
-                      end_display="%s%s" % (" : ", value), sleep=False)
+        display_steps("\t", elt, query='', dic=dictionary,
+                      end_display="%s%s" % (" : ", value), sleep=False,
+                          bypass=True)
 
 
 def print_query(dictionary):
@@ -45,6 +46,6 @@ def print_query(dictionary):
             value = ("True" if dictionary[elt][0] is td.v_true else "False"
                      if dictionary[elt][0] is td.v_false else "Undefined"
                      if dictionary[elt][0] is td.v_undef else "Bugged")
-            display_steps("\t", elt, query=elt, dic=dictionary,
+            display_steps("\t", elt, query='', dic=dictionary,
                           end_display="%s%s" % (" : ", value), sleep=False,
                           bypass=True)

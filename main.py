@@ -5,6 +5,7 @@ import tools.functions as tf
 from classes.btree import Btree
 from tools.functions import print_dict
 from input_file.input import main_input
+from tools.display import display_steps
 
 
 def check_with_curr_value(elt, expr_lst, dic):
@@ -18,16 +19,18 @@ def check_with_curr_value(elt, expr_lst, dic):
 
 if __name__ == "__main__":
 
-    dictionary, expr_lst = main_input()
-    for fact in dictionary:
-        if dictionary[fact][1] is not td.q_unused:
-            new_tree = Btree(dictionary, expr_lst, fact)
-            pouet = new_tree.recu_launcher(dictionary, expr_lst)
+    dic, expr_lst = main_input()
+    facts_true = [fact for fact in dic if dic[fact][2] is td.m_initial]
+    display_steps("\nKnown facts: ", facts_true, query='', dic=dic)
+    for fact in dic:
+        if dic[fact][1] is not td.q_unused:
+            new_tree = Btree(dic, expr_lst, fact)
+            pouet = new_tree.recu_launcher(dic, expr_lst)
 
-    for elt in [fact for fact in dictionary if dictionary[fact][2] == -1]:
-        check_with_curr_value(elt, expr_lst, dictionary)
+    for elt in [fact for fact in dic if dic[fact][2] == -1]:
+        check_with_curr_value(elt, expr_lst, dic)
 
     if td.op_dictionary:
-        print_dict(dictionary)
+        print_dict(dic)
 
-    tf.print_query(dictionary)
+    tf.print_query(dic)
