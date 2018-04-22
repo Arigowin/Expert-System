@@ -10,6 +10,7 @@ class Rule:
 
     Variables:
         expr
+        sub_rule
         used
         cdt
         symb
@@ -25,7 +26,8 @@ class Rule:
 
     """
 
-    __slots__ = "expr", "sub_rule", "used", "cdt", "symb", "cc", "cdt_lst", "cc_lst", "prio"
+    __slots__ = ["expr", "sub_rule", "used", "cdt", "symb", "cc", "cdt_lst",
+                 "cc_lst", "prio"]
 
     def __init__(self, expr, split_line, dic):
         self.expr = expr
@@ -43,7 +45,6 @@ class Rule:
 
         self.prio = td.m_iif if '<' in self.expr else td.m_modif
 
-
     def _check_syntax(self, split_line):
         """ launch the 'well formated' check on the three part of the rule:
         condition, symbole and conclusion
@@ -56,14 +57,12 @@ class Rule:
         self._check_regex(symb_reg, split_line[1])
         self._check_cond_recu(exp_reg, split_line[2], split_line[2])
 
-
     def _check_regex(self, regex, str):
         """ return if the given string 'str' matches the given 'regex' """
 
         cdt = re.search(regex, str)
         if not cdt:
             return td.Error
-
 
     def _check_cond_recu(self, regex, str, lmodif):
         """ check if the rule is well formated begining by the most inner

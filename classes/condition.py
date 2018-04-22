@@ -30,7 +30,6 @@ class Condition:
         self.cdt = cdt
         self.rpn_rule = get_polish_notation(cdt)
 
-
     def solver(self, dic):
         """ find the result of the given RPN expression """
 
@@ -38,7 +37,6 @@ class Condition:
         self._recu_solver(dic)
 
         return int(self.pmodif)
-
 
     def _recu_solver(self, dic):
         """ recursive function to handle the condition part of the solver """
@@ -64,7 +62,6 @@ class Condition:
             if elt in self.pmodif:
                 self._recu_solver(dic)
 
-
     def _get_sub_exp(self):
         """ split pmodif to get the fist operation to do -fact and symbol- and
         the 2 leftovers
@@ -85,7 +82,6 @@ class Condition:
 
         return None, None, None, None
 
-
     def _get_value(self, fact, dic):
         """ return the value of 'fact' from 'dictionary' """
 
@@ -96,11 +92,10 @@ class Condition:
             ret_val = str(get_value_from_dict(elt, dic))
             rlt += (elt if elt.isdigit()
                     else ret_val if int(ret_val) == td.v_undef
-                        and elt in cc_list
+                    and elt in cc_list
                     else str(dic[elt][0]))
 
         return rlt
-
 
     def _logic_not(self, val):
         """ handle the logic NOT in the condition of the expression """
@@ -109,24 +104,23 @@ class Condition:
                 else td.v_true if int(val) is td.v_false
                 else td.v_false)
 
-
     def _logic_and(self, val):
         """ handle the logic AND in the condition of the expression """
 
-        return (td.v_undef if int(val[0]) == td.v_undef or int(val[1]) == td.v_undef
+        return (td.v_undef if int(val[0]) == td.v_undef
+                or int(val[1]) == td.v_undef
                 else td.v_true if int(val[0]) == td.v_true
-                               and int(val[1]) == td.v_true
+                and int(val[1]) == td.v_true
                 else td.v_false)
-
 
     def _logic_or(self, val):
         """ handle the logic OR in the condition of the expression """
 
-        return (td.v_true if int(val[0]) == td.v_true or int(val[1]) == td.v_true
+        return (td.v_true if int(val[0]) == td.v_true
+                or int(val[1]) == td.v_true
                 else td.v_undef if int(val[0]) == td.v_undef
-                                or int(val[1]) == td.v_undef
+                or int(val[1]) == td.v_undef
                 else td.v_false)
-
 
     def _logic_xor(self, val, fact, dic):
         """ handle the logic XOR in the condition of the expression """
@@ -146,7 +140,8 @@ class Condition:
             fact_false = fact[1] if ival[0] is td.v_true else fact[0]
 
             if fact_false[0].isupper():
-                if fact_false not in [elt for elt in dic if dic[elt][1] is not td.q_unused]:
+                if (fact_false not in [elt for elt in dic
+                                       if dic[elt][1] is not td.q_unused]):
                     rlt = modify_dict(fact_false, td.v_false, dic, fact_false)
                 else:
                     rlt = modify_dict(fact_false, td.v_undef, dic, fact_false)
