@@ -41,7 +41,7 @@ class Condition:
 
 
     def _recu_solver(self, dic):
-        """ """
+        """ recursive function to handle the condition part of the solver """
 
         if len(self.pmodif) == 1:
             self.pmodif = self._get_value(self.pmodif, dic)
@@ -134,7 +134,6 @@ class Condition:
         ival = [int(val[0]), int(val[1])]
 
         if ival[0] == td.v_undef and ival[1] == td.v_undef:
-            print("val1")
             return td.v_undef
 
         if ival[0] == ival[1]:
@@ -151,11 +150,9 @@ class Condition:
                     rlt = modify_dict(fact_false, td.v_false, dic, fact_false)
                 else:
                     rlt = modify_dict(fact_false, td.v_undef, dic, fact_false)
-                    print("val3")
                     return td.v_undef if rlt is None else rlt
                 return rlt if rlt is not None else td.v_true
 
             return td.v_true
 
-        print("val2")
         return td.v_undef

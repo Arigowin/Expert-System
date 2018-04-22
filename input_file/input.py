@@ -4,14 +4,13 @@ import sys
 import string
 import argparse
 
-import tools.functions as tf
 import tools.defines as td
 from handle_expression.expression import create_rule
 from dictionary.fill_dictionary import init_dictionary
 
 
 def strip_line(line):
-    """ """
+    """ remove all the whitespaces from te input lines """
 
     if '#' in line:
         line = line[:line.index("#")]
@@ -24,17 +23,15 @@ def strip_line(line):
 
 
 def parse(filename, dictionary):
-    """ """
+    """ parse the file lines to check the syntax of the file """
 
     init = ''
     query = ''
     rules = []
 
     with open(filename, 'r') as content:
-        print("**************************************************************")
 
         for line in content:
-            print(line[:-1])
             rule = strip_line(line)
 
             if rule and rule[0] == '=':
@@ -48,23 +45,21 @@ def parse(filename, dictionary):
 
     dictionary = init_dictionary(init, query, dictionary)
 
-    print("**************************************************************")
-
     return dictionary, rules
 
 
 def parse_arg():
-    """ """
+    """ parse all the arguments and check the options """
 
     parser = argparse.ArgumentParser()
 
-    # Fixed argument
+    # Fixed arguments
     parser.add_argument("file", type=str,
                         help="input file : it will contain a list of rules, "
                              "then a list of initial facts, "
                              "then a list of queries.")
 
-    # Optional argument
+    # Optional arguments
     parser.add_argument("-v", "--visualisation",
                         help="display regular visualisation",
                         action="store_true")
@@ -82,42 +77,14 @@ def parse_arg():
     td.op_color = args.color
 
     if os.path.isfile(args.file):
-        print(args.file)
         return args.dictionary, args.visualisation, args.color, args.file
 
-    print("EXPERT SYSTEM - Error: File not found or it's not a file")
+    print("EXPERT SYSTEM - Error: non valid file name")
     parser.print_help()
     sys.exit()
 
 
-# def get_file():
-#     """ """
-#
-#     arg = sys.argv
-#     nb_arg = len(arg)
-#
-#     if nb_arg == 1:
-#         tf.usage()
-#         sys.exit()
-#
-#     elif nb_arg > 2:
-#         tf.usage()
-#         sys.exit()
-#
-#     if not os.path.isfile(arg[1]):
-#         tf.usage()
-#         sys.exit()
-#
-#     return arg[1]
-
-
 def main_input():
-    """ """
-
-    # filename = get_file()
-    #
-    # if not filename:
-    #     return None
 
     arg_d, arg_v, arg_c, filename = parse_arg()
 

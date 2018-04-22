@@ -4,6 +4,7 @@ import tools.defines as td
 from classes.enum import Btype
 from error.error import error
 from tools.custom_return import enable_ret, cust_ret
+from tools.display import display_steps
 
 
 class _BNode:
@@ -71,7 +72,7 @@ class Btree:
     def recu_launcher(self, dic, rule_lst, prev_rule=None):
         """ """
 
-        print("\nRECU LAUNCHER START", self._root.query)
+        print("\nFinding the value of", self._root.query)
 
         ret = self._recu(dic, rule_lst, self._root, prev_rule)
 
@@ -81,19 +82,21 @@ class Btree:
     def _recu(self, dic, rule_lst, curr_bnode, prev_rule):
         """ specify which element is needed in a specific bnode """
 
-        print(" -- RECU -- ")
 
         if curr_bnode.btype is Btype.CC:
+            display_steps("TROLOLO", "POUET", "TOTO")
+            print(" -- QUERY", curr_bnode.query, prev_rule)
             self._node_cc(dic, curr_bnode, rule_lst, prev_rule)
             return dic[curr_bnode.query][0]
 
+        print("-- EXPRESSION", curr_bnode.rule.expr, prev_rule)
         return self._node_cdt(dic, curr_bnode, rule_lst, prev_rule)
 
 
     def _node_cdt(self, dic, curr_bnode, rule_lst, prev_rule):
         """ """
 
-        print(" -- NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
+        print("NODE CDT -- ", curr_bnode.rule.expr, curr_bnode.query)
 
         val = curr_bnode.value
         if val is td.v_undef:
@@ -105,7 +108,7 @@ class Btree:
                                                            tree=curr_bnode)
 
                     ret_cdt = self._recu(dic, rule_lst, child_node, prev_rule)
-                    print(" -- DEPIL CDT --", curr_bnode.rule.cdt_lst, fact)
+                    print("DEPIL CDT --", curr_bnode.rule.cdt_lst, fact)
                     if dic[fact][2] is td.m_default:
                         dic[fact][2] = td.m_iif
 
@@ -117,7 +120,6 @@ class Btree:
     def _node_cc(self, dic, curr_bnode, rule_lst, prev_rule):
         """ """
 
-        print(" -- NODE CC -- ", curr_bnode.query, dic[curr_bnode.query])
 
         query = curr_bnode.query
 
@@ -126,7 +128,6 @@ class Btree:
                           query in rule.cc_lst and rule is not prev_rule)
 
             for rule in needed_rule:
-                print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx", rule.expr, rule.cdt.solver(dic))
                 if query not in rule.used:
                     child_node, curr_bnode = self._new_node(dic,
                                                             btype=Btype.CDT,
@@ -136,13 +137,15 @@ class Btree:
                     rule.used.append(query)
                     ret_recu = self._recu(dic, rule_lst, child_node, prev_rule)
 
-                    print(" -- DEPIL CC --", ret_recu)
                     needed_rule[rule] = ret_recu
 
             for node in curr_bnode.children:
-                print("NODE EXPR", node.rule.expr)
+                if node.rule.prio is 1:
+                    print("\nNext expression containing %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule))
+                else:
+                    print("\nNext expression containing %s: %s" % (curr_bnode.query, node.rule.expr))
+
                 if node.value is td.v_true:
-                    # val_cc = node.rule.cc.solver(dic, query, node.rule.prio)
                     val_cc = self._cc_solver_checker(dic, rule_lst, node.rule, query, node.rule.prio)
                     node.rule.used.append(query)
 
@@ -175,15 +178,12 @@ class Btree:
 
     def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
 
-        print("_cc_solver_checker")
         bck_dic = copy.deepcopy(dic)
 
         ret = curr_rule.cc.solver(dic, query, prio)
 
         if bck_dic != dic:
-            print("Dic modify in cc solver")
             new_lst = [elt for elt in rule_lst if query in elt.expr]
-            print([elt.expr for elt in new_lst])
 
             for elt in new_lst:
                 if elt.cdt.solver(dic) is td.v_true:
@@ -192,6 +192,7 @@ class Btree:
                     if elt == curr_rule:
                         ret = tmp
 
+        print("Expression with the newly found values: %s" % curr_rule.expr)
         return ret
 
     def _node_checking(self, dic, sorted_rule, rule_lst, query):
@@ -199,21 +200,17 @@ class Btree:
         determined
         """
 
-        print(" -- NODE CHECK -- ")
-
         i = 0
         bck_sorted = sorted_rule.copy()
 
         while i in range(len(sorted_rule)):
-            print("_node_checking ", [(elt[0].expr, elt[1]) for elt in sorted_rule], (sorted_rule[i][0].expr, sorted_rule[i][1]))
 
             if sorted_rule[i][1] is td.v_undef:
                 val = -1
                 ret = self._tree_skimming(dic, rule_lst, sorted_rule[i][0].cdt_lst)
                 a = sorted_rule[i][0].cdt.solver(dic)
-                print("BAC", ret, a, sorted_rule[i][0].cdt_lst)
+
                 if ret and a is td.v_true:
-                    # val = sorted_rule[i][0].cc.solver(dic, query, sorted_rule[i][0].prio)
                     val = self._cc_solver_checker(dic, rule_lst, sorted_rule[i][0], query, sorted_rule[i][0].prio)
 
 
@@ -221,7 +218,6 @@ class Btree:
                     sorted_rule[i][1] = val
 
             if td.v_undef not in [elt[1] for elt in sorted_rule]:
-                print("break")
                 break
 
             i += 1
@@ -234,16 +230,11 @@ class Btree:
     def _tree_skimming(self, dic, rule_lst, cdt_lst):
         """ skim the tree to check every child node """
 
-        print("-- TREE SKIM --")
         b = False
 
         for elt in cdt_lst:
-            # if dic[elt][2] is td.m_default:
-                print("\nSTART NEW TREE", elt)
                 new_tree = Btree(dic, rule_lst, elt)
                 ret = new_tree.recu_launcher(dic, rule_lst)
-                print("val from new Tree", ret)
-                print("\nEND NEW TREE", elt)
                 b = True
 
         return b

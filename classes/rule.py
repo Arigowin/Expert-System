@@ -25,11 +25,11 @@ class Rule:
 
     """
 
-    __slots__ = "expr", "used", "cdt", "symb", "cc", "cdt_lst", "cc_lst", "prio"
+    __slots__ = "expr", "sub_rule", "used", "cdt", "symb", "cc", "cdt_lst", "cc_lst", "prio"
 
     def __init__(self, expr, split_line, dic):
-
         self.expr = expr
+        self.sub_rule = ''.join(split_line)
         self.used = []
 
         self._check_syntax(split_line)

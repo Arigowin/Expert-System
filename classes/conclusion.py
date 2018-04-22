@@ -60,7 +60,6 @@ class Conclusion:
             r_rpn_lst = self._split_r_rpn(r_rpn_cpy)
 
         elif r_rpn_cpy[0].isupper():
-            #if wanted is td.v_true:
             ret = modify_dict(r_rpn_cpy[0], wanted, dic, query, symb)
             cust_ret(ret) if ret is not None else None
 
@@ -84,7 +83,6 @@ class Conclusion:
     def _logic_xor(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic XOR in the conclusion of the expression """
 
-        print("-- LOGIC XOR CC", wanted, r_rpn_lst)
         val = fact_to_value(r_rpn_lst[1:], dic)
 
         if (-1 not in val and 2 not in val and ((wanted is td.v_true and val[0] == val[1])
@@ -103,7 +101,6 @@ class Conclusion:
 
         i = 1
         while i < 3:
-            print("while")
             to_give = td.v_undef
             if wanted is not td.v_undef:
                 other_val = val[0 if i == 2 else 1]
@@ -125,11 +122,9 @@ class Conclusion:
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
                 tmp = to_give
-                print("Modif i=%d, val=%s, tmp=%d" % (i, val, tmp))
 
             if tmp != val[i - 1]:
                 val[i - 1] = tmp
-                print("set i 0 | i=%d, val=%s, tmp=%d" % (i, val, tmp))
                 i = 0
 
             i += 1
@@ -164,13 +159,9 @@ class Conclusion:
 
         return td.v_undef
 
-
-    # OR -- OK
     @enable_ret
     def _logic_or(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic OR in the conclusion of the expression """
-
-        print("-- LOGIC OR CC -- rule(%s)(%s) wanted(%s) query(%s)" % (self.cc, self.r_rpn, wanted, query))
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
@@ -198,8 +189,6 @@ class Conclusion:
 
             if len(r_rpn_lst[i]) > 1:
                 tmp = self._recu_solver(dic, r_rpn_lst[i], to_give, query, symb)
-                print(">>> DEPIL OR")
-
 
             if len(r_rpn_lst[i]) == 1 and r_rpn_lst[i].isupper():
                 ret = modify_dict(r_rpn_lst[i], to_give, dic, query, symb)
@@ -216,20 +205,15 @@ class Conclusion:
                      or (val.count(wanted) == 1 and wanted is td.v_true)
                 else td.v_undef)
 
-
     def _logic_and(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic AND in the conclusion of the expression """
-
-        print("-- LOGIC AND CC", wanted, r_rpn_lst)
 
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_true and td.v_false in val)
           or (wanted is td.v_false and val.count(td.v_true) == 2)):
-            print("rpn in and CC [%s] (%s) %s" % (r_rpn_lst, query, val))
             error(-6, "logic and cc")  # new msg 'c'est tout bugge' and return bugged
 
             if query in r_rpn_lst:
-                print("TROLOLO")
                 not_wanted = (td.v_true if wanted is td.v_false
                             else td.v_false if wanted is td.v_true
                             else td.v_undef)
@@ -257,9 +241,7 @@ class Conclusion:
                 elif wanted is td.v_false and other_val is td.v_true:
                     to_give = td.v_false
 
-                print("_logic_and ", r_rpn_lst, val)
                 val[i] = self._recu_solver(dic, elt, to_give, query, symb)
-                print(">>> DEPIL AND")
 
             else:
                 value = (td.v_true if wanted is td.v_true
@@ -274,13 +256,11 @@ class Conclusion:
     def _logic_not(self, dic, r_rpn_lst, wanted, query, symb):
         """ handle the logic NOT in the conclusion of the expression """
 
-        print("-- LOGIC NOT CC", wanted)
         inv_rlt = self._not(wanted) if wanted < 2 else td.v_undef
 
         if len(r_rpn_lst[1]) > 1:
             val = self._recu_solver(dic, r_rpn_lst[1], inv_rlt, query, symb)
             val = td.v_true if val == td.v_false else td.v_false if val == td.v_true else val
-            print(">>> DEPIL NOT")
 
         elif r_rpn_lst[1].isupper():
 
@@ -289,25 +269,20 @@ class Conclusion:
                 ret = modify_dict(r_rpn_lst[1], val, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
 
-                print("val0", val)
                 val = (td.v_true if val is td.v_false
                         else td.v_false if val is td.v_true else td.v_undef)
-                print("val1", val)
+
             else:
                 ret = modify_dict(r_rpn_lst[1], inv_rlt, dic, query, symb)
                 cust_ret(ret) if ret is not None else None
                 val = wanted
-                print("val2", val)
 
         else:
             val = r_rpn_lst[1]
-            print("val3", val)
 
         if int(val) != int(wanted) and wanted is not td.v_undef and int(val) >= 0 and int(val) is not td.v_undef and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb):
 
             error(-6, "logic not cc")  # new msg 'c'est tout bugge' and return bugged
-
-            print("logic not BUGGED", r_rpn_lst, self.r_rpn)
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
@@ -323,7 +298,7 @@ class Conclusion:
                 else td.v_false)
 
     def _split_r_rpn(self, r_rpn_cpy):
-        """ """
+        """ split the RPN expression to handle each part separately """
 
         op, index = [], 0
 
@@ -349,7 +324,7 @@ class Conclusion:
 
 
     def _fill_dict(self, dic):
-        """ """
+        """ fill the dictionary with the newly found values """
 
         for elt in self.r_rpn:
             if elt.isupper() and dic[elt][2] is td.m_default and dic[elt][1] is not td.q_initial:
