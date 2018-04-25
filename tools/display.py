@@ -2,6 +2,7 @@ import time
 
 import tools.defines as td
 
+
 def colored_display(options):
     styles = {
             # styles
@@ -40,31 +41,31 @@ def colored_display(options):
     }
     for elt in options:
         print(styles[elt], end='', flush=True)
-    
+
 
 def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
     if td.op_visualisation is True or bypass is True:
-        
+
         print(args[0], end='', flush=True)
         for arg in args[1:]:
             for letter in arg:
                 option = []
 
                 if td.op_color and td.op_visualisation:
-                        
+
                     if letter is query:
                         option.append("bold")
 
                     if letter.isupper():
                         if dic[letter][0] is td.v_true:
-                            option.append("fg_green")  
-                        elif (dic[letter][0] is td.v_false 
-                            and dic[letter][2] is not td.m_default):
-                            option.append("fg_red") 
+                            option.append("fg_green")
+                        elif (dic[letter][0] is td.v_false
+                              and dic[letter][2] is not td.m_default):
+                            option.append("fg_red")
                         elif dic[letter][0] is td.v_undef:
-                            option.append("fg_light_blue")  
-                        elif dic[letter][0] is td.v_bugged: 
-                            option.append("fg_dark_grey") 
+                            option.append("fg_light_blue")
+                        elif dic[letter][0] is td.v_bugged:
+                            option.append("fg_dark_grey")
                         else:
                             option.append("reset")
 
@@ -76,9 +77,7 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
 
                 else:
                     print("%s" % letter, end='', flush=True)
-                    
 
         print(end_display)
         # if sleep is True:
         #     time.sleep(1)
-

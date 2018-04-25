@@ -111,7 +111,7 @@ class Btree:
         if dic[query][2] <= 0 or dic[query][0] is td.v_undef:
             needed_rule = dict((rule, -1) for rule in rule_lst if
                                query in rule.cc_lst and rule is not prev_rule)
-            
+
             if len(needed_rule) == 0:
                 display_steps("\tNo rule for", " %s" % curr_bnode.query, query=curr_bnode.query, dic=dic)
 
@@ -150,15 +150,15 @@ class Btree:
                                          is not node.rule.expr]
                         for elt in cc_lst:
                             display_steps("\nWe need to know the value of", " %s" % elt, query=curr_bnode.query, dic=dic)
-                            
+
                             new_tree = Btree(dic, cust_rule_lst, elt)
                             new_tree.recu_launcher(dic, cust_rule_lst,
                                                    curr_bnode.rule)
 
-                            value = ("True" if dic[elt][0] is td.v_true 
-                                     else "False" if dic[elt][0] is td.v_false 
-                                     else "Not define" if dic[elt][0] is 
-                                         td.v_undef 
+                            value = ("True" if dic[elt][0] is td.v_true
+                                     else "False" if dic[elt][0] is td.v_false
+                                     else "Not define" if dic[elt][0] is
+                                          td.v_undef
                                      else "Bugged")
                             display_steps("\tNewly found value for", " %s: " % elt, end_display=value, query=curr_bnode.query, dic=dic)
 

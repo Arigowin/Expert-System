@@ -13,10 +13,10 @@ def error_tbl(code, msg=""):
     """
 
     error_tbl = {# rule inconstitiency but priority say we modify
-                 3: ["Try to modify value set in dico but prio say it's oki => modif", False],  # prio dico < prio current
+                 3: ["Try to modify value set in dico but prio say it's oki => modif %s" % msg, False],  # prio dico < prio current
 
                  # rule inconstitiency and priority say we can't modify
-                 4: ["Try to modify value set in dico, but OK => not modif%s" % msg, False],  # prio dico > prio current
+                 4: ["Try to modify value set in dico, but OK => not modif %s" % msg, False],  # prio dico > prio current
 
                  # rule inconsistiency and prio can't decied wich is true => BUGGED
                  5: ["Cannot modify value with same priority %s" % msg, False],  # prio dico == prio current
@@ -43,4 +43,3 @@ def error(code, msg=""):
         sys.exit(abs(code))
 
     return code
-

@@ -86,7 +86,7 @@ class Conclusion:
         if (-1 not in val and 2 not in val
                 and ((wanted is td.v_true and val[0] == val[1])
                      or (wanted is td.v_false and val[0] != val[1]))):
-            error(-6, "logic xor cc 1")  # new msg 'c'est tout bugge' and return bugged
+            error(-6, (": logic xor: %s" % self.cc))
 
             if query in r_rpn_lst:
                 elts = []
@@ -138,7 +138,7 @@ class Conclusion:
         elif (val.count(td.v_undef) == 0
                 and ((wanted is td.v_true and val[0] == val[1])
                      or (wanted is td.v_false and val[0] != val[1]))):
-            error(-6, "logic xor cc 2")  # new msg 'c'est tout bugge' and return bugged
+            error(-6, (": logic xor: %s" % self.cc))
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
@@ -165,7 +165,7 @@ class Conclusion:
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
                 or (wanted is td.v_true and val.count(td.v_false) == 2)):
-            error(-6, "logic or cc")  # new msg 'c'est tout bugge' and return bugged
+            error(-6, (": logic or: %s" % self.cc))
             if query in r_rpn_lst:
                 elts = []
                 for elt in list(r_rpn_lst[1:]):
@@ -212,7 +212,7 @@ class Conclusion:
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_true and td.v_false in val)
                 or (wanted is td.v_false and val.count(td.v_true) == 2)):
-            error(-6, "logic and cc")  # new msg 'c'est tout bugge' and return bugged
+            error(-6, (": logic and: %s" % self.cc))
 
             if query in r_rpn_lst:
                 not_wanted = (td.v_true if wanted is td.v_false
@@ -291,7 +291,7 @@ class Conclusion:
                 and int(val) is not td.v_undef
                 and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb)):
 
-            error(-6, "logic not cc")  # new msg 'c'est tout bugge' and return bugged
+            error(-6, (": logic not: %s" % self.cc))
 
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)

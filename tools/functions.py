@@ -33,7 +33,7 @@ def print_dict(dictionary):
                  if dictionary[elt][0] is td.v_undef else "Bugged")
         display_steps("\t", elt, query='', dic=dictionary,
                       end_display="%s%s" % (" : ", value), sleep=False,
-                          bypass=True)
+                      bypass=True)
 
 
 def print_query(dictionary):

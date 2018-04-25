@@ -75,13 +75,13 @@ def modify_dict(elts, value, dic, query, prio=td.m_modif):
 
         if (prio < dic[elt][2] and dic[elt][0] is not td.v_undef
                 and value is not td.v_undef):
-            ret.append(error(-4))
+            ret.append(error(-4, ": value in dictionary: %d, new value: %d" % (dic[elt][0], value)))
             continue
 
         if (prio == dic[elt][2] and dic[elt][0] is not td.v_undef
                 and value is not td.v_undef):
             dic[elt][0] = td.v_bugged
             dic[elt][2] = prio
-            ret.append(error(-5))
+            ret.append(error(-5, ": value in dictionary: %d, new value: %d" % (dic[elt][0], value)))
 
     return None if len(ret) == 0 else min(ret)
