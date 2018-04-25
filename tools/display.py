@@ -79,8 +79,8 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                     print("%s" % letter, end='')
 
         print(end_display)
-        # if sleep is True:
-        #     time.sleep(1)
+        if sleep is True:
+            time.sleep(1)
 
 
 def legend():
