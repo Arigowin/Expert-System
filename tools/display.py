@@ -81,3 +81,15 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
         print(end_display)
         # if sleep is True:
         #     time.sleep(1)
+
+
+def legend():
+    if td.op_color and td.op_visualisation:
+        colored_display(["fg_green"])
+        print("True\033[0;0m", end=' ', flush=True)
+        colored_display(["fg_red"])
+        print("False\033[0;0m", end=' ', flush=True)
+        colored_display(["fg_light_blue"])
+        print("Undefine\033[0;0m", end=' ', flush=True)
+        colored_display(["fg_dark_grey"])
+        print("Bugged\033[0;0m", flush=True)

@@ -128,11 +128,6 @@ class Btree:
                     needed_rule[rule] = ret_recu
 
             for node in curr_bnode.children:
-                if node.rule.prio is 1:
-                    display_steps("\tNext expression containing", " %s, from rule %s: %s" % (curr_bnode.query, node.rule.expr, node.rule.sub_rule), query=curr_bnode.query, dic=dic)
-                else:
-                    display_steps("\tNext expression containing", " %s: %s" % (curr_bnode.query, node.rule.expr), query=curr_bnode.query, dic=dic)
-
                 if node.value is td.v_true:
                     val_cc = self._cc_solver_checker(dic, rule_lst, node.rule,
                                                      query, node.rule.prio)
@@ -180,12 +175,20 @@ class Btree:
 
         bck_dic = copy.deepcopy(dic)
 
+        if curr_rule.prio is 1:
+            display_steps("\tNext expression containing", " %s, from rule %s: %s" % (query, curr_rule.expr, curr_rule.sub_rule), query=query, dic=dic)
+        else:
+            display_steps("\tNext expression containing", " %s: %s" % (query, curr_rule.expr), query=query, dic=dic)
         ret = curr_rule.cc.solver(dic, query, prio)
 
         if bck_dic != dic:
             new_lst = [elt for elt in rule_lst if query in elt.expr]
 
             for elt in new_lst:
+                if elt.prio is 1:
+                    display_steps("\tNext expression containing", " %s, from rule %s: %s" % (query, elt.expr, elt.sub_rule), query=query, dic=dic)
+                else:
+                    display_steps("\tNext expression containing", " %s: %s" % (query, elt.expr), query=query, dic=dic)
                 if elt.cdt.solver(dic) is td.v_true:
                     tmp = elt.cc.solver(dic, query, elt.prio)
 
