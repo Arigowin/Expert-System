@@ -12,28 +12,23 @@ def error_tbl(code, msg=""):
 
     """
 
-    error_tbl = {# rule inconstitiency but priority say we modify
-                 3: ["Try to modify value set in dico but prio say it's oki => modif%s" % msg, False],  # prio dico < prio current
-
-                 # rule inconstitiency and priority say we can't modify
-                 4: ["Try to modify value set in dico, but OK => not modif%s" % msg, False],  # prio dico > prio current
-
-                 # rule inconsistiency and prio can't decied wich is true => BUGGED
-                 5: ["Cannot modify value with same priority%s" % msg, False],  # prio dico == prio current
-
-                 # endless loop between the rules
-                 6: ["Problem of consistency between the rules%s" % msg, False],
-
-
-                 1: ["Input file not well formatted%s" % msg, True],
-                 8: ["trucmuche bugge", True],
-                 7: ["Notre machin il est tout casse.... :(%s" % msg, False]}
+    # TODO : clear error message
+    error_tbl = {
+        3: ["Try to modify value set in dico but prio say it's oki => modif%s" % msg, False],
+        4: ["Try to modify value set in dico, but OK => not modif%s" % msg, False],
+        5: ["Cannot modify value with same priority%s" % msg, False],
+        6: ["Problem of consistency between the rules%s" % msg, False],
+        1: ["Input file not well formatted%s" % msg, True],
+        8: ["trucmuche bugge", True],
+        7: ["Notre machin il est tout casse.... :(%s" % msg, False]
+    }
 
     return error_tbl[code]
 
 
 def error(code, msg=""):
-    """ display error message, return specific error code and exit if needed """
+    """ display error message, return specific error code and exit if needed
+    """
 
     err_lst = error_tbl(abs(code), msg)
 
