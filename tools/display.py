@@ -40,13 +40,13 @@ def colored_display(options):
             'bg_light_grey': '\033[47m'
     }
     for elt in options:
-        print(styles[elt], end='', flush=True)
+        print(styles[elt], end='')
 
 
 def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
     if td.op_visualisation is True or bypass is True:
 
-        print(args[0], end='', flush=True)
+        print(args[0], end='')
         for arg in args[1:]:
             for letter in arg:
                 option = []
@@ -73,23 +73,23 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                         option.append("reset")
 
                     colored_display(option)
-                    print("%s%s" % (letter, '\033[0;0m'), end='', flush=True)
+                    print("%s%s" % (letter, '\033[0;0m'), end='')
 
                 else:
-                    print("%s" % letter, end='', flush=True)
+                    print("%s" % letter, end='')
 
         print(end_display)
-        # if sleep is True:
-        #     time.sleep(1)
+        if sleep is True:
+            time.sleep(1)
 
 
 def legend():
     if td.op_color and td.op_visualisation:
         colored_display(["fg_green"])
-        print("True\033[0;0m", end=' ', flush=True)
+        print("True\033[0;0m", end=' ')
         colored_display(["fg_red"])
-        print("False\033[0;0m", end=' ', flush=True)
+        print("False\033[0;0m", end=' ')
         colored_display(["fg_light_blue"])
-        print("Undefine\033[0;0m", end=' ', flush=True)
+        print("Undefine\033[0;0m", end=' ')
         colored_display(["fg_dark_grey"])
-        print("Bugged\033[0;0m", flush=True)
+        print("Bugged\033[0;0m")
