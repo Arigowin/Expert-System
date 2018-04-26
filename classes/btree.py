@@ -3,6 +3,7 @@ import copy
 import tools.defines as td
 from classes.enum import Btype
 from tools.display import display_steps
+from error.error import error
 
 
 class _BNode:
@@ -66,16 +67,16 @@ class Btree:
         _, self._root = self._new_node(dic, Btype.CC, query=query)
 
     def recu_launcher(self, dic, rule_lst, prev_rule=None):
-        """ """
-
-        display_steps("\nFinding the value of ", self._root.query,
-                      query=self._root.query, dic=dic)
+        """ launch the main recursive loop """
 
         return self._recu(dic, rule_lst, self._root, prev_rule)
 
     def _recu(self, dic, rule_lst, curr_bnode, prev_rule):
         """ specify which element is needed in a specific bnode """
 
+        if curr_bnode.query:
+            display_steps("\nFinding the value of ", curr_bnode.query,
+                      query=curr_bnode.query, dic=dic)
         if curr_bnode.btype is Btype.CC:
 
             self._node_cc(dic, curr_bnode, rule_lst, prev_rule)
@@ -111,7 +112,8 @@ class Btree:
         if dic[query][2] <= 0 or dic[query][0] is td.v_undef:
             needed_rule = dict((rule, -1) for rule in rule_lst if
                                query in rule.cc_lst and rule is not prev_rule)
-
+           
+            display_steps("Rules containing ", "%s: " % query, ", ".join([rule.expr for rule in needed_rule]), query=curr_bnode.query, dic=dic)
             if len(needed_rule) == 0:
                 display_steps("\tNo rule for", " %s" % curr_bnode.query, query=curr_bnode.query, dic=dic)
 
@@ -128,6 +130,7 @@ class Btree:
                     needed_rule[rule] = ret_recu
 
             for node in curr_bnode.children:
+                
                 if node.value is td.v_true:
                     val_cc = self._cc_solver_checker(dic, rule_lst, node.rule,
                                                      query, node.rule.prio)
@@ -169,7 +172,7 @@ class Btree:
                                     rule_lst, query)
 
         else:
-            display_steps("\tValue of", " %s already known." % curr_bnode.query, query=curr_bnode.query, dic=dic)
+            display_steps("\tValue of", " %s already known.\n" % curr_bnode.query, query=curr_bnode.query, dic=dic)
 
     def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
 
@@ -180,7 +183,8 @@ class Btree:
         else:
             display_steps("\tNext expression containing", " %s: %s" % (query, curr_rule.expr), query=query, dic=dic)
         ret = curr_rule.cc.solver(dic, query, prio)
-
+        if ret == -2:
+            error(-2, " - on rule: %s" % curr_rule.expr)
         if bck_dic != dic:
             new_lst = [elt for elt in rule_lst if query in elt.expr]
 
@@ -191,6 +195,8 @@ class Btree:
                     display_steps("\tNext expression containing", " %s: %s" % (query, elt.expr), query=query, dic=dic)
                 if elt.cdt.solver(dic) is td.v_true:
                     tmp = elt.cc.solver(dic, query, elt.prio)
+                    if tmp == -2:
+                        error(-2, " - on rule: %s" % elt.expr)
 
                     if elt == curr_rule:
                         ret = tmp
@@ -235,14 +241,15 @@ class Btree:
     def _tree_skimming(self, dic, rule_lst, cdt_lst):
         """ skim the tree to check every child node """
 
-        b = False
+        ret = False
 
         for elt in cdt_lst:
+            if dic[elt][0] is td.v_undef or dic[elt][2] <= 0:
                 new_tree = Btree(dic, rule_lst, elt)
                 new_tree.recu_launcher(dic, rule_lst)
-                b = True
+                ret = True
 
-        return b
+        return ret
 
     def _new_node(self, dic, btype, rule=None, query=None, tree=None):
         """ create a new child node to be attach to the tree """

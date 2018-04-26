@@ -1,7 +1,7 @@
-import sys
-
 import tools.defines as td
 from classes.rule import Rule
+from error.error import error
+
 
 
 def create_rule(expr, dictionary):
@@ -10,14 +10,15 @@ def create_rule(expr, dictionary):
     """
 
     split = split_expr(expr)
-
+    if None in split:
+        error(-1)
     if '<' in split[1]:
         rules = handle_iif(expr, split, dictionary)
     else:
         rules = [Rule(expr, split, dictionary)]
 
     if td.Error in rules:
-        sys.exit()
+        error(-1)
 
     return rules
 
@@ -37,7 +38,7 @@ def split_expr(expr):
         if expr[i + 1] and expr[i + 2]:
             symb_end = i + 2
         else:
-            sys.exit()
+            error(-1)
 
         symb = expr[symb_beg:symb_end]
         cdt = expr[:symb_beg]

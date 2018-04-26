@@ -8,7 +8,6 @@ def get_polish_notation(cdt):
     ope = ""
 
     for elt in cdt:
-
         if elt.isupper():
             polish_rule += elt
 

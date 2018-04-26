@@ -12,15 +12,9 @@ def error_tbl(code, msg=""):
 
     """
 
-    # TODO : clear error message
     error_tbl = {
-        3: ["Try to modify value set in dico but prio say it's oki => modif%s" % msg, False],
-        4: ["Try to modify value set in dico, but OK => not modif%s" % msg, False],
-        5: ["Cannot modify value with same priority%s" % msg, False],
-        6: ["Problem of consistency between the rules%s" % msg, False],
+        2: ["Problem of consistency between the rules%s" % msg, False],
         1: ["Input file not well formatted%s" % msg, True],
-        8: ["trucmuche bugge", True],
-        7: ["Notre machin il est tout casse.... :(%s" % msg, False]
     }
 
     return error_tbl[code]
@@ -32,7 +26,7 @@ def error(code, msg=""):
 
     err_lst = error_tbl(abs(code), msg)
 
-    print("EXPERT SYSTEM - %d - Error: %s" % (abs(code), err_lst[0]))
+    print("\nEXPERT SYSTEM - Error: %s\n" % err_lst[0], file=sys.stderr)
 
     if err_lst[1]:
         sys.exit(abs(code))

@@ -5,7 +5,7 @@ import tools.functions as tf
 from classes.btree import Btree
 from tools.functions import print_dict
 from input_file.input import main_input
-from tools.display import display_steps, legend
+from tools.display import display_steps, display_legend, display_rules
 
 
 def check_with_curr_value(elt, expr_lst, dic):
@@ -21,10 +21,11 @@ if __name__ == "__main__":
 
     dic, expr_lst = main_input()
 
-    legend()
+    display_legend()
 
     facts_true = [fact for fact in dic if dic[fact][2] is td.m_initial]
     display_steps("\nKnown facts: ", facts_true, query='', dic=dic)
+    display_rules(expr_lst, dic)
     for fact in dic:
         if dic[fact][1] is not td.q_unused:
             new_tree = Btree(dic, expr_lst, fact)

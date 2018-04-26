@@ -1,5 +1,6 @@
 import re
 
+from error.error import error
 import tools.defines as td
 from classes.condition import Condition
 from classes.conclusion import Conclusion
@@ -22,7 +23,7 @@ class Rule:
     Functions:
         _check_syntax(self, split_line)
         _check_regex(self, regex, str)
-        _check_cond_recu(self, regex, strm lmodif)
+        _check_expr_syntax(self, regex, strm lmodif)
 
     """
 
@@ -49,34 +50,35 @@ class Rule:
         """ launch the 'well formated' check on the three part of the rule:
         condition, symbole and conclusion
         """
-
+        
         symb_reg = "^<?=>$"
-        exp_reg = "^!?[A-Z]([+\|\^]!?[A-Z])*$"
+        exp_reg = "^(!*[A-Z][+\|\^])*!*[A-Z]$"
 
-        self._check_cond_recu(exp_reg, split_line[0], split_line[0])
+        self._check_expr_syntax(exp_reg, split_line[0], split_line[0])
         self._check_regex(symb_reg, split_line[1])
-        self._check_cond_recu(exp_reg, split_line[2], split_line[2])
+        self._check_expr_syntax(exp_reg, split_line[2], split_line[2])
 
-    def _check_regex(self, regex, str):
-        """ return if the given string 'str' matches the given 'regex' """
+    def _check_regex(self, regex, string):
+        """ return if the given string 'string' matches the given 'regex' """
 
-        cdt = re.search(regex, str)
+        cdt = re.search(regex, string)
         if not cdt:
-            return td.Error
+            error(-1)
 
-    def _check_cond_recu(self, regex, str, lmodif):
+    def _check_expr_syntax(self, regex, string, lmodif):
         """ check if the rule is well formated begining by the most inner
         parenthesis
         """
 
-        if '(' in str:
-            popen = str.find('(')
-            pclose = str.rfind(')')
+        if "!!" in string:
+            error(-1)
 
-            if not pclose:
-                return td.Error
-
-            self._check_cond_recu(regex, str[popen + 1:pclose], lmodif)
-            str = str[:popen] + 'Z' + str[pclose + 1:]
-
-        self._check_regex(regex, str)
+        openp = string.count('(')
+        closep = string.count(')')
+        if openp != closep:
+            error(-1)
+        
+        table = str.maketrans(dict.fromkeys("()"))
+        string = string.translate(table)
+        self._check_regex(regex, string)
+        

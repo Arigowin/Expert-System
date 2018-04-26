@@ -79,7 +79,7 @@ def parse_arg():
     if os.path.isfile(args.file):
         return args.dictionary, args.no_visualisation, args.no_color, args.file
 
-    print("EXPERT SYSTEM - Error: non valid file name")
+    print("EXPERT SYSTEM - Error: Filename not valid")
     parser.print_help()
     sys.exit()
 

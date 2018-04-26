@@ -1,5 +1,4 @@
 import tools.defines as td
-from error.error import error
 from tools.functions import get_first_index
 from handle_expression.create_RPN import get_polish_notation
 from dictionary.check_dictionary import get_value_from_dict, fact_to_value
@@ -53,7 +52,6 @@ class Conclusion:
         """ recursive function to call the correct operator function """
 
         r_rpn_lst = []
-        # print("-- RECU SOLVER CC", wanted, r_rpn_cpy, symb)
 
         if get_first_index(td.Symbols, r_rpn_cpy) is not -1:
             r_rpn_lst = self._split_r_rpn(r_rpn_cpy)
@@ -86,7 +84,6 @@ class Conclusion:
         if (-1 not in val and 2 not in val
                 and ((wanted is td.v_true and val[0] == val[1])
                      or (wanted is td.v_false and val[0] != val[1]))):
-            error(-6, (": logic xor: %s" % self.cc))
 
             if query in r_rpn_lst:
                 elts = []
@@ -97,7 +94,7 @@ class Conclusion:
 
                 ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
-                return td.v_bugged
+                return -2
 
         i = 1
         while i < 3:
@@ -138,12 +135,11 @@ class Conclusion:
         elif (val.count(td.v_undef) == 0
                 and ((wanted is td.v_true and val[0] == val[1])
                      or (wanted is td.v_false and val[0] != val[1]))):
-            error(-6, (": logic xor: %s" % self.cc))
 
             elts = set([elt for elt in list(r_rpn_lst[1:]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
-            return td.v_bugged
+            return -2
 
         elif (val.count(td.v_undef) == 1 and len(r_rpn_lst[1]) == 1
               and len(r_rpn_lst[2]) == 1):
@@ -165,7 +161,6 @@ class Conclusion:
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_false and td.v_true in val)
                 or (wanted is td.v_true and val.count(td.v_false) == 2)):
-            error(-6, (": logic or: %s" % self.cc))
             if query in r_rpn_lst:
                 elts = []
                 for elt in list(r_rpn_lst[1:]):
@@ -175,7 +170,7 @@ class Conclusion:
 
                 ret = modify_dict(elts, td.v_bugged, dic, query, symb)
 
-                return td.v_bugged
+                return -2
 
         i = 1
         while i < 3:
@@ -212,7 +207,6 @@ class Conclusion:
         val = fact_to_value(r_rpn_lst[1:], dic)
         if ((wanted is td.v_true and td.v_false in val)
                 or (wanted is td.v_false and val.count(td.v_true) == 2)):
-            error(-6, (": logic and: %s" % self.cc))
 
             if query in r_rpn_lst:
                 not_wanted = (td.v_true if wanted is td.v_false
@@ -231,7 +225,7 @@ class Conclusion:
 
                 ret = modify_dict(und, td.v_undef, dic, query, symb)
 
-                return td.v_bugged
+                return -2
 
         for i, elt in enumerate(r_rpn_lst[1:]):
             if len(elt) > 1:
@@ -291,11 +285,9 @@ class Conclusion:
                 and int(val) is not td.v_undef
                 and (len(r_rpn_lst[1]) > 1 or dic[r_rpn_lst[1]][2] <= symb)):
 
-            error(-6, (": logic not: %s" % self.cc))
-
             elts = set([elt for elt in ''.join(r_rpn_lst[1]) if elt.isupper()])
             ret = modify_dict(elts, td.v_bugged, dic, query, symb)
-            return td.v_bugged
+            return -2
 
         return val
 
@@ -310,7 +302,6 @@ class Conclusion:
         """ split the RPN expression to handle each part separately """
 
         op, index = [], 0
-
         for i, elt in enumerate(r_rpn_cpy):
 
             if elt in "^|+":

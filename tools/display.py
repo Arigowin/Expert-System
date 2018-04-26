@@ -79,17 +79,25 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                     print("%s" % letter, end='')
 
         print(end_display)
-        if sleep is True:
-            time.sleep(1)
+        # if sleep is True:
+        #     time.sleep(1)
 
 
-def legend():
+def display_legend():
     if td.op_color and td.op_visualisation:
+        print("Color scheme:")
         colored_display(["fg_green"])
-        print("True\033[0;0m", end=' ')
+        print("\tTrue\033[0;0m")
         colored_display(["fg_red"])
-        print("False\033[0;0m", end=' ')
+        print("\tFalse\033[0;0m")
         colored_display(["fg_light_blue"])
-        print("Undefine\033[0;0m", end=' ')
+        print("\tUndefine\033[0;0m")
         colored_display(["fg_dark_grey"])
-        print("Bugged\033[0;0m")
+        print("\tBugged\033[0;0m")
+
+
+def display_rules(rule_list, dic):
+
+    display_steps("\nList of known rules:", query='', dic=dic, bypass=True)
+    for rule in rule_list:
+        display_steps("\t", rule.expr, query='',  dic=dic, bypass=True)
