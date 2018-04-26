@@ -1,6 +1,7 @@
 import copy
 
 import tools.defines as td
+import tools.functions as tf
 from classes.enum import Btype
 from tools.display import display_steps
 from error.error import error
@@ -172,7 +173,12 @@ class Btree:
                                     rule_lst, query)
 
         else:
-            display_steps("\tValue of", " %s already known.\n" % curr_bnode.query, query=curr_bnode.query, dic=dic)
+            if tf.check_with_curr_value(curr_bnode.query, rule_lst, dic, True, 2):
+                display_steps("\tValue of", " %s already known.\n" % curr_bnode.query, query=curr_bnode.query, dic=dic)
+            else:
+                error(-2)
+                display_steps("\tNewly found value for", " %s: " % curr_bnode.query, end_display="Bugged", query=curr_bnode.query, dic=dic)
+
 
     def _cc_solver_checker(self, dic, rule_lst, curr_rule, query, prio):
 
@@ -184,8 +190,8 @@ class Btree:
             display_steps("\tNext expression containing", " %s: %s" % (query, curr_rule.expr), query=query, dic=dic)
 
         ret = curr_rule.cc.solver(dic, query, prio)
-        if ret == -2:
-            error(-2, " - on rule: %s" % curr_rule.expr)
+        if ret == -2 or (ret is td.v_bugged and bck_dic[query][0] is not td.v_bugged):
+            return error(-2, " - on rule: %s" % curr_rule.expr)
 
         if bck_dic != dic:
             new_lst = [elt for elt in rule_lst if query in elt.expr]
@@ -198,8 +204,8 @@ class Btree:
 
                 if elt.cdt.solver(dic) is td.v_true:
                     tmp = elt.cc.solver(dic, query, elt.prio)
-                    if tmp == -2:
-                        error(-2, " - on rule: %s" % elt.expr)
+                    if tmp == -2 or (tmp is td.v_bugged and bck_dic[query][0] is not td.v_bugged):
+                        return error(-2, " - on rule: %s" % elt.expr)
 
                     if elt == curr_rule:
                         ret = tmp

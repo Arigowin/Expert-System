@@ -1,5 +1,6 @@
 import tools.defines as td
 from tools.display import display_steps
+from error.error import error
 
 
 def get_first_index(to_find, to_search, n=1, order=True):
@@ -49,3 +50,16 @@ def print_query(dictionary):
             display_steps("\t", elt, query='', dic=dictionary,
                           end_display="%s%s" % (" : ", value), sleep=False,
                           bypass=True)
+
+
+def check_with_curr_value(elt, expr_lst, dic, change=False, prio=-1):
+    needed_rule = [rule for rule in expr_lst if elt in rule.cc_lst]
+
+    for rule in needed_rule:
+        if rule.cdt.solver(dic) is td.v_true:
+            ret = rule.cc.solver(dic, elt, prio if prio == -1 else rule.prio)
+            if ret == td.v_true and change:
+                dic[elt][2] = 2
+            elif ret is not td.v_true:
+                return False
+    return True

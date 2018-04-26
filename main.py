@@ -11,15 +11,6 @@ from tools.display import display_steps, display_legend, display_rules
 from dictionary.fill_dictionary import init_dictionary
 
 
-def check_with_curr_value(elt, expr_lst, dic):
-    needed_rule = [rule for rule in expr_lst if elt in rule.cc_lst]
-
-    for rule in needed_rule:
-        if rule.cdt.solver(dic) is td.v_true:
-            if rule.cc.solver(dic, elt, -1) == td.v_true:
-                dic[elt][2] = 2
-
-
 def modif_file(msg):
     while(True):
         new = input(msg)
@@ -45,7 +36,7 @@ def main_loop(default_dic, default_expr_lst):
             new_tree.recu_launcher(dic, expr_lst)
 
     for elt in [fact for fact in dic if dic[fact][2] == -1]:
-        check_with_curr_value(elt, expr_lst, dic)
+        tf.check_with_curr_value(elt, expr_lst, dic)
 
     if td.op_dictionary:
         print_dict(dic)
