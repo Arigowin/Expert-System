@@ -36,7 +36,7 @@ tmp = {'A': "A : True",
        'Z': "Z : Bugged"}
 
 for i in range(i):
-    process = Popen(["python3", "main.py", "-cdv", "tests/basic_test_2.txt"], stdout=PIPE)
+    process = Popen(["python3", "expert_system.py", "-cdv", "tests/basic_test_2.txt"], stdout=PIPE)
 
     (ret, err) = process.communicate()
 
