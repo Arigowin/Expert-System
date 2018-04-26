@@ -59,8 +59,7 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                     if letter.isupper():
                         if dic[letter][0] is td.v_true:
                             option.append("fg_green")
-                        elif (dic[letter][0] is td.v_false
-                              and dic[letter][2] is not td.m_default):
+                        elif dic[letter][0] is td.v_false:
                             option.append("fg_red")
                         elif dic[letter][0] is td.v_undef:
                             option.append("fg_light_blue")
@@ -80,7 +79,7 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
 
         print(end_display)
         if sleep is True:
-            time.sleep(1)
+            time.sleep(0.5)
 
 
 def display_legend():

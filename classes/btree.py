@@ -148,18 +148,19 @@ class Btree:
                         cust_rule_lst = [rule for rule in rule_lst if rule.expr
                                          is not node.rule.expr]
                         for elt in cc_lst:
-                            display_steps("\nWe need to know the value of", " %s" % elt, query=curr_bnode.query, dic=dic)
+                            if dic[elt][0] is not td.v_bugged:
+                                display_steps("\nWe need to know the value of", " %s" % elt, query=curr_bnode.query, dic=dic)
 
-                            new_tree = Btree(dic, cust_rule_lst, elt)
-                            new_tree.recu_launcher(dic, cust_rule_lst,
-                                                   curr_bnode.rule)
+                                new_tree = Btree(dic, cust_rule_lst, elt)
+                                new_tree.recu_launcher(dic, cust_rule_lst,
+                                                       curr_bnode.rule)
 
-                            value = ("True" if dic[elt][0] is td.v_true
-                                     else "False" if dic[elt][0] is td.v_false
-                                     else "Not define" if dic[elt][0] is
-                                          td.v_undef
-                                     else "Bugged")
-                            display_steps("\tNewly found value for", " %s: " % elt, end_display=value, query=curr_bnode.query, dic=dic)
+                                value = ("True" if dic[elt][0] is td.v_true
+                                         else "False" if dic[elt][0] is td.v_false
+                                         else "Not define" if dic[elt][0] is
+                                              td.v_undef
+                                         else "Bugged")
+                                display_steps("\tNewly found value for", " %s: " % elt, end_display=value, query=curr_bnode.query, dic=dic)
 
                         if (dic[query][0] is not td.v_bugged
                                 and node.rule.prio > dic[query][2]):
@@ -175,7 +176,7 @@ class Btree:
         else:
             if tf.check_with_curr_value(curr_bnode.query, rule_lst, dic, True, 2):
                 display_steps("\tValue of", " %s already known.\n" % curr_bnode.query, query=curr_bnode.query, dic=dic)
-            else:
+            elif dic[curr_bnode.query][0] is td.v_bugged:
                 error(-2)
                 display_steps("\tNewly found value for", " %s: " % curr_bnode.query, end_display="Bugged", query=curr_bnode.query, dic=dic)
 
