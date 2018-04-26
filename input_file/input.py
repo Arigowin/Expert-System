@@ -69,15 +69,19 @@ def parse_arg():
     parser.add_argument("-c", "--no_color",
                         help="do not display colorized visualisation",
                         action="store_false")
+    parser.add_argument("-i", "--interactive",
+                        help="interactively add initial facts and/or queries",
+                        action="store_true")
 
     args = parser.parse_args()
 
     td.op_visualisation = args.no_visualisation
     td.op_dictionary = args.dictionary
     td.op_color = args.no_color
+    td.op_inter = args.interactive
 
     if os.path.isfile(args.file):
-        return args.dictionary, args.no_visualisation, args.no_color, args.file
+        return args.file
 
     print("EXPERT SYSTEM - Error: Filename not valid")
     parser.print_help()
@@ -86,7 +90,7 @@ def parse_arg():
 
 def main_input():
 
-    arg_d, arg_v, arg_c, filename = parse_arg()
+    filename = parse_arg()
 
     dictionary = dict((letter, [0, 0, 0]) for letter in string.ascii_uppercase)
     dictionary, rules = parse(filename, dictionary)

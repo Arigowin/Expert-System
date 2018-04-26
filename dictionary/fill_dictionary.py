@@ -1,5 +1,4 @@
 import tools.defines as td
-from error.error import error
 
 
 def init_dictionary(init, query, dic):

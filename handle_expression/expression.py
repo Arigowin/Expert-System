@@ -3,7 +3,6 @@ from classes.rule import Rule
 from error.error import error
 
 
-
 def create_rule(expr, dictionary):
     """ create a list of Rule object with all the rules needed to resolve the
     given expression

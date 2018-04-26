@@ -79,8 +79,8 @@ def display_steps(*args, query, dic, end_display="", sleep=True, bypass=False):
                     print("%s" % letter, end='')
 
         print(end_display)
-        # if sleep is True:
-        #     time.sleep(1)
+        if sleep is True:
+            time.sleep(1)
 
 
 def display_legend():
@@ -98,6 +98,6 @@ def display_legend():
 
 def display_rules(rule_list, dic):
 
-    display_steps("\nList of known rules:", query='', dic=dic, bypass=True)
+    display_steps("\nList of known rules:", query='', dic=dic, sleep=False, bypass=True)
     for rule in rule_list:
-        display_steps("\t", rule.expr, query='',  dic=dic, bypass=True)
+        display_steps("\t", rule.expr, query='',  dic=dic, sleep=False, bypass=True)

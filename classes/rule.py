@@ -50,7 +50,7 @@ class Rule:
         """ launch the 'well formated' check on the three part of the rule:
         condition, symbole and conclusion
         """
-        
+
         symb_reg = "^<?=>$"
         exp_reg = "^(!*[A-Z][+\|\^])*!*[A-Z]$"
 
@@ -77,8 +77,7 @@ class Rule:
         closep = string.count(')')
         if openp != closep:
             error(-1)
-        
+
         table = str.maketrans(dict.fromkeys("()"))
         string = string.translate(table)
         self._check_regex(regex, string)
-        

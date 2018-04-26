@@ -23,3 +23,4 @@ Error = -1
 op_visualisation = True
 op_dictionary = False
 op_color = True
+op_inter = False
